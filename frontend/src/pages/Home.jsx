@@ -55,11 +55,11 @@ export const Home = () => {
 
   return (
     <div className="min-h-screen">
-      {/* Hero Carousel Section */}
-      <section className="relative h-screen">
+      {/* Hero Carousel Section - Premium Design */}
+      <section className="relative h-screen overflow-hidden">
         {loading || carouselSlides.length === 0 ? (
           <div className="h-full flex items-center justify-center bg-slate-900">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white"></div>
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-amber-500"></div>
           </div>
         ) : (
           <Carousel className="h-full" opts={{ loop: true }}>
@@ -67,57 +67,169 @@ export const Home = () => {
               {carouselSlides.map((slide, index) => (
                 <CarouselItem key={slide.id}>
                   <div className="relative h-screen">
+                    {/* Background Image with Ken Burns Effect */}
                     <div
-                      className="absolute inset-0 bg-cover bg-center"
+                      className="absolute inset-0 bg-cover bg-center scale-105 animate-slow-zoom"
                       style={{ backgroundImage: `url('${slide.image}')` }}
                     >
-                      <div className="absolute inset-0 bg-gradient-to-r from-slate-900/90 via-slate-900/70 to-slate-900/50"></div>
+                      <div className="absolute inset-0 bg-gradient-to-r from-slate-900/95 via-slate-900/70 to-transparent"></div>
+                      <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-slate-900/30"></div>
                     </div>
                     
-                    <div className="relative z-10 h-full flex items-center justify-center">
-                      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-                        <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white mb-6 animate-fade-in">
-                          {slide.title}
-                          {slide.subtitle && (
-                            <span className="block mt-2 bg-gradient-to-r from-amber-400 to-amber-200 bg-clip-text text-transparent">
-                              {slide.subtitle}
-                            </span>
-                          )}
-                        </h1>
-                        {slide.description && (
-                          <p className="text-lg md:text-xl text-slate-200 mb-8 max-w-2xl mx-auto">
-                            {slide.description}
-                          </p>
-                        )}
-                        {slide.cta_text && slide.cta_link && (
-                          <Button
-                            asChild
-                            size="lg"
-                            className="bg-amber-500 hover:bg-amber-600 text-white px-8 py-6 text-lg rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
-                          >
-                            <Link to={slide.cta_link}>
-                              {slide.cta_text}
-                              <ArrowRight className="ml-2 w-5 h-5" />
-                            </Link>
-                          </Button>
-                        )}
+                    {/* Content */}
+                    <div className="relative z-10 h-full flex items-center">
+                      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+                        <div className="grid lg:grid-cols-2 gap-12 items-center">
+                          {/* Left Content */}
+                          <div className="text-left">
+                            {/* Badge */}
+                            <div className="inline-flex items-center gap-2 px-4 py-2 bg-amber-500/20 backdrop-blur-sm border border-amber-500/30 rounded-full mb-6">
+                              <Star className="w-4 h-4 text-amber-400 fill-amber-400" />
+                              <span className="text-amber-400 text-sm font-medium">Profesyonel Gayrimenkul Danışmanlığı</span>
+                            </div>
+                            
+                            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 leading-tight">
+                              {slide.title}
+                            </h1>
+                            {slide.subtitle && (
+                              <p className="text-2xl md:text-3xl lg:text-4xl font-bold bg-gradient-to-r from-amber-400 via-amber-300 to-amber-500 bg-clip-text text-transparent mb-6">
+                                {slide.subtitle}
+                              </p>
+                            )}
+                            {slide.description && (
+                              <p className="text-lg text-slate-300 mb-8 max-w-xl leading-relaxed">
+                                {slide.description}
+                              </p>
+                            )}
+                            
+                            {/* CTA Buttons */}
+                            <div className="flex flex-wrap gap-4 mb-10">
+                              {slide.cta_text && slide.cta_link && (
+                                <Button
+                                  asChild
+                                  size="lg"
+                                  className="bg-amber-500 hover:bg-amber-600 text-white px-8 py-6 text-lg rounded-xl shadow-lg shadow-amber-500/25 hover:shadow-xl hover:shadow-amber-500/30 transform hover:scale-105 transition-all duration-300"
+                                >
+                                  <Link to={slide.cta_link}>
+                                    {slide.cta_text}
+                                    <ArrowRight className="ml-2 w-5 h-5" />
+                                  </Link>
+                                </Button>
+                              )}
+                              <Button
+                                asChild
+                                size="lg"
+                                variant="outline"
+                                className="border-white/30 bg-white/5 backdrop-blur-sm text-white hover:bg-white/10 px-8 py-6 text-lg rounded-xl transition-all duration-300"
+                              >
+                                <Link to="/iletisim">
+                                  <Phone className="mr-2 w-5 h-5" />
+                                  Bize Ulaşın
+                                </Link>
+                              </Button>
+                            </div>
+                            
+                            {/* Trust Indicators */}
+                            <div className="flex flex-wrap gap-6">
+                              <div className="flex items-center gap-2 text-slate-300">
+                                <div className="w-10 h-10 rounded-full bg-green-500/20 flex items-center justify-center">
+                                  <CheckCircle2 className="w-5 h-5 text-green-400" />
+                                </div>
+                                <span className="text-sm">Lisanslı Danışman</span>
+                              </div>
+                              <div className="flex items-center gap-2 text-slate-300">
+                                <div className="w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center">
+                                  <Shield className="w-5 h-5 text-blue-400" />
+                                </div>
+                                <span className="text-sm">Güvenli İşlem</span>
+                              </div>
+                              <div className="flex items-center gap-2 text-slate-300">
+                                <div className="w-10 h-10 rounded-full bg-amber-500/20 flex items-center justify-center">
+                                  <Award className="w-5 h-5 text-amber-400" />
+                                </div>
+                                <span className="text-sm">15+ Yıl Tecrübe</span>
+                              </div>
+                            </div>
+                          </div>
+                          
+                          {/* Right Side - Floating Info Card */}
+                          <div className="hidden lg:block">
+                            <div className="relative">
+                              {/* Main Card */}
+                              <div className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-3xl p-8 shadow-2xl">
+                                <div className="flex items-center gap-3 mb-6">
+                                  <div className="w-12 h-12 bg-amber-500 rounded-xl flex items-center justify-center">
+                                    <HomeIcon className="w-6 h-6 text-white" />
+                                  </div>
+                                  <div>
+                                    <p className="text-white font-bold text-lg">Hızlı Değerleme</p>
+                                    <p className="text-slate-400 text-sm">Ücretsiz mülk değerlendirme</p>
+                                  </div>
+                                </div>
+                                
+                                <div className="space-y-4 mb-6">
+                                  <div className="flex items-center gap-3 p-3 bg-white/5 rounded-xl">
+                                    <Key className="w-5 h-5 text-amber-400" />
+                                    <span className="text-slate-200">Satılık & Kiralık Portföy</span>
+                                  </div>
+                                  <div className="flex items-center gap-3 p-3 bg-white/5 rounded-xl">
+                                    <Building2 className="w-5 h-5 text-amber-400" />
+                                    <span className="text-slate-200">200+ Tamamlanan Proje</span>
+                                  </div>
+                                  <div className="flex items-center gap-3 p-3 bg-white/5 rounded-xl">
+                                    <MapPin className="w-5 h-5 text-amber-400" />
+                                    <span className="text-slate-200">Türkiye Geneli Hizmet</span>
+                                  </div>
+                                </div>
+                                
+                                <Button asChild className="w-full bg-amber-500 hover:bg-amber-600 py-6 rounded-xl text-lg">
+                                  <Link to="/projeler">
+                                    Projeleri Keşfet
+                                    <ArrowRight className="ml-2 w-5 h-5" />
+                                  </Link>
+                                </Button>
+                              </div>
+                              
+                              {/* Floating Stats */}
+                              <div className="absolute -bottom-6 -left-6 bg-slate-900 border border-slate-700 rounded-2xl p-4 shadow-xl">
+                                <div className="flex items-center gap-3">
+                                  <div className="w-12 h-12 bg-green-500/20 rounded-xl flex items-center justify-center">
+                                    <Users className="w-6 h-6 text-green-400" />
+                                  </div>
+                                  <div>
+                                    <p className="text-2xl font-bold text-white">500+</p>
+                                    <p className="text-slate-400 text-sm">Mutlu Müşteri</p>
+                                  </div>
+                                </div>
+                              </div>
+                              
+                              <div className="absolute -top-4 -right-4 bg-amber-500 rounded-2xl p-4 shadow-xl">
+                                <div className="flex items-center gap-2">
+                                  <Star className="w-5 h-5 text-white fill-white" />
+                                  <span className="text-white font-bold">4.9/5</span>
+                                </div>
+                                <p className="text-white/80 text-xs">Müşteri Puanı</p>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
                 </CarouselItem>
               ))}
             </CarouselContent>
-            <CarouselPrevious className="left-4" />
-            <CarouselNext className="right-4" />
+            <CarouselPrevious className="left-4 bg-white/10 backdrop-blur-sm border-white/20 text-white hover:bg-white/20" />
+            <CarouselNext className="right-4 bg-white/10 backdrop-blur-sm border-white/20 text-white hover:bg-white/20" />
+            
+            {/* Slide Indicators */}
+            <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex gap-2">
+              {carouselSlides.map((_, idx) => (
+                <div key={idx} className={`w-2 h-2 rounded-full transition-all duration-300 ${idx === 0 ? 'w-8 bg-amber-500' : 'bg-white/30'}`}></div>
+              ))}
+            </div>
           </Carousel>
         )}
-        
-        {/* Scroll Indicator */}
-        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
-          <div className="w-6 h-10 border-2 border-white/50 rounded-full flex items-start justify-center p-2">
-            <div className="w-1 h-3 bg-white/50 rounded-full"></div>
-          </div>
-        </div>
       </section>
 
       {/* Stats Section */}
