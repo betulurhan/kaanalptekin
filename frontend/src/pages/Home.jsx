@@ -209,24 +209,6 @@ export const Home = () => {
                                     </div>
                                   );
                                 })}
-                                <div className="flex items-center gap-2 text-slate-300">
-                                  <div className="w-10 h-10 rounded-full bg-green-500/20 flex items-center justify-center">
-                                    <CheckCircle2 className="w-5 h-5 text-green-400" />
-                                  </div>
-                                  <span className="text-sm">Lisanslı Danışman</span>
-                                </div>
-                                <div className="flex items-center gap-2 text-slate-300">
-                                  <div className="w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center">
-                                    <Shield className="w-5 h-5 text-blue-400" />
-                                  </div>
-                                  <span className="text-sm">Güvenli İşlem</span>
-                                </div>
-                                <div className="flex items-center gap-2 text-slate-300">
-                                  <div className="w-10 h-10 rounded-full bg-amber-500/20 flex items-center justify-center">
-                                    <Award className="w-5 h-5 text-amber-400" />
-                                  </div>
-                                  <span className="text-sm">15+ Yıl Tecrübe</span>
-                                </div>
                               </div>
                             </div>
                             
