@@ -192,23 +192,35 @@ export const messagesAPI = {
   }
 };
 
-// Upload API
-export const uploadAPI = {
-  uploadImage: async (token, file) => {
-    const formData = new FormData();
-    formData.append('file', file);
-    
-    const response = await axios.post(`${API}/upload/image`, formData, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'multipart/form-data'
-      }
+// Carousel API
+export const carouselAPI = {
+  getAll: async (activeOnly = true) => {
+    const params = activeOnly ? '?active_only=true' : '';
+    const response = await axios.get(`${API}/carousel${params}`);
+    return response.data;
+  },
+  
+  getById: async (id) => {
+    const response = await axios.get(`${API}/carousel/${id}`);
+    return response.data;
+  },
+  
+  create: async (token, data) => {
+    const response = await axios.post(`${API}/carousel`, data, {
+      headers: { Authorization: `Bearer ${token}` }
     });
     return response.data;
   },
   
-  deleteFile: async (token, filename) => {
-    const response = await axios.delete(`${API}/upload/files/${filename}`, {
+  update: async (token, id, data) => {
+    const response = await axios.put(`${API}/carousel/${id}`, data, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    return response.data;
+  },
+  
+  delete: async (token, id) => {
+    const response = await axios.delete(`${API}/carousel/${id}`, {
       headers: { Authorization: `Bearer ${token}` }
     });
     return response.data;
