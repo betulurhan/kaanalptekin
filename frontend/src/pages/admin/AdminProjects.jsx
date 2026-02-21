@@ -388,7 +388,7 @@ export const AdminProjects = () => {
                         </Select>
                       </div>
                       <div>
-                        <Label className="md:hidden text-xs text-slate-500">m²</Label>
+                        <Label className="lg:hidden text-xs text-slate-500">m²</Label>
                         <Input 
                           type="number"
                           value={unit.area_m2 || ''} 
@@ -402,7 +402,7 @@ export const AdminProjects = () => {
                         />
                       </div>
                       <div>
-                        <Label className="md:hidden text-xs text-slate-500">Fiyat</Label>
+                        <Label className="lg:hidden text-xs text-slate-500">Fiyat</Label>
                         <Input 
                           value={unit.price || ''} 
                           onChange={(e) => {
@@ -415,7 +415,7 @@ export const AdminProjects = () => {
                         />
                       </div>
                       <div>
-                        <Label className="md:hidden text-xs text-slate-500">Durum</Label>
+                        <Label className="lg:hidden text-xs text-slate-500">Durum</Label>
                         <Select 
                           value={unit.status || 'available'} 
                           onValueChange={(val) => {
