@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, Depends, status
 from motor.motor_asyncio import AsyncIOMotorDatabase
-from models import AboutContent, AboutContentUpdate, ContactInfo, ContactInfoUpdate, HeroContent, HeroContentUpdate, HeroFeatures, HeroFeaturesUpdate, HeroFeatureItem
+from models import AboutContent, AboutContentUpdate, ContactInfo, ContactInfoUpdate, HeroContent, HeroContentUpdate, HeroFeatures, HeroFeaturesUpdate, HeroFeatureItem, TrustIndicator
 from auth import verify_token
 from datetime import datetime
 import uuid
