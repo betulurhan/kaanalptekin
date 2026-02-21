@@ -132,7 +132,9 @@ export const Home = () => {
                               {/* Badge */}
                               <div className="inline-flex items-center gap-2 px-4 py-2 bg-amber-500/20 backdrop-blur-sm border border-amber-500/30 rounded-full mb-6">
                                 <Star className="w-4 h-4 text-amber-400 fill-amber-400" />
-                                <span className="text-amber-400 text-sm font-medium">Profesyonel Gayrimenkul Danışmanlığı</span>
+                                <span className="text-amber-400 text-sm font-medium">
+                                  {heroFeatures?.badge_text || 'Profesyonel Gayrimenkul Danışmanlığı'}
+                                </span>
                               </div>
                               
                               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 leading-tight">
@@ -169,15 +171,44 @@ export const Home = () => {
                                   variant="outline"
                                   className="border-white/30 bg-white/5 backdrop-blur-sm text-white hover:bg-white/10 px-8 py-6 text-lg rounded-xl transition-all duration-300"
                                 >
-                                  <Link to="/iletisim">
+                                  <Link to={heroFeatures?.secondary_cta_link || '/iletisim'}>
                                     <Phone className="mr-2 w-5 h-5" />
-                                    Bize Ulaşın
+                                    {heroFeatures?.secondary_cta_text || 'Bize Ulaşın'}
                                   </Link>
                                 </Button>
                               </div>
                               
-                              {/* Trust Indicators */}
+                              {/* Trust Indicators - Dynamic */}
                               <div className="flex flex-wrap gap-6">
+                                {(heroFeatures?.trust_indicators || [
+                                  { icon: 'check-circle', text: 'Lisanslı Danışman', color: 'green' },
+                                  { icon: 'shield', text: 'Güvenli İşlem', color: 'blue' },
+                                  { icon: 'award', text: '15+ Yıl Tecrübe', color: 'amber' }
+                                ]).filter(t => t.is_active !== false).map((indicator, idx) => {
+                                  const colorClasses = {
+                                    green: 'bg-green-500/20 text-green-400',
+                                    blue: 'bg-blue-500/20 text-blue-400',
+                                    amber: 'bg-amber-500/20 text-amber-400',
+                                    red: 'bg-red-500/20 text-red-400',
+                                    purple: 'bg-purple-500/20 text-purple-400'
+                                  };
+                                  const iconMap = {
+                                    'check-circle': CheckCircle2,
+                                    'shield': Shield,
+                                    'award': Award,
+                                    'star': Star,
+                                    'users': Users
+                                  };
+                                  const IconComp = iconMap[indicator.icon] || CheckCircle2;
+                                  return (
+                                    <div key={idx} className="flex items-center gap-2 text-slate-300">
+                                      <div className={`w-10 h-10 rounded-full ${colorClasses[indicator.color] || colorClasses.green} flex items-center justify-center`}>
+                                        <IconComp className="w-5 h-5" />
+                                      </div>
+                                      <span className="text-sm">{indicator.text}</span>
+                                    </div>
+                                  );
+                                })}
                                 <div className="flex items-center gap-2 text-slate-300">
                                   <div className="w-10 h-10 rounded-full bg-green-500/20 flex items-center justify-center">
                                     <CheckCircle2 className="w-5 h-5 text-green-400" />
