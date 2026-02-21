@@ -114,6 +114,42 @@ export const AdminContent = () => {
     }
   };
 
+  const handleSaveHeroFeatures = async (e) => {
+    e.preventDefault();
+    try {
+      await contentAPI.updateHeroFeatures(token, heroFeatures);
+      toast({ title: 'Başarılı', description: 'Slider özellikleri güncellendi' });
+    } catch (error) {
+      toast({ title: 'Hata', description: 'Güncellenemedi', variant: 'destructive' });
+    }
+  };
+
+  const addFeature = () => {
+    const newFeature = {
+      id: Date.now().toString(),
+      icon: 'key',
+      title: '',
+      link: '/projeler',
+      order: heroFeatures.features?.length || 0,
+      is_active: true
+    };
+    setHeroFeatures({
+      ...heroFeatures,
+      features: [...(heroFeatures.features || []), newFeature]
+    });
+  };
+
+  const updateFeature = (index, field, value) => {
+    const newFeatures = [...heroFeatures.features];
+    newFeatures[index] = { ...newFeatures[index], [field]: value };
+    setHeroFeatures({ ...heroFeatures, features: newFeatures });
+  };
+
+  const removeFeature = (index) => {
+    const newFeatures = heroFeatures.features.filter((_, i) => i !== index);
+    setHeroFeatures({ ...heroFeatures, features: newFeatures });
+  };
+
   if (loading) return <div className="flex justify-center py-12"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-slate-800"></div></div>;
 
   return (
