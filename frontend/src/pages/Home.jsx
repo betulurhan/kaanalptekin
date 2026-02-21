@@ -24,13 +24,13 @@ export const Home = () => {
     loadData();
   }, []);
 
-  // Autoplay effect - 1.5 second interval
+  // Autoplay effect - 3 second interval
   useEffect(() => {
     if (!emblaApi || loading || carouselSlides.length < 2) return;
     
     const autoplay = setInterval(() => {
       emblaApi.scrollNext();
-    }, 1500);
+    }, 3000);
     
     return () => clearInterval(autoplay);
   }, [emblaApi, loading, carouselSlides.length]);
