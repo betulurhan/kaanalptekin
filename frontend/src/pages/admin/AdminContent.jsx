@@ -170,6 +170,31 @@ export const AdminContent = () => {
     setHeroFeatures({ ...heroFeatures, features: newFeatures });
   };
 
+  const addTrustIndicator = () => {
+    const newIndicator = {
+      id: Date.now().toString(),
+      icon: 'check-circle',
+      text: '',
+      color: 'green',
+      is_active: true
+    };
+    setHeroFeatures({
+      ...heroFeatures,
+      trust_indicators: [...(heroFeatures.trust_indicators || []), newIndicator]
+    });
+  };
+
+  const updateTrustIndicator = (index, field, value) => {
+    const newIndicators = [...(heroFeatures.trust_indicators || [])];
+    newIndicators[index] = { ...newIndicators[index], [field]: value };
+    setHeroFeatures({ ...heroFeatures, trust_indicators: newIndicators });
+  };
+
+  const removeTrustIndicator = (index) => {
+    const newIndicators = (heroFeatures.trust_indicators || []).filter((_, i) => i !== index);
+    setHeroFeatures({ ...heroFeatures, trust_indicators: newIndicators });
+  };
+
   if (loading) return <div className="flex justify-center py-12"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-slate-800"></div></div>;
 
   return (
