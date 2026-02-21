@@ -37,6 +37,10 @@ export const Blog = () => {
 
   return (
     <div className="min-h-screen pt-20 bg-slate-50">
+      <SEOHead 
+        title={seoSettings?.blog_title || 'Blog | ' + (seoSettings?.site_title || '')} 
+        description={seoSettings?.blog_description || seoSettings?.site_description} 
+      />
       {/* Hero Section */}
       <section className="bg-slate-800 text-white py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
