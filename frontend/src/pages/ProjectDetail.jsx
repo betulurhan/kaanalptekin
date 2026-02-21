@@ -253,12 +253,12 @@ export const ProjectDetail = () => {
                 <CardContent className="p-8">
                   <h2 className="text-3xl font-bold text-slate-800 mb-6">Ünite Tipleri</h2>
                   
-                  {/* Unit Types */}
-                  <div className="grid md:grid-cols-3 gap-4 mb-8">
+                  {/* Unit Types - Compact inline badges */}
+                  <div className="flex flex-wrap gap-3 mb-8">
                     {roomTypes.map((type, idx) => (
-                      <div key={idx} className="p-6 bg-amber-50 rounded-xl border-2 border-amber-200 text-center">
-                        <HomeIcon className="w-10 h-10 mx-auto mb-3 text-amber-600" />
-                        <p className="text-2xl font-bold text-slate-800">{type}</p>
+                      <div key={idx} className="inline-flex items-center gap-2 px-4 py-2 bg-amber-50 rounded-full border-2 border-amber-200">
+                        <HomeIcon className="w-5 h-5 text-amber-600" />
+                        <span className="text-lg font-bold text-slate-800">{type}</span>
                       </div>
                     ))}
                   </div>
