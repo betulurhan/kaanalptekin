@@ -190,3 +190,38 @@ class ContactMessageCreate(BaseModel):
     phone: Optional[str] = None
     subject: str
     message: str
+
+
+# Carousel/Slider Model
+class CarouselSlide(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    title: str
+    subtitle: Optional[str] = None
+    description: Optional[str] = None
+    image: str
+    cta_text: Optional[str] = None
+    cta_link: Optional[str] = None
+    order: int = 0
+    is_active: bool = True
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    updated_at: datetime = Field(default_factory=datetime.utcnow)
+
+class CarouselSlideCreate(BaseModel):
+    title: str
+    subtitle: Optional[str] = None
+    description: Optional[str] = None
+    image: str
+    cta_text: Optional[str] = None
+    cta_link: Optional[str] = None
+    order: int = 0
+    is_active: bool = True
+
+class CarouselSlideUpdate(BaseModel):
+    title: Optional[str] = None
+    subtitle: Optional[str] = None
+    description: Optional[str] = None
+    image: Optional[str] = None
+    cta_text: Optional[str] = None
+    cta_link: Optional[str] = None
+    order: Optional[int] = None
+    is_active: Optional[bool] = None

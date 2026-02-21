@@ -8,7 +8,7 @@ import os
 from dotenv import load_dotenv
 from pathlib import Path
 from auth import get_password_hash
-from models import User, Project, BlogPost, AboutContent, ContactInfo, HeroContent
+from models import User, Project, BlogPost, AboutContent, ContactInfo, HeroContent, CarouselSlide
 
 # Load environment
 ROOT_DIR = Path(__file__).parent
@@ -181,6 +181,49 @@ async def seed_database():
         print(f"✅ {len(blog_posts_data)} blog posts seeded")
     else:
         print(f"⏭️  {blog_count} blog posts already exist")
+    
+    # 7. Seed Carousel Slides (only if empty)
+    carousel_count = await db.carousel_slides.count_documents({})
+    if carousel_count == 0:
+        carousel_slides = [
+            CarouselSlide(
+                title="Hayalinizdeki Ev",
+                subtitle="Bir Tık Uzağınızda",
+                description="15 yıllık deneyimimle size rehberlik ediyorum",
+                image="https://images.unsplash.com/photo-1613977257365-aaae5a9817ff",
+                cta_text="Projeleri İncele",
+                cta_link="/projeler",
+                order=1,
+                is_active=True
+            ),
+            CarouselSlide(
+                title="Lüks Yaşam Alanları",
+                subtitle="Modern Mimari",
+                description="Deniz manzaralı ve şehir merkezinde prestijli projeler",
+                image="https://images.unsplash.com/photo-1613490493576-7fde63acd811",
+                cta_text="Detayları Gör",
+                cta_link="/projeler",
+                order=2,
+                is_active=True
+            ),
+            CarouselSlide(
+                title="Güvenilir Danışmanlık",
+                subtitle="Profesyonel Hizmet",
+                description="200+ tamamlanmış proje, 500+ mutlu müşteri",
+                image="https://images.unsplash.com/photo-1613977257592-4871e5fcd7c4",
+                cta_text="İletişime Geç",
+                cta_link="/iletisim",
+                order=3,
+                is_active=True
+            )
+        ]
+        
+        for slide in carousel_slides:
+            await db.carousel_slides.insert_one(slide.dict())
+        
+        print(f"✅ {len(carousel_slides)} carousel slides seeded")
+    else:
+        print(f"⏭️  {carousel_count} carousel slides already exist")
     
     print("\n🎉 Database seeding completed!")
     print("\n📝 Default Admin Credentials:")
