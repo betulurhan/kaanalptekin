@@ -146,7 +146,7 @@ export const Footer = () => {
         <div className="mt-12 pt-8 border-t border-slate-800">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <p className="text-sm text-center md:text-left">
-              © {currentYear} GayrimenkulRehberi. Tüm hakları saklıdır.
+              © {currentYear} {siteSettings?.site_name || 'GayrimenkulRehberi'}. Tüm hakları saklıdır.
             </p>
             <div className="flex gap-6 text-sm">
               <a href="#" className="hover:text-white transition-colors">
