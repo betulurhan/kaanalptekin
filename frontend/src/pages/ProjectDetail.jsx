@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { MapPin, Calendar, CheckCircle2, ArrowLeft, Home as HomeIcon, Ruler, DollarSign } from 'lucide-react';
+import { MapPin, Calendar, CheckCircle2, ArrowLeft, Home as HomeIcon, Ruler, DollarSign, Phone, Building2, Users } from 'lucide-react';
 import { Card, CardContent } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
 import { Button } from '../components/ui/button';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '../components/ui/carousel';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../components/ui/dialog';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
 import { projectsAPI } from '../services/api';
 
 export const ProjectDetail = () => {
@@ -13,7 +14,7 @@ export const ProjectDetail = () => {
   const [project, setProject] = useState(null);
   const [loading, setLoading] = useState(true);
   const [unitsDialogOpen, setUnitsDialogOpen] = useState(false);
-  const [floorPlanDialogOpen, setFloorPlanDialogOpen] = useState(false);
+  const [selectedImage, setSelectedImage] = useState(null);
 
   useEffect(() => {
     loadProject();
@@ -50,38 +51,58 @@ export const ProjectDetail = () => {
   }
 
   const allImages = project.images && project.images.length > 0 
-    ? project.images 
+    ? [project.image, ...project.images] 
     : [project.image];
 
   const availableUnits = project.units?.filter(u => u.status === 'available').length || 0;
   const soldUnits = project.units?.filter(u => u.status === 'sold').length || 0;
+  const totalUnits = project.units?.length || 0;
+
+  // Get unique room types
+  const roomTypes = [...new Set(project.units?.map(u => u.rooms) || [])];
 
   return (
-    <div className="min-h-screen pt-20 bg-slate-50">
-      {/* Back Button */}
-      <div className="bg-white border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <Button variant="ghost" asChild>
+    <div className="min-h-screen pt-20 bg-white">
+      {/* Hero Section with Breadcrumb */}
+      <div className="bg-slate-900 text-white py-6">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <Button variant="ghost" asChild className="text-white hover:text-amber-400 mb-4">
             <Link to="/projeler">
               <ArrowLeft className="w-4 h-4 mr-2" />
-              Projelere Dön
+              Tüm Projelere Dön
             </Link>
           </Button>
+          <div className="flex items-center gap-3 mb-2">
+            <Badge className={project.status === 'completed' ? 'bg-green-600' : 'bg-amber-500'}>
+              {project.status === 'completed' ? 'Tamamlandı' : 'Devam Ediyor'}
+            </Badge>
+            <Badge variant="outline" className="bg-white/10 text-white border-white/30">
+              {project.type}
+            </Badge>
+          </div>
+          <h1 className="text-4xl md:text-5xl font-bold mb-3">{project.title}</h1>
+          <div className="flex items-center text-amber-400 text-lg">
+            <MapPin className="w-5 h-5 mr-2" />
+            {project.location}
+          </div>
         </div>
       </div>
 
-      {/* Image Gallery */}
-      <section className="bg-slate-900 py-8">
+      {/* Main Image Carousel */}
+      <section className="py-8 bg-slate-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <Carousel className="w-full" opts={{ loop: true }}>
             <CarouselContent>
               {allImages.map((img, index) => (
                 <CarouselItem key={index}>
-                  <div className="h-[500px] rounded-xl overflow-hidden">
+                  <div 
+                    className="h-[600px] rounded-2xl overflow-hidden cursor-pointer"
+                    onClick={() => setSelectedImage(img)}
+                  >
                     <img 
                       src={img} 
                       alt={`${project.title} - ${index + 1}`}
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
                     />
                   </div>
                 </CarouselItem>
@@ -94,29 +115,57 @@ export const ProjectDetail = () => {
               </>
             )}
           </Carousel>
+          
+          {/* Thumbnail Gallery */}
+          {allImages.length > 1 && (
+            <div className="mt-6 grid grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-3">
+              {allImages.slice(0, 8).map((img, idx) => (
+                <div 
+                  key={idx}
+                  className="aspect-square rounded-lg overflow-hidden cursor-pointer border-2 border-transparent hover:border-amber-500 transition-all"
+                  onClick={() => setSelectedImage(img)}
+                >
+                  <img src={img} alt={`Thumbnail ${idx + 1}`} className="w-full h-full object-cover" />
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 
-      {/* Project Info */}
-      <section className="py-12">
+      {/* Project Overview Cards */}
+      <section className="py-12 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid lg:grid-cols-3 gap-8">
-            {/* Main Content */}
-            <div className="lg:col-span-2 space-y-6">
-              <div>
-                <div className="flex items-center gap-3 mb-4">
-                  <Badge className={project.status === 'completed' ? 'bg-green-600' : 'bg-amber-500'}>
-                    {project.status === 'completed' ? 'Tamamlandı' : 'Devam Ediyor'}
-                  </Badge>
-                  <Badge variant="outline">{project.type}</Badge>
-                </div>
-                <h1 className="text-4xl font-bold text-slate-800 mb-4">{project.title}</h1>
-                <div className="flex items-center text-slate-600 mb-6">
-                  <MapPin className="w-5 h-5 mr-2" />
-                  {project.location}
-                </div>
-                <p className="text-slate-700 text-lg leading-relaxed">{project.description}</p>
-              </div>
+          <div className="grid md:grid-cols-4 gap-6 mb-12">
+            <Card className="border-none shadow-lg hover:shadow-xl transition-shadow">
+              <CardContent className="p-6 text-center">
+                <Building2 className="w-10 h-10 mx-auto mb-3 text-amber-600" />
+                <p className="text-sm text-slate-600 mb-1">Proje Tipi</p>
+                <p className="text-lg font-bold text-slate-800">{project.type}</p>
+              </CardContent>
+            </Card>
+            <Card className="border-none shadow-lg hover:shadow-xl transition-shadow">
+              <CardContent className="p-6 text-center">
+                <Calendar className="w-10 h-10 mx-auto mb-3 text-amber-600" />
+                <p className="text-sm text-slate-600 mb-1">Teslim Tarihi</p>
+                <p className="text-lg font-bold text-slate-800">{project.completion_date}</p>
+              </CardContent>
+            </Card>
+            <Card className="border-none shadow-lg hover:shadow-xl transition-shadow">
+              <CardContent className="p-6 text-center">
+                <MapPin className="w-10 h-10 mx-auto mb-3 text-amber-600" />
+                <p className="text-sm text-slate-600 mb-1">Konum</p>
+                <p className="text-lg font-bold text-slate-800">{project.location.split(',')[0]}</p>
+              </CardContent>
+            </Card>
+            <Card className="border-none shadow-lg hover:shadow-xl transition-shadow">
+              <CardContent className="p-6 text-center">
+                <HomeIcon className="w-10 h-10 mx-auto mb-3 text-amber-600" />
+                <p className="text-sm text-slate-600 mb-1">Toplam Ünite</p>
+                <p className="text-lg font-bold text-slate-800">{totalUnits} Daire</p>
+              </CardContent>
+            </Card>
+          </div>
 
               {/* Features */}
               <Card className="border-none shadow-lg">
