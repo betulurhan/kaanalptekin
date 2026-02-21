@@ -3,12 +3,15 @@ import { Calendar, User, Clock, Tag, ArrowRight } from 'lucide-react';
 import { Card, CardContent } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
 import { blogAPI } from '../services/api';
+import { SEOHead } from '../components/SEOHead';
+import { useSEO } from '../context/SEOContext';
 
 export const Blog = () => {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const categories = ['Tümü', 'Piyasa Analizi', 'Satın Alma Rehberi', 'Yatırım', 'Finansman', 'Yaşam', 'Değerleme'];
   const [selectedCategory, setSelectedCategory] = useState('Tümü');
+  const { seoSettings } = useSEO();
 
   useEffect(() => {
     loadPosts();
