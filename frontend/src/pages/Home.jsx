@@ -13,26 +13,58 @@ import Autoplay from 'embla-carousel-autoplay';
 export const Home = () => {
   const [carouselSlides, setCarouselSlides] = useState([]);
   const [projects, setProjects] = useState([]);
+  const [heroFeatures, setHeroFeatures] = useState(null);
   const [selectedType, setSelectedType] = useState('all');
   const [loading, setLoading] = useState(true);
+  const [currentSlide, setCurrentSlide] = useState(0);
+  
+  // Autoplay carousel with 1.5 second interval
+  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true }, [
+    Autoplay({ delay: 1500, stopOnInteraction: false })
+  ]);
 
   useEffect(() => {
     loadData();
   }, []);
 
+  useEffect(() => {
+    if (emblaApi) {
+      emblaApi.on('select', () => {
+        setCurrentSlide(emblaApi.selectedScrollSnap());
+      });
+    }
+  }, [emblaApi]);
+
   const loadData = async () => {
     try {
-      const [slides, projectsData] = await Promise.all([
+      const [slides, projectsData, features] = await Promise.all([
         carouselAPI.getAll(true),
-        projectsAPI.getAll()
+        projectsAPI.getAll(),
+        contentAPI.getHeroFeatures().catch(() => null)
       ]);
       setCarouselSlides(slides);
       setProjects(projectsData);
+      setHeroFeatures(features);
     } catch (error) {
       console.error('Failed to load data:', error);
     } finally {
       setLoading(false);
     }
+  };
+
+  // Icon mapping for dynamic icons
+  const getIcon = (iconName) => {
+    const icons = {
+      'home': HomeIcon,
+      'key': Key,
+      'building': Building2,
+      'map-pin': MapPin,
+      'users': Users,
+      'award': Award,
+      'star': Star,
+      'phone': Phone
+    };
+    return icons[iconName] || Key;
   };
 
   const filteredProjects = selectedType === 'all' 
