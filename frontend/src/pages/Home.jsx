@@ -96,18 +96,17 @@ export const Home = () => {
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-amber-500"></div>
           </div>
         ) : (
-          <Carousel className="h-full" opts={{ loop: true }}>
-            <CarouselContent>
-              {carouselSlides.map((slide, index) => (
-                <CarouselItem key={slide.id}>
-                  <div className="relative h-screen">
-                    {/* Background Image with Ken Burns Effect */}
+          <div className="h-full relative">
+            <div className="overflow-hidden h-full" ref={emblaRef}>
+              <div className="flex h-full">
+                {carouselSlides.map((slide, index) => (
+                  <div key={slide.id} className="flex-[0_0_100%] min-w-0 relative h-full">
+                    {/* Background Image */}
                     <div
-                      className="absolute inset-0 bg-cover bg-center scale-105 animate-slow-zoom"
+                      className="absolute inset-0 bg-cover bg-center"
                       style={{ backgroundImage: `url('${slide.image}')` }}
                     >
-                      <div className="absolute inset-0 bg-gradient-to-r from-slate-900/95 via-slate-900/70 to-transparent"></div>
-                      <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-slate-900/30"></div>
+                      <div className="absolute inset-0 bg-gradient-to-r from-slate-900/90 via-slate-900/60 to-slate-900/30"></div>
                     </div>
                     
                     {/* Content */}
@@ -186,63 +185,76 @@ export const Home = () => {
                             </div>
                           </div>
                           
-                          {/* Right Side - Floating Info Card */}
+                          {/* Right Side - Floating Info Card with Clickable Items */}
                           <div className="hidden lg:block">
                             <div className="relative">
-                              {/* Main Card */}
-                              <div className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-3xl p-8 shadow-2xl">
+                              {/* Main Card - Light & Clean Design */}
+                              <div className="bg-white rounded-3xl p-8 shadow-2xl">
                                 <div className="flex items-center gap-3 mb-6">
-                                  <div className="w-12 h-12 bg-amber-500 rounded-xl flex items-center justify-center">
+                                  <div className="w-12 h-12 bg-gradient-to-br from-amber-400 to-amber-600 rounded-xl flex items-center justify-center shadow-lg">
                                     <HomeIcon className="w-6 h-6 text-white" />
                                   </div>
                                   <div>
-                                    <p className="text-white font-bold text-lg">Hızlı Değerleme</p>
-                                    <p className="text-slate-400 text-sm">Ücretsiz mülk değerlendirme</p>
+                                    <p className="text-slate-800 font-bold text-lg">
+                                      {heroFeatures?.card_title || 'Hızlı Değerleme'}
+                                    </p>
+                                    <p className="text-slate-500 text-sm">
+                                      {heroFeatures?.card_subtitle || 'Ücretsiz mülk değerlendirme'}
+                                    </p>
                                   </div>
                                 </div>
                                 
-                                <div className="space-y-4 mb-6">
-                                  <div className="flex items-center gap-3 p-3 bg-white/5 rounded-xl">
-                                    <Key className="w-5 h-5 text-amber-400" />
-                                    <span className="text-slate-200">Satılık & Kiralık Portföy</span>
-                                  </div>
-                                  <div className="flex items-center gap-3 p-3 bg-white/5 rounded-xl">
-                                    <Building2 className="w-5 h-5 text-amber-400" />
-                                    <span className="text-slate-200">200+ Tamamlanan Proje</span>
-                                  </div>
-                                  <div className="flex items-center gap-3 p-3 bg-white/5 rounded-xl">
-                                    <MapPin className="w-5 h-5 text-amber-400" />
-                                    <span className="text-slate-200">Türkiye Geneli Hizmet</span>
-                                  </div>
+                                {/* Clickable Feature Links */}
+                                <div className="space-y-3 mb-6">
+                                  {(heroFeatures?.features || [
+                                    { icon: 'key', title: 'Satılık & Kiralık Portföy', link: '/projeler' },
+                                    { icon: 'building', title: '200+ Tamamlanan Proje', link: '/projeler' },
+                                    { icon: 'map-pin', title: 'Türkiye Geneli Hizmet', link: '/iletisim' }
+                                  ]).filter(f => f.is_active !== false).map((feature, idx) => {
+                                    const IconComponent = getIcon(feature.icon);
+                                    return (
+                                      <Link 
+                                        key={idx} 
+                                        to={feature.link}
+                                        className="flex items-center gap-3 p-4 bg-slate-50 hover:bg-amber-50 rounded-xl transition-all duration-300 group border border-transparent hover:border-amber-200 hover:shadow-md"
+                                      >
+                                        <div className="w-10 h-10 bg-amber-100 group-hover:bg-amber-500 rounded-lg flex items-center justify-center transition-colors duration-300">
+                                          <IconComponent className="w-5 h-5 text-amber-600 group-hover:text-white transition-colors duration-300" />
+                                        </div>
+                                        <span className="text-slate-700 font-medium group-hover:text-amber-700 transition-colors duration-300">{feature.title}</span>
+                                        <ArrowRight className="w-4 h-4 text-slate-400 group-hover:text-amber-500 ml-auto opacity-0 group-hover:opacity-100 transform translate-x-0 group-hover:translate-x-1 transition-all duration-300" />
+                                      </Link>
+                                    );
+                                  })}
                                 </div>
                                 
-                                <Button asChild className="w-full bg-amber-500 hover:bg-amber-600 py-6 rounded-xl text-lg">
-                                  <Link to="/projeler">
-                                    Projeleri Keşfet
+                                <Button asChild className="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 py-6 rounded-xl text-lg shadow-lg shadow-amber-500/25">
+                                  <Link to={heroFeatures?.cta_link || '/projeler'}>
+                                    {heroFeatures?.cta_text || 'Projeleri Keşfet'}
                                     <ArrowRight className="ml-2 w-5 h-5" />
                                   </Link>
                                 </Button>
                               </div>
                               
-                              {/* Floating Stats */}
-                              <div className="absolute -bottom-6 -left-6 bg-slate-900 border border-slate-700 rounded-2xl p-4 shadow-xl">
+                              {/* Floating Stats - Clean Style */}
+                              <div className="absolute -bottom-6 -left-6 bg-white border border-slate-100 rounded-2xl p-4 shadow-xl">
                                 <div className="flex items-center gap-3">
-                                  <div className="w-12 h-12 bg-green-500/20 rounded-xl flex items-center justify-center">
-                                    <Users className="w-6 h-6 text-green-400" />
+                                  <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
+                                    <Users className="w-6 h-6 text-green-600" />
                                   </div>
                                   <div>
-                                    <p className="text-2xl font-bold text-white">500+</p>
-                                    <p className="text-slate-400 text-sm">Mutlu Müşteri</p>
+                                    <p className="text-2xl font-bold text-slate-800">{heroFeatures?.stats_count || '500+'}</p>
+                                    <p className="text-slate-500 text-sm">{heroFeatures?.stats_label || 'Mutlu Müşteri'}</p>
                                   </div>
                                 </div>
                               </div>
                               
-                              <div className="absolute -top-4 -right-4 bg-amber-500 rounded-2xl p-4 shadow-xl">
+                              <div className="absolute -top-4 -right-4 bg-gradient-to-br from-amber-400 to-amber-600 rounded-2xl p-4 shadow-xl">
                                 <div className="flex items-center gap-2">
                                   <Star className="w-5 h-5 text-white fill-white" />
-                                  <span className="text-white font-bold">4.9/5</span>
+                                  <span className="text-white font-bold">{heroFeatures?.rating || '4.9/5'}</span>
                                 </div>
-                                <p className="text-white/80 text-xs">Müşteri Puanı</p>
+                                <p className="text-white/80 text-xs">{heroFeatures?.rating_label || 'Müşteri Puanı'}</p>
                               </div>
                             </div>
                           </div>
@@ -250,19 +262,35 @@ export const Home = () => {
                       </div>
                     </div>
                   </div>
-                </CarouselItem>
-              ))}
-            </CarouselContent>
-            <CarouselPrevious className="left-4 bg-white/10 backdrop-blur-sm border-white/20 text-white hover:bg-white/20" />
-            <CarouselNext className="right-4 bg-white/10 backdrop-blur-sm border-white/20 text-white hover:bg-white/20" />
+                ))}
+              </div>
+            </div>
+            
+            {/* Navigation Arrows */}
+            <button 
+              onClick={() => emblaApi?.scrollPrev()} 
+              className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/10 backdrop-blur-sm border border-white/20 text-white hover:bg-white/20 rounded-full flex items-center justify-center transition-all duration-300 z-20"
+            >
+              <ChevronLeft className="w-6 h-6" />
+            </button>
+            <button 
+              onClick={() => emblaApi?.scrollNext()} 
+              className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/10 backdrop-blur-sm border border-white/20 text-white hover:bg-white/20 rounded-full flex items-center justify-center transition-all duration-300 z-20"
+            >
+              <ChevronRight className="w-6 h-6" />
+            </button>
             
             {/* Slide Indicators */}
-            <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex gap-2">
+            <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex gap-2 z-20">
               {carouselSlides.map((_, idx) => (
-                <div key={idx} className={`w-2 h-2 rounded-full transition-all duration-300 ${idx === 0 ? 'w-8 bg-amber-500' : 'bg-white/30'}`}></div>
+                <button 
+                  key={idx} 
+                  onClick={() => emblaApi?.scrollTo(idx)}
+                  className={`h-2 rounded-full transition-all duration-300 ${currentSlide === idx ? 'w-8 bg-amber-500' : 'w-2 bg-white/30 hover:bg-white/50'}`}
+                />
               ))}
             </div>
-          </Carousel>
+          </div>
         )}
       </section>
 
