@@ -64,7 +64,7 @@ export const ProjectDetail = () => {
   return (
     <div className="min-h-screen pt-20 bg-white">
       {/* Hero Section with Breadcrumb */}
-      <div className="bg-slate-900 text-white py-6">
+      <div className="bg-slate-900 text-white py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <Button variant="ghost" asChild className="text-white hover:text-amber-400 mb-4">
             <Link to="/projeler">
@@ -72,7 +72,7 @@ export const ProjectDetail = () => {
               Tüm Projelere Dön
             </Link>
           </Button>
-          <div className="flex items-center gap-3 mb-2">
+          <div className="flex items-center gap-3 mb-3">
             <Badge className={project.status === 'completed' ? 'bg-green-600' : 'bg-amber-500'}>
               {project.status === 'completed' ? 'Tamamlandı' : 'Devam Ediyor'}
             </Badge>
@@ -88,44 +88,84 @@ export const ProjectDetail = () => {
         </div>
       </div>
 
-      {/* Main Image Carousel */}
-      <section className="py-8 bg-slate-50">
+      {/* Quick Info Section - Sticky Info Box */}
+      <section className="py-8 bg-slate-50 border-b-4 border-amber-500">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <Carousel className="w-full" opts={{ loop: true }}>
-            <CarouselContent>
-              {allImages.map((img, index) => (
-                <CarouselItem key={index}>
-                  <div 
-                    className="h-[600px] rounded-2xl overflow-hidden cursor-pointer"
-                    onClick={() => setSelectedImage(img)}
-                  >
-                    <img 
-                      src={img} 
-                      alt={`${project.title} - ${index + 1}`}
-                      className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
-                    />
-                  </div>
-                </CarouselItem>
-              ))}
-            </CarouselContent>
-            {allImages.length > 1 && (
-              <>
-                <CarouselPrevious className="left-4" />
-                <CarouselNext className="right-4" />
-              </>
-            )}
-          </Carousel>
+          <Card className="border-none shadow-2xl">
+            <CardContent className="p-8">
+              <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div className="text-center md:text-left">
+                  <p className="text-sm text-slate-600 mb-2">Fiyat Aralığı</p>
+                  <p className="text-3xl font-bold text-amber-600">{project.price}</p>
+                </div>
+                <div className="text-center md:text-left">
+                  <p className="text-sm text-slate-600 mb-2">Teslim Tarihi</p>
+                  <p className="text-2xl font-bold text-slate-800">{project.completion_date}</p>
+                </div>
+                <div className="text-center md:text-left">
+                  <p className="text-sm text-slate-600 mb-2">Konum</p>
+                  <p className="text-xl font-bold text-slate-800">{project.location.split(',')[0]}</p>
+                </div>
+                <div className="text-center md:text-left">
+                  {totalUnits > 0 && (
+                    <>
+                      <p className="text-sm text-slate-600 mb-2">Durum</p>
+                      <div className="flex gap-2 justify-center md:justify-start">
+                        <Badge className="bg-green-600 text-white">{availableUnits} Satışta</Badge>
+                        <Badge variant="secondary">{soldUnits} Satıldı</Badge>
+                      </div>
+                    </>
+                  )}
+                </div>
+              </div>
+              <div className="mt-6 pt-6 border-t grid md:grid-cols-2 gap-4">
+                <Button asChild size="lg" className="bg-amber-500 hover:bg-amber-600 text-white">
+                  <Link to="/iletisim">
+                    <Phone className="w-5 h-5 mr-2" />
+                    Hemen Bilgi Alın
+                  </Link>
+                </Button>
+                <Button asChild size="lg" variant="outline" className="border-slate-300">
+                  <Link to="/iletisim">
+                    İletişim Formu
+                  </Link>
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </section>
+
+      {/* Image Grid - 3 Big Images */}
+      <section className="py-12 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="text-2xl font-bold text-slate-800 mb-6">Proje Görselleri</h2>
+          <div className="grid md:grid-cols-3 gap-4 mb-6">
+            {allImages.slice(0, 3).map((img, index) => (
+              <div 
+                key={index}
+                className="aspect-[4/3] rounded-xl overflow-hidden cursor-pointer group shadow-lg hover:shadow-2xl transition-all"
+                onClick={() => setSelectedImage(img)}
+              >
+                <img 
+                  src={img} 
+                  alt={`${project.title} - ${index + 1}`}
+                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                />
+              </div>
+            ))}
+          </div>
           
-          {/* Thumbnail Gallery */}
-          {allImages.length > 1 && (
-            <div className="mt-6 grid grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-3">
-              {allImages.slice(0, 8).map((img, idx) => (
+          {/* Thumbnail Gallery - Rest of Images */}
+          {allImages.length > 3 && (
+            <div className="grid grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-3">
+              {allImages.slice(3, 11).map((img, idx) => (
                 <div 
-                  key={idx}
-                  className="aspect-square rounded-lg overflow-hidden cursor-pointer border-2 border-transparent hover:border-amber-500 transition-all"
+                  key={idx + 3}
+                  className="aspect-square rounded-lg overflow-hidden cursor-pointer border-2 border-transparent hover:border-amber-500 transition-all shadow-md"
                   onClick={() => setSelectedImage(img)}
                 >
-                  <img src={img} alt={`Thumbnail ${idx + 1}`} className="w-full h-full object-cover" />
+                  <img src={img} alt={`Thumbnail ${idx + 4}`} className="w-full h-full object-cover" />
                 </div>
               ))}
             </div>
@@ -134,9 +174,9 @@ export const ProjectDetail = () => {
       </section>
 
       {/* Project Overview Cards */}
-      <section className="py-12 bg-white">
+      <section className="py-12 bg-slate-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid md:grid-cols-4 gap-6 mb-12">
+          <div className="grid md:grid-cols-4 gap-6">
             <Card className="border-none shadow-lg hover:shadow-xl transition-shadow">
               <CardContent className="p-6 text-center">
                 <Building2 className="w-10 h-10 mx-auto mb-3 text-amber-600" />
@@ -147,34 +187,38 @@ export const ProjectDetail = () => {
             <Card className="border-none shadow-lg hover:shadow-xl transition-shadow">
               <CardContent className="p-6 text-center">
                 <Calendar className="w-10 h-10 mx-auto mb-3 text-amber-600" />
-                <p className="text-sm text-slate-600 mb-1">Teslim Tarihi</p>
+                <p className="text-sm text-slate-600 mb-1">Teslim Yılı</p>
                 <p className="text-lg font-bold text-slate-800">{project.completion_date}</p>
-              </CardContent>
-            </Card>
-            <Card className="border-none shadow-lg hover:shadow-xl transition-shadow">
-              <CardContent className="p-6 text-center">
-                <MapPin className="w-10 h-10 mx-auto mb-3 text-amber-600" />
-                <p className="text-sm text-slate-600 mb-1">Konum</p>
-                <p className="text-lg font-bold text-slate-800">{project.location.split(',')[0]}</p>
               </CardContent>
             </Card>
             <Card className="border-none shadow-lg hover:shadow-xl transition-shadow">
               <CardContent className="p-6 text-center">
                 <HomeIcon className="w-10 h-10 mx-auto mb-3 text-amber-600" />
                 <p className="text-sm text-slate-600 mb-1">Toplam Ünite</p>
-                <p className="text-lg font-bold text-slate-800">{totalUnits} Daire</p>
+                <p className="text-lg font-bold text-slate-800">{totalUnits || 'Bilgi Yok'}</p>
+              </CardContent>
+            </Card>
+            <Card className="border-none shadow-lg hover:shadow-xl transition-shadow">
+              <CardContent className="p-6 text-center">
+                <Users className="w-10 h-10 mx-auto mb-3 text-amber-600" />
+                <p className="text-sm text-slate-600 mb-1">Daire Tipleri</p>
+                <p className="text-lg font-bold text-slate-800">{roomTypes.length || 'Çeşitli'}</p>
               </CardContent>
             </Card>
           </div>
+        </div>
+      </section>
 
-          {/* Main Content - Tabs */}
+      {/* Main Content - Tabs */}
+      <section className="py-12 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <Tabs defaultValue="aciklama" className="w-full">
-            <TabsList className="grid w-full grid-cols-3 lg:grid-cols-5 mb-8">
-              <TabsTrigger value="aciklama">Açıklama</TabsTrigger>
-              <TabsTrigger value="ozellikler">Özellikler</TabsTrigger>
-              <TabsTrigger value="daireler">Daireler</TabsTrigger>
-              {project.payment_plan && <TabsTrigger value="odeme">Ödeme Planı</TabsTrigger>}
-              {project.floor_plan && <TabsTrigger value="kat">Kat Planı</TabsTrigger>}
+            <TabsList className="grid w-full grid-cols-3 lg:grid-cols-5 mb-8 bg-slate-100 p-1 rounded-xl">
+              <TabsTrigger value="aciklama" className="rounded-lg">Açıklama</TabsTrigger>
+              <TabsTrigger value="ozellikler" className="rounded-lg">Özellikler</TabsTrigger>
+              <TabsTrigger value="daireler" className="rounded-lg">Daireler</TabsTrigger>
+              {project.payment_plan && <TabsTrigger value="odeme" className="rounded-lg">Ödeme</TabsTrigger>}
+              {project.floor_plan && <TabsTrigger value="kat" className="rounded-lg">Kat Planı</TabsTrigger>}
             </TabsList>
 
             <TabsContent value="aciklama">
@@ -295,60 +339,27 @@ export const ProjectDetail = () => {
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="py-16 bg-slate-800 text-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid md:grid-cols-2 gap-8 items-center">
-            <div>
-              <h2 className="text-3xl md:text-4xl font-bold mb-4">
-                {project.title} Hakkında Bilgi Alın
-              </h2>
-              <p className="text-slate-300 text-lg mb-6">
-                Detaylı bilgi ve fiyat teklifi için bizimle iletişime geçin.
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4">
-                <Button asChild size="lg" className="bg-amber-500 hover:bg-amber-600">
-                  <Link to="/iletisim">
-                    <Phone className="w-5 h-5 mr-2" />
-                    Bizi Arayın
-                  </Link>
-                </Button>
-                <Button asChild size="lg" variant="outline" className="bg-white/10 border-white/30 text-white hover:bg-white/20">
-                  <Link to="/iletisim">
-                    İletişim Formu
-                  </Link>
-                </Button>
-              </div>
-            </div>
-            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8">
-              <h3 className="text-2xl font-bold mb-4">Proje Özeti</h3>
-              <div className="space-y-3">
-                <div className="flex justify-between border-b border-white/20 pb-2">
-                  <span className="text-slate-300">Lokasyon</span>
-                  <span className="font-semibold">{project.location}</span>
-                </div>
-                <div className="flex justify-between border-b border-white/20 pb-2">
-                  <span className="text-slate-300">Fiyat Aralığı</span>
-                  <span className="font-semibold text-amber-400">{project.price}</span>
-                </div>
-                <div className="flex justify-between border-b border-white/20 pb-2">
-                  <span className="text-slate-300">Teslim Tarihi</span>
-                  <span className="font-semibold">{project.completion_date}</span>
-                </div>
-                {totalUnits > 0 && (
-                  <>
-                    <div className="flex justify-between border-b border-white/20 pb-2">
-                      <span className="text-slate-300">Satışta</span>
-                      <span className="font-semibold text-green-400">{availableUnits} Daire</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-slate-300">Satıldı</span>
-                      <span className="font-semibold text-slate-400">{soldUnits} Daire</span>
-                    </div>
-                  </>
-                )}
-              </div>
-            </div>
+      {/* CTA Section - Simplified */}
+      <section className="py-16 bg-gradient-to-r from-slate-800 to-slate-900 text-white">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h2 className="text-3xl md:text-4xl font-bold mb-4">
+            {project.title} Hakkında Detaylı Bilgi Alın
+          </h2>
+          <p className="text-slate-300 text-lg mb-8">
+            Uzman danışmanlarımız size yardımcı olmak için hazır. Hemen iletişime geçin!
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Button asChild size="lg" className="bg-amber-500 hover:bg-amber-600 text-white px-10">
+              <Link to="/iletisim">
+                <Phone className="w-5 h-5 mr-2" />
+                Hemen Ara
+              </Link>
+            </Button>
+            <Button asChild size="lg" variant="outline" className="bg-white/10 border-white/30 text-white hover:bg-white/20 px-10">
+              <Link to="/iletisim">
+                Form Doldur
+              </Link>
+            </Button>
           </div>
         </div>
       </section>
