@@ -300,3 +300,19 @@ class HeroFeaturesUpdate(BaseModel):
     rating: Optional[str] = None
     rating_label: Optional[str] = None
 
+
+# Site Settings Model (Logo etc.)
+class SiteSettings(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    site_name: str = "GayrimenkulRehberi"
+    navbar_logo: Optional[str] = None  # Logo image URL for navbar
+    footer_logo: Optional[str] = None  # Logo image URL for footer
+    favicon: Optional[str] = None
+    updated_at: datetime = Field(default_factory=datetime.utcnow)
+
+class SiteSettingsUpdate(BaseModel):
+    site_name: Optional[str] = None
+    navbar_logo: Optional[str] = None
+    footer_logo: Optional[str] = None
+    favicon: Optional[str] = None
+
