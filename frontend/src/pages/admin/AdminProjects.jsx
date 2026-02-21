@@ -338,7 +338,7 @@ export const AdminProjects = () => {
                   {formData.units.map((unit, index) => (
                     <div key={index} className="grid grid-cols-2 lg:grid-cols-[1fr_0.7fr_0.7fr_0.7fr_1.2fr_1fr_0.5fr] gap-2 p-3 bg-white rounded border hover:shadow-md transition-shadow">
                       <div>
-                        <Label className="md:hidden text-xs text-slate-500">Daire No</Label>
+                        <Label className="lg:hidden text-xs text-slate-500">Daire No</Label>
                         <Input 
                           value={unit.unit_number || ''} 
                           onChange={(e) => {
@@ -351,7 +351,7 @@ export const AdminProjects = () => {
                         />
                       </div>
                       <div>
-                        <Label className="md:hidden text-xs text-slate-500">Kat</Label>
+                        <Label className="lg:hidden text-xs text-slate-500">Kat</Label>
                         <Input 
                           type="number"
                           value={unit.floor || ''} 
@@ -365,7 +365,7 @@ export const AdminProjects = () => {
                         />
                       </div>
                       <div>
-                        <Label className="md:hidden text-xs text-slate-500">Tip</Label>
+                        <Label className="lg:hidden text-xs text-slate-500">Tip</Label>
                         <Select 
                           value={unit.rooms || '2+1'} 
                           onValueChange={(val) => {
