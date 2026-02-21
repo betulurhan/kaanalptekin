@@ -19,19 +19,43 @@ export const AdminContent = () => {
   const [aboutData, setAboutData] = useState({});
   const [contactData, setContactData] = useState({});
   const [heroData, setHeroData] = useState({});
+  const [heroFeatures, setHeroFeatures] = useState({
+    card_title: 'Hızlı Değerleme',
+    card_subtitle: 'Ücretsiz mülk değerlendirme',
+    features: [],
+    cta_text: 'Projeleri Keşfet',
+    cta_link: '/projeler',
+    stats_count: '500+',
+    stats_label: 'Mutlu Müşteri',
+    rating: '4.9/5',
+    rating_label: 'Müşteri Puanı'
+  });
+
+  const iconOptions = [
+    { value: 'home', label: 'Ev', icon: Home },
+    { value: 'key', label: 'Anahtar', icon: Key },
+    { value: 'building', label: 'Bina', icon: Building2 },
+    { value: 'map-pin', label: 'Konum', icon: MapPin },
+    { value: 'users', label: 'Kullanıcılar', icon: Users },
+    { value: 'award', label: 'Ödül', icon: Award },
+    { value: 'star', label: 'Yıldız', icon: Star },
+    { value: 'phone', label: 'Telefon', icon: Phone }
+  ];
 
   useEffect(() => { loadContent(); }, []);
 
   const loadContent = async () => {
     try {
-      const [about, contact, hero] = await Promise.all([
+      const [about, contact, hero, features] = await Promise.all([
         contentAPI.getAbout(),
         contentAPI.getContact(),
-        contentAPI.getHero()
+        contentAPI.getHero(),
+        contentAPI.getHeroFeatures().catch(() => null)
       ]);
       setAboutData(about);
       setContactData(contact);
       setHeroData(hero);
+      if (features) setHeroFeatures(features);
     } finally {
       setLoading(false);
     }
