@@ -235,18 +235,88 @@ export const AdminContent = () => {
         </TabsContent>
 
         <TabsContent value="slider">
-          <Card><CardHeader><CardTitle>Slider Sağ Kart Özellikleri</CardTitle></CardHeader><CardContent>
+          <Card><CardHeader><CardTitle>Slider Tüm Özellikleri</CardTitle></CardHeader><CardContent>
             <form onSubmit={handleSaveHeroFeatures} className="space-y-6">
+              
+              {/* Badge & Secondary CTA */}
+              <div className="border rounded-lg p-4 bg-blue-50">
+                <Label className="text-lg font-semibold mb-4 block">Sol Üst Badge & İkinci Buton</Label>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div><Label>Badge Metni</Label><Input value={heroFeatures.badge_text || ''} onChange={(e) => setHeroFeatures({ ...heroFeatures, badge_text: e.target.value })} placeholder="Profesyonel Gayrimenkul Danışmanlığı" /></div>
+                  <div><Label>İkinci Buton Metni</Label><Input value={heroFeatures.secondary_cta_text || ''} onChange={(e) => setHeroFeatures({ ...heroFeatures, secondary_cta_text: e.target.value })} placeholder="Bize Ulaşın" /></div>
+                  <div><Label>İkinci Buton Linki</Label><Input value={heroFeatures.secondary_cta_link || ''} onChange={(e) => setHeroFeatures({ ...heroFeatures, secondary_cta_link: e.target.value })} placeholder="/iletisim" /></div>
+                </div>
+              </div>
+
+              {/* Trust Indicators */}
+              <div className="border rounded-lg p-4 bg-green-50">
+                <div className="flex items-center justify-between mb-4">
+                  <Label className="text-lg font-semibold">Güven Göstergeleri (Sol Alt)</Label>
+                  <Button type="button" size="sm" onClick={addTrustIndicator} className="bg-green-600 hover:bg-green-700">
+                    <Plus className="w-4 h-4 mr-1" /> Gösterge Ekle
+                  </Button>
+                </div>
+                
+                {(heroFeatures.trust_indicators || []).length > 0 ? (
+                  <div className="space-y-3">
+                    {(heroFeatures.trust_indicators || []).map((indicator, index) => (
+                      <div key={indicator.id || index} className="grid grid-cols-[100px_1fr_100px_auto] gap-3 p-3 bg-white rounded border">
+                        <div>
+                          <Label className="text-xs text-slate-500">İkon</Label>
+                          <Select value={indicator.icon} onValueChange={(val) => updateTrustIndicator(index, 'icon', val)}>
+                            <SelectTrigger className="h-9"><SelectValue /></SelectTrigger>
+                            <SelectContent>
+                              {trustIconOptions.map(opt => (
+                                <SelectItem key={opt.value} value={opt.value}>
+                                  <span className="flex items-center gap-2">
+                                    <opt.icon className="w-4 h-4" /> {opt.label}
+                                  </span>
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div>
+                          <Label className="text-xs text-slate-500">Metin</Label>
+                          <Input value={indicator.text} onChange={(e) => updateTrustIndicator(index, 'text', e.target.value)} placeholder="Lisanslı Danışman" className="h-9" />
+                        </div>
+                        <div>
+                          <Label className="text-xs text-slate-500">Renk</Label>
+                          <Select value={indicator.color} onValueChange={(val) => updateTrustIndicator(index, 'color', val)}>
+                            <SelectTrigger className="h-9"><SelectValue /></SelectTrigger>
+                            <SelectContent>
+                              {colorOptions.map(opt => (
+                                <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div className="flex items-end">
+                          <Button type="button" variant="ghost" size="sm" className="text-red-600 hover:bg-red-50 h-9" onClick={() => removeTrustIndicator(index)}>
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-center py-4 text-slate-500">Henüz güven göstergesi eklenmedi</p>
+                )}
+              </div>
+
               {/* Card Header */}
-              <div className="grid grid-cols-2 gap-4">
-                <div><Label>Kart Başlığı</Label><Input value={heroFeatures.card_title || ''} onChange={(e) => setHeroFeatures({ ...heroFeatures, card_title: e.target.value })} placeholder="Hızlı Değerleme" /></div>
-                <div><Label>Kart Alt Başlığı</Label><Input value={heroFeatures.card_subtitle || ''} onChange={(e) => setHeroFeatures({ ...heroFeatures, card_subtitle: e.target.value })} placeholder="Ücretsiz mülk değerlendirme" /></div>
+              <div className="border rounded-lg p-4 bg-amber-50">
+                <Label className="text-lg font-semibold mb-4 block">Sağ Kart Başlık</Label>
+                <div className="grid grid-cols-2 gap-4">
+                  <div><Label>Kart Başlığı</Label><Input value={heroFeatures.card_title || ''} onChange={(e) => setHeroFeatures({ ...heroFeatures, card_title: e.target.value })} placeholder="Hızlı Değerleme" /></div>
+                  <div><Label>Kart Alt Başlığı</Label><Input value={heroFeatures.card_subtitle || ''} onChange={(e) => setHeroFeatures({ ...heroFeatures, card_subtitle: e.target.value })} placeholder="Ücretsiz mülk değerlendirme" /></div>
+                </div>
               </div>
 
               {/* Feature Links */}
               <div className="border rounded-lg p-4 bg-slate-50">
                 <div className="flex items-center justify-between mb-4">
-                  <Label className="text-lg font-semibold">Tıklanabilir Özellik Linkleri</Label>
+                  <Label className="text-lg font-semibold">Tıklanabilir Özellik Linkleri (Kart İçi)</Label>
                   <Button type="button" size="sm" onClick={addFeature} className="bg-amber-500 hover:bg-amber-600">
                     <Plus className="w-4 h-4 mr-1" /> Link Ekle
                   </Button>
