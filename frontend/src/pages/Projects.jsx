@@ -5,11 +5,14 @@ import { Card, CardContent } from '../components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
 import { Badge } from '../components/ui/badge';
 import { projectsAPI } from '../services/api';
+import { SEOHead } from '../components/SEOHead';
+import { useSEO } from '../context/SEOContext';
 
 export const Projects = () => {
   const [projects, setProjects] = useState([]);
   const [selectedType, setSelectedType] = useState('all');
   const [loading, setLoading] = useState(true);
+  const { seoSettings } = useSEO();
 
   useEffect(() => {
     loadProjects();
