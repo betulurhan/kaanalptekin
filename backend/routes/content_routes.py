@@ -128,3 +128,80 @@ async def update_hero_content(
     
     updated_content = await db.hero_content.find_one({"id": existing["id"]})
     return HeroContent(**updated_content)
+
+
+
+# Hero Features Endpoints (Slider quick links)
+@router.get("/hero-features")
+async def get_hero_features(db: AsyncIOMotorDatabase = Depends(get_db)):
+    """Get hero features (quick links on slider)"""
+    features = await db.hero_features.find_one()
+    if not features:
+        # Return default if not exists
+        default_features = {
+            "id": str(uuid.uuid4()),
+            "card_title": "Hızlı Değerleme",
+            "card_subtitle": "Ücretsiz mülk değerlendirme",
+            "features": [
+                {"id": str(uuid.uuid4()), "icon": "key", "title": "Satılık & Kiralık Portföy", "link": "/projeler", "order": 0, "is_active": True},
+                {"id": str(uuid.uuid4()), "icon": "building", "title": "200+ Tamamlanan Proje", "link": "/projeler", "order": 1, "is_active": True},
+                {"id": str(uuid.uuid4()), "icon": "map-pin", "title": "Türkiye Geneli Hizmet", "link": "/iletisim", "order": 2, "is_active": True}
+            ],
+            "cta_text": "Projeleri Keşfet",
+            "cta_link": "/projeler",
+            "stats_count": "500+",
+            "stats_label": "Mutlu Müşteri",
+            "rating": "4.9/5",
+            "rating_label": "Müşteri Puanı",
+            "updated_at": datetime.utcnow()
+        }
+        await db.hero_features.insert_one(default_features)
+        return {k: v for k, v in default_features.items() if k != "_id"}
+    return {k: v for k, v in features.items() if k != "_id"}
+
+
+@router.put("/hero-features")
+async def update_hero_features(
+    features_data: HeroFeaturesUpdate,
+    payload: dict = Depends(verify_token),
+    db: AsyncIOMotorDatabase = Depends(get_db)
+):
+    """Update hero features (admin only)"""
+    existing = await db.hero_features.find_one()
+    
+    if not existing:
+        # Create default first
+        default_features = {
+            "id": str(uuid.uuid4()),
+            "card_title": "Hızlı Değerleme",
+            "card_subtitle": "Ücretsiz mülk değerlendirme",
+            "features": [],
+            "cta_text": "Projeleri Keşfet",
+            "cta_link": "/projeler",
+            "stats_count": "500+",
+            "stats_label": "Mutlu Müşteri",
+            "rating": "4.9/5",
+            "rating_label": "Müşteri Puanı",
+            "updated_at": datetime.utcnow()
+        }
+        await db.hero_features.insert_one(default_features)
+        existing = await db.hero_features.find_one()
+    
+    update_data = {}
+    for k, v in features_data.dict().items():
+        if v is not None:
+            if k == "features" and v:
+                # Convert features to dict format
+                update_data[k] = [f.dict() if hasattr(f, 'dict') else f for f in v]
+            else:
+                update_data[k] = v
+    
+    update_data["updated_at"] = datetime.utcnow()
+    
+    await db.hero_features.update_one(
+        {"id": existing["id"]},
+        {"$set": update_data}
+    )
+    
+    updated = await db.hero_features.find_one({"id": existing["id"]})
+    return {k: v for k, v in updated.items() if k != "_id"}
