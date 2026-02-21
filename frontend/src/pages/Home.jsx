@@ -4,27 +4,46 @@ import { ArrowRight, CheckCircle2, Award, Users, Building2, TrendingUp, ChevronL
 import { Button } from '../components/ui/button';
 import { Card, CardContent } from '../components/ui/card';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '../components/ui/carousel';
-import { aboutData, projects } from '../mock/mockData';
-import { carouselAPI } from '../services/api';
+import { Badge } from '../components/ui/badge';
+import { aboutData } from '../mock/mockData';
+import { carouselAPI, projectsAPI } from '../services/api';
 
 export const Home = () => {
   const [carouselSlides, setCarouselSlides] = useState([]);
+  const [projects, setProjects] = useState([]);
+  const [selectedType, setSelectedType] = useState('all');
   const [loading, setLoading] = useState(true);
-  const featuredProjects = projects.filter(p => p.status === 'completed').slice(0, 3);
 
   useEffect(() => {
-    loadCarousel();
+    loadData();
   }, []);
 
-  const loadCarousel = async () => {
+  const loadData = async () => {
     try {
-      const slides = await carouselAPI.getAll(true);
+      const [slides, projectsData] = await Promise.all([
+        carouselAPI.getAll(true),
+        projectsAPI.getAll()
+      ]);
       setCarouselSlides(slides);
+      setProjects(projectsData);
     } catch (error) {
-      console.error('Failed to load carousel:', error);
+      console.error('Failed to load data:', error);
     } finally {
       setLoading(false);
     }
+  };
+
+  const filteredProjects = selectedType === 'all' 
+    ? projects.filter(p => p.status === 'completed').slice(0, 6)
+    : projects.filter(p => p.status === 'completed' && p.type === selectedType).slice(0, 6);
+
+  const projectTypes = ['all', 'Rezidans', 'Apartman', 'Villa', 'Ticari'];
+  const projectTypeLabels = {
+    'all': 'Tümü',
+    'Rezidans': 'Rezidans',
+    'Apartman': 'Apartman', 
+    'Villa': 'Villa',
+    'Ticari': 'Ticari'
   };
   
   const stats = [
@@ -184,7 +203,7 @@ export const Home = () => {
       {/* Featured Projects Section */}
       <section className="py-20 bg-slate-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
+          <div className="text-center mb-8">
             <h2 className="text-3xl md:text-4xl font-bold text-slate-800 mb-4">
               Öne Çıkan Projeler
             </h2>
@@ -192,31 +211,75 @@ export const Home = () => {
               Tamamlanmış projelerimizden seçkiler. Her biri kalite ve müşteri memnuniyetinin göstergesi.
             </p>
           </div>
-          <div className="grid md:grid-cols-3 gap-8">
-            {featuredProjects.map((project) => (
-              <Card
-                key={project.id}
-                className="overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border-none"
+
+          {/* Category Filter */}
+          <div className="flex flex-wrap gap-3 justify-center mb-10">
+            {projectTypes.map((type) => (
+              <button
+                key={type}
+                onClick={() => setSelectedType(type)}
+                className={`px-6 py-2 rounded-full font-medium transition-all duration-300 ${
+                  selectedType === type
+                    ? 'bg-slate-800 text-white shadow-lg'
+                    : 'bg-white text-slate-700 hover:bg-slate-100 shadow-sm'
+                }`}
               >
-                <div className="relative h-64 overflow-hidden">
-                  <img
-                    src={project.image}
-                    alt={project.title}
-                    className="w-full h-full object-cover transform hover:scale-110 transition-transform duration-500"
-                  />
-                  <div className="absolute top-4 right-4 bg-green-600 text-white px-3 py-1 rounded-full text-xs font-semibold">
-                    Tamamlandı
-                  </div>
-                </div>
-                <CardContent className="p-6">
-                  <h3 className="text-xl font-bold text-slate-800 mb-2">{project.title}</h3>
-                  <p className="text-slate-600 text-sm mb-3">{project.location}</p>
-                  <p className="text-slate-700 mb-4 line-clamp-2">{project.description}</p>
-                  <p className="text-amber-600 font-bold text-lg">{project.price}</p>
-                </CardContent>
-              </Card>
+                {projectTypeLabels[type]}
+              </button>
             ))}
           </div>
+
+          {/* Projects Grid */}
+          {loading ? (
+            <div className="flex justify-center py-12">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-slate-800"></div>
+            </div>
+          ) : (
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {filteredProjects.map((project) => (
+                <Card
+                  key={project.id}
+                  className="overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border-none"
+                >
+                  <div className="relative h-64 overflow-hidden">
+                    <img
+                      src={project.image}
+                      alt={project.title}
+                      className="w-full h-full object-cover transform hover:scale-110 transition-transform duration-500"
+                    />
+                    <div className="absolute top-4 right-4 bg-green-600 text-white px-3 py-1 rounded-full text-xs font-semibold">
+                      Tamamlandı
+                    </div>
+                    <div className="absolute top-4 left-4">
+                      <Badge variant="secondary" className="bg-white/90">
+                        {project.type}
+                      </Badge>
+                    </div>
+                  </div>
+                  <CardContent className="p-6">
+                    <h3 className="text-xl font-bold text-slate-800 mb-2">{project.title}</h3>
+                    <p className="text-slate-600 text-sm mb-3">{project.location}</p>
+                    <p className="text-slate-700 mb-4 line-clamp-2">{project.description}</p>
+                    <div className="flex flex-wrap gap-2 mb-4">
+                      {project.features.slice(0, 3).map((feature, idx) => (
+                        <Badge key={idx} variant="outline" className="text-xs">
+                          {feature}
+                        </Badge>
+                      ))}
+                    </div>
+                    <p className="text-amber-600 font-bold text-lg">{project.price}</p>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          )}
+
+          {filteredProjects.length === 0 && !loading && (
+            <div className="text-center py-12">
+              <p className="text-slate-500 text-lg">Bu kategoride proje bulunmuyor.</p>
+            </div>
+          )}
+
           <div className="text-center mt-10">
             <Button
               asChild
