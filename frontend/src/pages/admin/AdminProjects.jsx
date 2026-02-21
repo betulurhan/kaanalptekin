@@ -292,6 +292,27 @@ export const AdminProjects = () => {
               </div>
             </div>
 
+            <div>
+              <Label>Daireler (JSON formatında)</Label>
+              <Textarea 
+                value={formData.units ? JSON.stringify(formData.units, null, 2) : '[]'} 
+                onChange={(e) => {
+                  try {
+                    const units = JSON.parse(e.target.value);
+                    setFormData({ ...formData, units });
+                  } catch (err) {
+                    // Invalid JSON, don't update
+                  }
+                }} 
+                placeholder='[{"unit_number":"A1","floor":1,"rooms":"2+1","area_m2":120,"price":"₺5.500.000","status":"available"}]'
+                rows={6}
+                className="font-mono text-sm"
+              />
+              <p className="text-xs text-slate-500 mt-1">
+                Örnek: {`[{"unit_number":"A1","floor":1,"rooms":"2+1","area_m2":120,"price":"₺5.500.000","status":"available"}]`}
+              </p>
+            </div>
+
             <div className="flex gap-2 pt-4">
               <Button type="submit" className="flex-1 bg-amber-500 hover:bg-amber-600">
                 {editingProject ? 'Güncelle' : 'Ekle'}
