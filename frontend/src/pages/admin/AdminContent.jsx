@@ -1,19 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
-import { contentAPI } from '../../services/api';
+import { contentAPI, uploadAPI } from '../../services/api';
 import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/card';
 import { Button } from '../../components/ui/button';
 import { Input } from '../../components/ui/input';
 import { Label } from '../../components/ui/label';
 import { Textarea } from '../../components/ui/textarea';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../components/ui/tabs';
-import { Save } from 'lucide-react';
+import { Save, Upload, Image as ImageIcon } from 'lucide-react';
 import { useToast } from '../../hooks/use-toast';
 
 export const AdminContent = () => {
   const { token } = useAuth();
   const { toast } = useToast();
   const [loading, setLoading] = useState(true);
+  const [uploading, setUploading] = useState({ hero: false, about: false });
   const [aboutData, setAboutData] = useState({});
   const [contactData, setContactData] = useState({});
   const [heroData, setHeroData] = useState({});
@@ -32,6 +33,29 @@ export const AdminContent = () => {
       setHeroData(hero);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleImageUpload = async (e, section) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    setUploading({ ...uploading, [section]: true });
+    try {
+      const result = await uploadAPI.uploadImage(token, file);
+      const fullUrl = `${process.env.REACT_APP_BACKEND_URL}${result.url}`;
+      
+      if (section === 'hero') {
+        setHeroData({ ...heroData, image: fullUrl });
+      } else if (section === 'about') {
+        setAboutData({ ...aboutData, image: fullUrl });
+      }
+      
+      toast({ title: 'Başarılı', description: 'Görsel yüklendi' });
+    } catch (error) {
+      toast({ title: 'Hata', description: 'Görsel yüklenemedi', variant: 'destructive' });
+    } finally {
+      setUploading({ ...uploading, [section]: false });
     }
   };
 
@@ -84,7 +108,16 @@ export const AdminContent = () => {
               <div><Label>Başlık</Label><Input value={heroData.title || ''} onChange={(e) => setHeroData({ ...heroData, title: e.target.value })} /></div>
               <div><Label>Alt Başlık</Label><Input value={heroData.subtitle || ''} onChange={(e) => setHeroData({ ...heroData, subtitle: e.target.value })} /></div>
               <div><Label>Açıklama</Label><Textarea value={heroData.description || ''} onChange={(e) => setHeroData({ ...heroData, description: e.target.value })} rows={3} /></div>
-              <div><Label>Arka Plan Görseli URL</Label><Input value={heroData.image || ''} onChange={(e) => setHeroData({ ...heroData, image: e.target.value })} /></div>
+              <div><Label>Arka Plan Görseli URL</Label><Input value={heroData.image || ''} onChange={(e) => setHeroData({ ...heroData, image: e.target.value })} />
+                <div className="mt-2 flex gap-2">
+                  <Button type="button" variant="outline" onClick={() => document.getElementById('hero-image-upload').click()} disabled={uploading.hero}>
+                    <Upload className="w-4 h-4 mr-2" />
+                    {uploading.hero ? 'Yükleniyor...' : 'Bilgisayardan Yükle'}
+                  </Button>
+                  <input id="hero-image-upload" type="file" accept="image/*" className="hidden" onChange={(e) => handleImageUpload(e, 'hero')} />
+                </div>
+                {heroData.image && <img src={heroData.image} alt="Hero" className="mt-2 w-full h-32 object-cover rounded" />}
+              </div>
               <div className="grid grid-cols-2 gap-4">
                 <div><Label>Birincil Buton Metni</Label><Input value={heroData.cta_primary_text || ''} onChange={(e) => setHeroData({ ...heroData, cta_primary_text: e.target.value })} /></div>
                 <div><Label>İkincil Buton Metni</Label><Input value={heroData.cta_secondary_text || ''} onChange={(e) => setHeroData({ ...heroData, cta_secondary_text: e.target.value })} /></div>
@@ -108,7 +141,16 @@ export const AdminContent = () => {
                 <div><Label>Proje Sayısı</Label><Input value={aboutData.completed_projects || ''} onChange={(e) => setAboutData({ ...aboutData, completed_projects: e.target.value })} /></div>
                 <div><Label>Müşteri Sayısı</Label><Input value={aboutData.happy_clients || ''} onChange={(e) => setAboutData({ ...aboutData, happy_clients: e.target.value })} /></div>
               </div>
-              <div><Label>Profil Görseli URL</Label><Input value={aboutData.image || ''} onChange={(e) => setAboutData({ ...aboutData, image: e.target.value })} /></div>
+              <div><Label>Profil Görseli URL</Label><Input value={aboutData.image || ''} onChange={(e) => setAboutData({ ...aboutData, image: e.target.value })} />
+                <div className="mt-2 flex gap-2">
+                  <Button type="button" variant="outline" onClick={() => document.getElementById('about-image-upload').click()} disabled={uploading.about}>
+                    <Upload className="w-4 h-4 mr-2" />
+                    {uploading.about ? 'Yükleniyor...' : 'Bilgisayardan Yükle'}
+                  </Button>
+                  <input id="about-image-upload" type="file" accept="image/*" className="hidden" onChange={(e) => handleImageUpload(e, 'about')} />
+                </div>
+                {aboutData.image && <img src={aboutData.image} alt="Profile" className="mt-2 w-full h-32 object-cover rounded" />}
+              </div>
               <Button type="submit" className="bg-amber-500 hover:bg-amber-600"><Save className="w-4 h-4 mr-2" /> Kaydet</Button>
             </form>
           </CardContent></Card>
