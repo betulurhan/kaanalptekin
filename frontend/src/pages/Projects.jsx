@@ -87,6 +87,12 @@ export const Projects = () => {
   return (
     <div className="min-h-screen pt-20 bg-slate-50">
       {/* Hero Section */}
+      {loading ? (
+        <div className="flex items-center justify-center py-20">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-slate-800"></div>
+        </div>
+      ) : (
+        <>
       <section className="bg-slate-800 text-white py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h1 className="text-4xl md:text-5xl font-bold mb-4">Projelerimiz</h1>
@@ -215,6 +221,8 @@ export const Projects = () => {
           </a>
         </div>
       </section>
+        </>
+      )}
     </div>
   );
 };
