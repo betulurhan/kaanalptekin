@@ -271,3 +271,75 @@ async def update_site_settings(
     
     updated = await db.site_settings.find_one({"id": existing["id"]})
     return {k: v for k, v in updated.items() if k != "_id"}
+
+
+# SEO Settings Endpoints
+@router.get("/seo-settings")
+async def get_seo_settings(db: AsyncIOMotorDatabase = Depends(get_db)):
+    """Get SEO settings"""
+    settings = await db.seo_settings.find_one()
+    if not settings:
+        # Return default if not exists
+        default_settings = {
+            "id": str(uuid.uuid4()),
+            "site_title": "Özpınarlar İnşaat Grubu | Gayrimenkul Danışmanlığı",
+            "site_description": "15 yıllık deneyimle profesyonel gayrimenkul danışmanlığı. Satılık ve kiralık konut, rezidans, villa ve ticari gayrimenkul portföyü.",
+            "site_keywords": "gayrimenkul, emlak, konut, satılık daire, kiralık daire, rezidans, villa, inşaat, Türkiye",
+            "google_analytics_id": None,
+            "organization_name": "Özpınarlar İnşaat Grubu",
+            "organization_phone": "+90 532 123 45 67",
+            "organization_email": "info@ozpinarlar.com",
+            "organization_address": "Ankara, Türkiye",
+            "home_title": None,
+            "home_description": None,
+            "projects_title": None,
+            "projects_description": None,
+            "about_title": None,
+            "about_description": None,
+            "blog_title": None,
+            "blog_description": None,
+            "contact_title": None,
+            "contact_description": None,
+            "updated_at": datetime.utcnow()
+        }
+        await db.seo_settings.insert_one(default_settings)
+        return {k: v for k, v in default_settings.items() if k != "_id"}
+    return {k: v for k, v in settings.items() if k != "_id"}
+
+
+@router.put("/seo-settings")
+async def update_seo_settings(
+    settings_data: SEOSettingsUpdate,
+    payload: dict = Depends(verify_token),
+    db: AsyncIOMotorDatabase = Depends(get_db)
+):
+    """Update SEO settings (admin only)"""
+    existing = await db.seo_settings.find_one()
+    
+    if not existing:
+        # Create default first
+        default_settings = {
+            "id": str(uuid.uuid4()),
+            "site_title": "Özpınarlar İnşaat Grubu | Gayrimenkul Danışmanlığı",
+            "site_description": "15 yıllık deneyimle profesyonel gayrimenkul danışmanlığı.",
+            "site_keywords": "gayrimenkul, emlak, konut",
+            "google_analytics_id": None,
+            "organization_name": "Özpınarlar İnşaat Grubu",
+            "organization_phone": "+90 532 123 45 67",
+            "organization_email": "info@ozpinarlar.com",
+            "organization_address": "Ankara, Türkiye",
+            "updated_at": datetime.utcnow()
+        }
+        await db.seo_settings.insert_one(default_settings)
+        existing = await db.seo_settings.find_one()
+    
+    update_data = {k: v for k, v in settings_data.dict().items() if v is not None}
+    update_data["updated_at"] = datetime.utcnow()
+    
+    await db.seo_settings.update_one(
+        {"id": existing["id"]},
+        {"$set": update_data}
+    )
+    
+    updated = await db.seo_settings.find_one({"id": existing["id"]})
+    return {k: v for k, v in updated.items() if k != "_id"}
