@@ -71,16 +71,18 @@ export const AdminContent = () => {
 
   const loadContent = async () => {
     try {
-      const [about, contact, hero, features] = await Promise.all([
+      const [about, contact, hero, features, settings] = await Promise.all([
         contentAPI.getAbout(),
         contentAPI.getContact(),
         contentAPI.getHero(),
-        contentAPI.getHeroFeatures().catch(() => null)
+        contentAPI.getHeroFeatures().catch(() => null),
+        contentAPI.getSiteSettings().catch(() => null)
       ]);
       setAboutData(about);
       setContactData(contact);
       setHeroData(hero);
       if (features) setHeroFeatures(features);
+      if (settings) setSiteSettings(settings);
     } finally {
       setLoading(false);
     }
