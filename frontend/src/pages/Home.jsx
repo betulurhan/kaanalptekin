@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, CheckCircle2, Award, Users, Building2, TrendingUp, ChevronLeft, ChevronRight, Phone, MapPin, Star, Home as HomeIcon, Key, Shield } from 'lucide-react';
 import { Button } from '../components/ui/button';
@@ -8,7 +8,6 @@ import { Badge } from '../components/ui/badge';
 import { aboutData } from '../mock/mockData';
 import { carouselAPI, projectsAPI, contentAPI } from '../services/api';
 import useEmblaCarousel from 'embla-carousel-react';
-import Autoplay from 'embla-carousel-autoplay';
 
 export const Home = () => {
   const [carouselSlides, setCarouselSlides] = useState([]);
