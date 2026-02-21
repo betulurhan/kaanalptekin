@@ -157,8 +157,9 @@ export const AdminContent = () => {
       <h1 className="text-3xl font-bold text-slate-800">İçerik Yönetimi</h1>
       
       <Tabs defaultValue="hero">
-        <TabsList className="grid w-full grid-cols-3">
+        <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="hero">Ana Sayfa</TabsTrigger>
+          <TabsTrigger value="slider">Slider Özellikleri</TabsTrigger>
           <TabsTrigger value="about">Hakkımda</TabsTrigger>
           <TabsTrigger value="contact">İletişim</TabsTrigger>
         </TabsList>
@@ -183,6 +184,93 @@ export const AdminContent = () => {
                 <div><Label>Birincil Buton Metni</Label><Input value={heroData.cta_primary_text || ''} onChange={(e) => setHeroData({ ...heroData, cta_primary_text: e.target.value })} /></div>
                 <div><Label>İkincil Buton Metni</Label><Input value={heroData.cta_secondary_text || ''} onChange={(e) => setHeroData({ ...heroData, cta_secondary_text: e.target.value })} /></div>
               </div>
+              <Button type="submit" className="bg-amber-500 hover:bg-amber-600"><Save className="w-4 h-4 mr-2" /> Kaydet</Button>
+            </form>
+          </CardContent></Card>
+        </TabsContent>
+
+        <TabsContent value="slider">
+          <Card><CardHeader><CardTitle>Slider Sağ Kart Özellikleri</CardTitle></CardHeader><CardContent>
+            <form onSubmit={handleSaveHeroFeatures} className="space-y-6">
+              {/* Card Header */}
+              <div className="grid grid-cols-2 gap-4">
+                <div><Label>Kart Başlığı</Label><Input value={heroFeatures.card_title || ''} onChange={(e) => setHeroFeatures({ ...heroFeatures, card_title: e.target.value })} placeholder="Hızlı Değerleme" /></div>
+                <div><Label>Kart Alt Başlığı</Label><Input value={heroFeatures.card_subtitle || ''} onChange={(e) => setHeroFeatures({ ...heroFeatures, card_subtitle: e.target.value })} placeholder="Ücretsiz mülk değerlendirme" /></div>
+              </div>
+
+              {/* Feature Links */}
+              <div className="border rounded-lg p-4 bg-slate-50">
+                <div className="flex items-center justify-between mb-4">
+                  <Label className="text-lg font-semibold">Tıklanabilir Özellik Linkleri</Label>
+                  <Button type="button" size="sm" onClick={addFeature} className="bg-amber-500 hover:bg-amber-600">
+                    <Plus className="w-4 h-4 mr-1" /> Link Ekle
+                  </Button>
+                </div>
+                
+                {heroFeatures.features?.length > 0 ? (
+                  <div className="space-y-3">
+                    {heroFeatures.features.map((feature, index) => (
+                      <div key={feature.id || index} className="grid grid-cols-[100px_1fr_1fr_auto] gap-3 p-3 bg-white rounded border">
+                        <div>
+                          <Label className="text-xs text-slate-500">İkon</Label>
+                          <Select value={feature.icon} onValueChange={(val) => updateFeature(index, 'icon', val)}>
+                            <SelectTrigger className="h-9"><SelectValue /></SelectTrigger>
+                            <SelectContent>
+                              {iconOptions.map(opt => (
+                                <SelectItem key={opt.value} value={opt.value}>
+                                  <span className="flex items-center gap-2">
+                                    <opt.icon className="w-4 h-4" /> {opt.label}
+                                  </span>
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div>
+                          <Label className="text-xs text-slate-500">Başlık</Label>
+                          <Input value={feature.title} onChange={(e) => updateFeature(index, 'title', e.target.value)} placeholder="Satılık & Kiralık Portföy" className="h-9" />
+                        </div>
+                        <div>
+                          <Label className="text-xs text-slate-500">Link</Label>
+                          <Input value={feature.link} onChange={(e) => updateFeature(index, 'link', e.target.value)} placeholder="/projeler" className="h-9" />
+                        </div>
+                        <div className="flex items-end">
+                          <Button type="button" variant="ghost" size="sm" className="text-red-600 hover:bg-red-50 h-9" onClick={() => removeFeature(index)}>
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-center py-4 text-slate-500">Henüz link eklenmedi</p>
+                )}
+              </div>
+
+              {/* CTA Button */}
+              <div className="grid grid-cols-2 gap-4">
+                <div><Label>Buton Metni</Label><Input value={heroFeatures.cta_text || ''} onChange={(e) => setHeroFeatures({ ...heroFeatures, cta_text: e.target.value })} placeholder="Projeleri Keşfet" /></div>
+                <div><Label>Buton Linki</Label><Input value={heroFeatures.cta_link || ''} onChange={(e) => setHeroFeatures({ ...heroFeatures, cta_link: e.target.value })} placeholder="/projeler" /></div>
+              </div>
+
+              {/* Stats & Rating */}
+              <div className="grid grid-cols-2 gap-4">
+                <div className="border rounded-lg p-4 bg-green-50">
+                  <Label className="font-semibold mb-2 block">Sol Alt İstatistik</Label>
+                  <div className="grid grid-cols-2 gap-2">
+                    <div><Label className="text-xs">Sayı</Label><Input value={heroFeatures.stats_count || ''} onChange={(e) => setHeroFeatures({ ...heroFeatures, stats_count: e.target.value })} placeholder="500+" /></div>
+                    <div><Label className="text-xs">Etiket</Label><Input value={heroFeatures.stats_label || ''} onChange={(e) => setHeroFeatures({ ...heroFeatures, stats_label: e.target.value })} placeholder="Mutlu Müşteri" /></div>
+                  </div>
+                </div>
+                <div className="border rounded-lg p-4 bg-amber-50">
+                  <Label className="font-semibold mb-2 block">Sağ Üst Puan</Label>
+                  <div className="grid grid-cols-2 gap-2">
+                    <div><Label className="text-xs">Puan</Label><Input value={heroFeatures.rating || ''} onChange={(e) => setHeroFeatures({ ...heroFeatures, rating: e.target.value })} placeholder="4.9/5" /></div>
+                    <div><Label className="text-xs">Etiket</Label><Input value={heroFeatures.rating_label || ''} onChange={(e) => setHeroFeatures({ ...heroFeatures, rating_label: e.target.value })} placeholder="Müşteri Puanı" /></div>
+                  </div>
+                </div>
+              </div>
+
               <Button type="submit" className="bg-amber-500 hover:bg-amber-600"><Save className="w-4 h-4 mr-2" /> Kaydet</Button>
             </form>
           </CardContent></Card>
