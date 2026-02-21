@@ -257,8 +257,23 @@ class HeroFeatureItem(BaseModel):
     order: int = 0
     is_active: bool = True
 
+class TrustIndicator(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    icon: str  # check-circle, shield, award, etc.
+    text: str
+    color: str = "green"  # green, blue, amber
+    is_active: bool = True
+
 class HeroFeatures(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    # Badge
+    badge_text: str = "Profesyonel Gayrimenkul Danışmanlığı"
+    # Secondary CTA Button
+    secondary_cta_text: str = "Bize Ulaşın"
+    secondary_cta_link: str = "/iletisim"
+    # Trust Indicators
+    trust_indicators: List[TrustIndicator] = []
+    # Card Settings
     card_title: str = "Hızlı Değerleme"
     card_subtitle: str = "Ücretsiz mülk değerlendirme"
     features: List[HeroFeatureItem] = []
@@ -271,6 +286,10 @@ class HeroFeatures(BaseModel):
     updated_at: datetime = Field(default_factory=datetime.utcnow)
 
 class HeroFeaturesUpdate(BaseModel):
+    badge_text: Optional[str] = None
+    secondary_cta_text: Optional[str] = None
+    secondary_cta_link: Optional[str] = None
+    trust_indicators: Optional[List[TrustIndicator]] = None
     card_title: Optional[str] = None
     card_subtitle: Optional[str] = None
     features: Optional[List[HeroFeatureItem]] = None
@@ -280,3 +299,4 @@ class HeroFeaturesUpdate(BaseModel):
     stats_label: Optional[str] = None
     rating: Optional[str] = None
     rating_label: Optional[str] = None
+
