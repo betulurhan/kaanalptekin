@@ -7,7 +7,6 @@ import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious
 import { Badge } from '../components/ui/badge';
 import { aboutData } from '../mock/mockData';
 import { carouselAPI, projectsAPI, contentAPI } from '../services/api';
-import useEmblaCarousel from 'embla-carousel-react';
 
 export const Home = () => {
   const [carouselSlides, setCarouselSlides] = useState([]);
@@ -16,9 +15,7 @@ export const Home = () => {
   const [selectedType, setSelectedType] = useState('all');
   const [loading, setLoading] = useState(true);
   const [currentSlide, setCurrentSlide] = useState(0);
-  
-  // Embla carousel
-  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true });
+  const [carouselApi, setCarouselApi] = useState(null);
 
   useEffect(() => {
     loadData();
@@ -26,22 +23,26 @@ export const Home = () => {
 
   // Autoplay effect - 3 second interval
   useEffect(() => {
-    if (!emblaApi || loading || carouselSlides.length < 2) return;
+    if (!carouselApi || carouselSlides.length < 2) return;
     
     const autoplay = setInterval(() => {
-      emblaApi.scrollNext();
+      carouselApi.scrollNext();
     }, 3000);
     
     return () => clearInterval(autoplay);
-  }, [emblaApi, loading, carouselSlides.length]);
+  }, [carouselApi, carouselSlides.length]);
 
+  // Track current slide
   useEffect(() => {
-    if (emblaApi) {
-      emblaApi.on('select', () => {
-        setCurrentSlide(emblaApi.selectedScrollSnap());
-      });
-    }
-  }, [emblaApi]);
+    if (!carouselApi) return;
+    
+    const onSelect = () => {
+      setCurrentSlide(carouselApi.selectedScrollSnap());
+    };
+    
+    carouselApi.on('select', onSelect);
+    return () => carouselApi.off('select', onSelect);
+  }, [carouselApi]);
 
   const loadData = async () => {
     try {
@@ -75,21 +76,20 @@ export const Home = () => {
     return icons[iconName] || Key;
   };
 
-  const filteredProjects = selectedType === 'all' 
-    ? projects.filter(p => p.status === 'completed').slice(0, 6)
-    : projects.filter(p => p.status === 'completed' && p.type === selectedType).slice(0, 6);
+  const projectTypes = [
+    { value: 'all', label: 'Tümü' },
+    { value: 'Rezidans', label: 'Rezidans' },
+    { value: 'Apartman', label: 'Apartman' },
+    { value: 'Villa', label: 'Villa' },
+    { value: 'Ticari', label: 'Ticari' },
+  ];
 
-  const projectTypes = ['all', 'Rezidans', 'Apartman', 'Villa', 'Ticari'];
-  const projectTypeLabels = {
-    'all': 'Tümü',
-    'Rezidans': 'Rezidans',
-    'Apartman': 'Apartman', 
-    'Villa': 'Villa',
-    'Ticari': 'Ticari'
-  };
-  
+  const filteredProjects = selectedType === 'all'
+    ? projects.slice(0, 6)
+    : projects.filter((p) => p.type === selectedType).slice(0, 6);
+
   const stats = [
-    { icon: Award, value: '15+', label: 'Yıl Deneyim' },
+    { icon: Award, value: '15+', label: 'Yıllık Deneyim' },
     { icon: Building2, value: '200+', label: 'Tamamlanan Proje' },
     { icon: Users, value: '500+', label: 'Mutlu Müşteri' },
     { icon: TrendingUp, value: '%98', label: 'Memnuniyet Oranı' },
@@ -97,18 +97,22 @@ export const Home = () => {
 
   return (
     <div className="min-h-screen">
-      {/* Hero Carousel Section - Premium Design */}
+      {/* Hero Carousel Section */}
       <section className="relative h-screen overflow-hidden">
         {loading || carouselSlides.length === 0 ? (
           <div className="h-full flex items-center justify-center bg-slate-900">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-amber-500"></div>
           </div>
         ) : (
-          <div className="h-full relative">
-            <div className="overflow-hidden h-full" ref={emblaRef}>
-              <div className="flex h-full">
-                {carouselSlides.map((slide, index) => (
-                  <div key={slide.id} className="flex-[0_0_100%] min-w-0 relative h-full">
+          <Carousel 
+            className="h-full w-full" 
+            opts={{ loop: true }}
+            setApi={setCarouselApi}
+          >
+            <CarouselContent className="-ml-0 h-screen">
+              {carouselSlides.map((slide, index) => (
+                <CarouselItem key={slide.id} className="pl-0 h-full">
+                  <div className="relative h-full w-full">
                     {/* Background Image */}
                     <div
                       className="absolute inset-0 bg-cover bg-center"
@@ -195,10 +199,10 @@ export const Home = () => {
                               </div>
                             </div>
                             
-                            {/* Right Side - Floating Info Card with Clickable Items */}
+                            {/* Right Side - Floating Info Card */}
                             <div className="hidden lg:block">
                               <div className="relative">
-                                {/* Main Card - Light & Clean Design */}
+                                {/* Main Card */}
                                 <div className="bg-white rounded-3xl p-8 shadow-2xl">
                                   <div className="flex items-center gap-3 mb-6">
                                     <div className="w-12 h-12 bg-gradient-to-br from-amber-400 to-amber-600 rounded-xl flex items-center justify-center shadow-lg">
@@ -246,7 +250,7 @@ export const Home = () => {
                                   </Button>
                                 </div>
                                 
-                                {/* Floating Stats - Clean Style */}
+                                {/* Floating Stats */}
                                 <div className="absolute -bottom-6 -left-6 bg-white border border-slate-100 rounded-2xl p-4 shadow-xl">
                                   <div className="flex items-center gap-3">
                                     <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
@@ -272,7 +276,7 @@ export const Home = () => {
                         </div>
                       </div>
                     ) : (
-                      /* OTHER SLIDES - Simple Design with Image and Text */
+                      /* OTHER SLIDES - Simple Design */
                       <div className="relative z-10 h-full flex items-center justify-center">
                         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
                           <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight">
@@ -304,19 +308,19 @@ export const Home = () => {
                       </div>
                     )}
                   </div>
-                ))}
-              </div>
-            </div>
+                </CarouselItem>
+              ))}
+            </CarouselContent>
             
             {/* Navigation Arrows */}
             <button 
-              onClick={() => emblaApi?.scrollPrev()} 
+              onClick={() => carouselApi?.scrollPrev()} 
               className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/10 backdrop-blur-sm border border-white/20 text-white hover:bg-white/20 rounded-full flex items-center justify-center transition-all duration-300 z-20"
             >
               <ChevronLeft className="w-6 h-6" />
             </button>
             <button 
-              onClick={() => emblaApi?.scrollNext()} 
+              onClick={() => carouselApi?.scrollNext()} 
               className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/10 backdrop-blur-sm border border-white/20 text-white hover:bg-white/20 rounded-full flex items-center justify-center transition-all duration-300 z-20"
             >
               <ChevronRight className="w-6 h-6" />
@@ -327,186 +331,106 @@ export const Home = () => {
               {carouselSlides.map((_, idx) => (
                 <button 
                   key={idx} 
-                  onClick={() => emblaApi?.scrollTo(idx)}
+                  onClick={() => carouselApi?.scrollTo(idx)}
                   className={`h-2 rounded-full transition-all duration-300 ${currentSlide === idx ? 'w-8 bg-amber-500' : 'w-2 bg-white/30 hover:bg-white/50'}`}
                 />
               ))}
             </div>
-          </div>
+          </Carousel>
         )}
       </section>
 
       {/* Stats Section */}
-      <section className="py-16 bg-slate-50">
+      <section className="py-16 bg-slate-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             {stats.map((stat, index) => {
               const Icon = stat.icon;
               return (
-                <Card
-                  key={index}
-                  className="border-none shadow-md hover:shadow-xl transition-shadow duration-300"
-                >
-                  <CardContent className="p-6 text-center">
-                    <Icon className="w-10 h-10 mx-auto mb-3 text-amber-500" />
-                    <p className="text-3xl font-bold text-slate-800 mb-1">{stat.value}</p>
-                    <p className="text-sm text-slate-600">{stat.label}</p>
-                  </CardContent>
-                </Card>
+                <div key={index} className="text-center">
+                  <div className="w-16 h-16 bg-amber-500/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                    <Icon className="w-8 h-8 text-amber-400" />
+                  </div>
+                  <p className="text-4xl font-bold text-white mb-1">{stat.value}</p>
+                  <p className="text-slate-400">{stat.label}</p>
+                </div>
               );
             })}
           </div>
         </div>
       </section>
 
-      {/* About Preview Section */}
-      <section className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid md:grid-cols-2 gap-12 items-center">
-            <div className="order-2 md:order-1">
-              <h2 className="text-3xl md:text-4xl font-bold text-slate-800 mb-6">
-                Profesyonel Gayrimenkul Danışmanlığı
-              </h2>
-              <p className="text-slate-600 mb-6 leading-relaxed">
-                {aboutData.shortBio}
-              </p>
-              <ul className="space-y-3 mb-8">
-                <li className="flex items-start gap-3">
-                  <CheckCircle2 className="w-5 h-5 text-green-600 mt-1 flex-shrink-0" />
-                  <span className="text-slate-700">15 yılı aşkın sektör deneyimi</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <CheckCircle2 className="w-5 h-5 text-green-600 mt-1 flex-shrink-0" />
-                  <span className="text-slate-700">Geniş proje portföyü ve referanslar</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <CheckCircle2 className="w-5 h-5 text-green-600 mt-1 flex-shrink-0" />
-                  <span className="text-slate-700">Müşteri odaklı çözümler ve şeffaf süreç</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <CheckCircle2 className="w-5 h-5 text-green-600 mt-1 flex-shrink-0" />
-                  <span className="text-slate-700">Piyasa analizi ve yatırım danışmanlığı</span>
-                </li>
-              </ul>
-              <Button
-                asChild
-                size="lg"
-                className="bg-slate-800 hover:bg-slate-700 text-white px-6 rounded-xl transition-all duration-300"
-              >
-                <Link to="/hakkimda">
-                  Daha Fazla Bilgi
-                  <ArrowRight className="ml-2 w-4 h-4" />
-                </Link>
-              </Button>
-            </div>
-            <div className="order-1 md:order-2">
-              <div className="relative">
-                <img
-                  src={aboutData.image}
-                  alt="About"
-                  className="rounded-2xl shadow-2xl w-full h-[500px] object-cover"
-                />
-                <div className="absolute -bottom-6 -left-6 bg-amber-500 text-white p-6 rounded-xl shadow-xl">
-                  <p className="text-4xl font-bold">{aboutData.experience}</p>
-                  <p className="text-sm">Tecrübe</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Featured Projects Section */}
+      {/* Projects Section */}
       <section className="py-20 bg-slate-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-8">
-            <h2 className="text-3xl md:text-4xl font-bold text-slate-800 mb-4">
-              Öne Çıkan Projeler
-            </h2>
-            <p className="text-slate-600 max-w-2xl mx-auto">
-              Tamamlanmış projelerimizden seçkiler. Her biri kalite ve müşteri memnuniyetinin göstergesi.
-            </p>
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold text-slate-800 mb-4">Öne Çıkan Projeler</h2>
+            <p className="text-slate-600 max-w-2xl mx-auto">Sizin için özenle seçilmiş projelerimizi keşfedin</p>
           </div>
 
-          {/* Category Filter */}
-          <div className="flex flex-wrap gap-3 justify-center mb-10">
+          {/* Filter Tabs */}
+          <div className="flex flex-wrap justify-center gap-2 mb-12">
             {projectTypes.map((type) => (
               <button
-                key={type}
-                onClick={() => setSelectedType(type)}
+                key={type.value}
+                onClick={() => setSelectedType(type.value)}
                 className={`px-6 py-2 rounded-full font-medium transition-all duration-300 ${
-                  selectedType === type
-                    ? 'bg-slate-800 text-white shadow-lg'
-                    : 'bg-white text-slate-700 hover:bg-slate-100 shadow-sm'
+                  selectedType === type.value
+                    ? 'bg-amber-500 text-white shadow-lg'
+                    : 'bg-white text-slate-600 hover:bg-slate-100'
                 }`}
               >
-                {projectTypeLabels[type]}
+                {type.label}
               </button>
             ))}
           </div>
 
           {/* Projects Grid */}
-          {loading ? (
-            <div className="flex justify-center py-12">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-slate-800"></div>
-            </div>
-          ) : (
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {filteredProjects.map((project) => (
-                <Link to={`/projeler/${project.id}`} key={project.id}>
-                <Card
-                  className="overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border-none cursor-pointer"
-                >
-                  <div className="relative h-64 overflow-hidden">
-                    <img
-                      src={project.image}
-                      alt={project.title}
-                      className="w-full h-full object-cover transform hover:scale-110 transition-transform duration-500"
-                    />
-                    <div className="absolute top-4 right-4 bg-green-600 text-white px-3 py-1 rounded-full text-xs font-semibold">
-                      Tamamlandı
-                    </div>
-                    <div className="absolute top-4 left-4">
-                      <Badge variant="secondary" className="bg-white/90">
-                        {project.type}
-                      </Badge>
-                    </div>
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {filteredProjects.map((project) => (
+              <Card
+                key={project.id}
+                className="group cursor-pointer overflow-hidden border-none shadow-lg hover:shadow-2xl transition-all duration-500"
+              >
+                <div className="relative h-64 overflow-hidden">
+                  <img
+                    src={project.image}
+                    alt={project.title}
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-transparent" />
+                  <Badge className="absolute top-4 left-4 bg-amber-500">{project.type}</Badge>
+                  <Badge className={`absolute top-4 right-4 ${project.status === 'completed' ? 'bg-green-500' : 'bg-blue-500'}`}>
+                    {project.status === 'completed' ? 'Tamamlandı' : 'Devam Ediyor'}
+                  </Badge>
+                </div>
+                <CardContent className="p-6">
+                  <h3 className="text-xl font-bold text-slate-800 mb-2 group-hover:text-amber-600 transition-colors">
+                    {project.title}
+                  </h3>
+                  <div className="flex items-center text-slate-500 mb-4">
+                    <MapPin className="w-4 h-4 mr-1" />
+                    <span className="text-sm">{project.location}</span>
                   </div>
-                  <CardContent className="p-6">
-                    <h3 className="text-xl font-bold text-slate-800 mb-2">{project.title}</h3>
-                    <p className="text-slate-600 text-sm mb-3">{project.location}</p>
-                    <p className="text-slate-700 mb-4 line-clamp-2">{project.description}</p>
-                    <div className="flex flex-wrap gap-2 mb-4">
-                      {project.features.slice(0, 3).map((feature, idx) => (
-                        <Badge key={idx} variant="outline" className="text-xs">
-                          {feature}
-                        </Badge>
-                      ))}
-                    </div>
-                    <p className="text-amber-600 font-bold text-lg">{project.price}</p>
-                  </CardContent>
-                </Card>
-                </Link>
-              ))}
-            </div>
-          )}
+                  <div className="flex items-center justify-between">
+                    <span className="text-lg font-bold text-amber-600">{project.price}</span>
+                    <Link
+                      to={`/projeler/${project.id}`}
+                      className="text-slate-600 hover:text-amber-600 font-medium flex items-center gap-1 transition-colors"
+                    >
+                      Detaylar <ArrowRight className="w-4 h-4" />
+                    </Link>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
 
-          {filteredProjects.length === 0 && !loading && (
-            <div className="text-center py-12">
-              <p className="text-slate-500 text-lg">Bu kategoride proje bulunmuyor.</p>
-            </div>
-          )}
-
-          <div className="text-center mt-10">
-            <Button
-              asChild
-              size="lg"
-              variant="outline"
-              className="border-slate-300 hover:bg-slate-100 px-8 rounded-xl transition-all duration-300"
-            >
+          <div className="text-center mt-12">
+            <Button asChild size="lg" className="bg-slate-800 hover:bg-slate-900">
               <Link to="/projeler">
-                Tüm Projeleri Görüntüle
-                <ArrowRight className="ml-2 w-4 h-4" />
+                Tüm Projeleri Gör
+                <ArrowRight className="ml-2 w-5 h-5" />
               </Link>
             </Button>
           </div>
@@ -514,24 +438,22 @@ export const Home = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-slate-800 text-white">
+      <section className="py-20 bg-gradient-to-r from-amber-500 to-amber-600">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl md:text-4xl font-bold mb-6">
-            Hayalinizdeki Mülkü Birlikte Bulalım
+          <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
+            Hayalinizdeki Gayrimenkul İçin İlk Adımı Atın
           </h2>
-          <p className="text-slate-300 mb-8 text-lg">
-            Uzman gayrimenkul danışmanlığı için hemen iletişime geçin. Size en uygun seçenekleri birlikte değerlendirelim.
+          <p className="text-white/90 mb-8 text-lg">
+            Uzman ekibimiz size en uygun seçenekleri sunmak için hazır. Hemen iletişime geçin!
           </p>
-          <Button
-            asChild
-            size="lg"
-            className="bg-amber-500 hover:bg-amber-600 text-white px-10 py-6 text-lg rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
-          >
-            <Link to="/iletisim">
-              Hemen İletişime Geç
-              <ArrowRight className="ml-2 w-5 h-5" />
-            </Link>
-          </Button>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Button asChild size="lg" className="bg-white text-amber-600 hover:bg-slate-100">
+              <Link to="/iletisim">Bizimle İletişime Geçin</Link>
+            </Button>
+            <Button asChild size="lg" variant="outline" className="border-white text-white hover:bg-white/10">
+              <Link to="/projeler">Projeleri İnceleyin</Link>
+            </Button>
+          </div>
         </div>
       </section>
     </div>
