@@ -222,13 +222,136 @@ export const AdminContent = () => {
     <div className="space-y-6">
       <h1 className="text-3xl font-bold text-slate-800">İçerik Yönetimi</h1>
       
-      <Tabs defaultValue="hero">
-        <TabsList className="grid w-full grid-cols-4">
+      <Tabs defaultValue="logo">
+        <TabsList className="grid w-full grid-cols-5">
+          <TabsTrigger value="logo">Logo</TabsTrigger>
           <TabsTrigger value="hero">Ana Sayfa</TabsTrigger>
           <TabsTrigger value="slider">Slider Özellikleri</TabsTrigger>
           <TabsTrigger value="about">Hakkımda</TabsTrigger>
           <TabsTrigger value="contact">İletişim</TabsTrigger>
         </TabsList>
+
+        <TabsContent value="logo">
+          <Card><CardHeader><CardTitle>Logo Yönetimi</CardTitle></CardHeader><CardContent>
+            <form onSubmit={handleSaveSiteSettings} className="space-y-6">
+              <div>
+                <Label>Site Adı</Label>
+                <Input 
+                  value={siteSettings.site_name || ''} 
+                  onChange={(e) => setSiteSettings({ ...siteSettings, site_name: e.target.value })} 
+                  placeholder="GayrimenkulRehberi"
+                />
+                <p className="text-sm text-slate-500 mt-1">Logo yüklenmezse bu isim gösterilir</p>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Navbar Logo */}
+                <div className="border rounded-lg p-4 bg-slate-50">
+                  <Label className="text-lg font-semibold mb-4 block">Üst Menü Logosu (Navbar)</Label>
+                  <div className="space-y-3">
+                    <Input 
+                      value={siteSettings.navbar_logo || ''} 
+                      onChange={(e) => setSiteSettings({ ...siteSettings, navbar_logo: e.target.value })} 
+                      placeholder="Logo URL'si"
+                    />
+                    <div className="flex gap-2">
+                      <Button 
+                        type="button" 
+                        variant="outline" 
+                        onClick={() => document.getElementById('navbar-logo-upload').click()} 
+                        disabled={uploading.navbar_logo}
+                      >
+                        <Upload className="w-4 h-4 mr-2" />
+                        {uploading.navbar_logo ? 'Yükleniyor...' : 'Bilgisayardan Yükle'}
+                      </Button>
+                      {siteSettings.navbar_logo && (
+                        <Button 
+                          type="button" 
+                          variant="destructive" 
+                          size="sm"
+                          onClick={() => setSiteSettings({ ...siteSettings, navbar_logo: null })}
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
+                      )}
+                    </div>
+                    <input 
+                      id="navbar-logo-upload" 
+                      type="file" 
+                      accept="image/*" 
+                      className="hidden" 
+                      onChange={(e) => handleImageUpload(e, 'navbar_logo')} 
+                    />
+                    {siteSettings.navbar_logo ? (
+                      <div className="mt-3 p-4 bg-white rounded border">
+                        <p className="text-xs text-slate-500 mb-2">Önizleme:</p>
+                        <img src={siteSettings.navbar_logo} alt="Navbar Logo" className="h-12 w-auto object-contain" />
+                      </div>
+                    ) : (
+                      <div className="mt-3 p-4 bg-white rounded border text-center text-slate-400">
+                        <ImageIcon className="w-8 h-8 mx-auto mb-2" />
+                        <p className="text-sm">Logo yüklenmedi</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Footer Logo */}
+                <div className="border rounded-lg p-4 bg-slate-50">
+                  <Label className="text-lg font-semibold mb-4 block">Alt Kısım Logosu (Footer)</Label>
+                  <div className="space-y-3">
+                    <Input 
+                      value={siteSettings.footer_logo || ''} 
+                      onChange={(e) => setSiteSettings({ ...siteSettings, footer_logo: e.target.value })} 
+                      placeholder="Logo URL'si"
+                    />
+                    <div className="flex gap-2">
+                      <Button 
+                        type="button" 
+                        variant="outline" 
+                        onClick={() => document.getElementById('footer-logo-upload').click()} 
+                        disabled={uploading.footer_logo}
+                      >
+                        <Upload className="w-4 h-4 mr-2" />
+                        {uploading.footer_logo ? 'Yükleniyor...' : 'Bilgisayardan Yükle'}
+                      </Button>
+                      {siteSettings.footer_logo && (
+                        <Button 
+                          type="button" 
+                          variant="destructive" 
+                          size="sm"
+                          onClick={() => setSiteSettings({ ...siteSettings, footer_logo: null })}
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
+                      )}
+                    </div>
+                    <input 
+                      id="footer-logo-upload" 
+                      type="file" 
+                      accept="image/*" 
+                      className="hidden" 
+                      onChange={(e) => handleImageUpload(e, 'footer_logo')} 
+                    />
+                    {siteSettings.footer_logo ? (
+                      <div className="mt-3 p-4 bg-slate-800 rounded border">
+                        <p className="text-xs text-slate-400 mb-2">Önizleme (koyu arka plan):</p>
+                        <img src={siteSettings.footer_logo} alt="Footer Logo" className="h-12 w-auto object-contain" />
+                      </div>
+                    ) : (
+                      <div className="mt-3 p-4 bg-white rounded border text-center text-slate-400">
+                        <ImageIcon className="w-8 h-8 mx-auto mb-2" />
+                        <p className="text-sm">Logo yüklenmedi</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+              
+              <Button type="submit" className="bg-amber-500 hover:bg-amber-600"><Save className="w-4 h-4 mr-2" /> Kaydet</Button>
+            </form>
+          </CardContent></Card>
+        </TabsContent>
 
         <TabsContent value="hero">
           <Card><CardHeader><CardTitle>Ana Sayfa Hero Bölümü</CardTitle></CardHeader><CardContent>
