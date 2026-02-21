@@ -237,9 +237,9 @@ export const Home = () => {
           ) : (
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
               {filteredProjects.map((project) => (
+                <Link to={`/projeler/${project.id}`} key={project.id}>
                 <Card
-                  key={project.id}
-                  className="overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border-none"
+                  className="overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border-none cursor-pointer"
                 >
                   <div className="relative h-64 overflow-hidden">
                     <img
@@ -270,6 +270,7 @@ export const Home = () => {
                     <p className="text-amber-600 font-bold text-lg">{project.price}</p>
                   </CardContent>
                 </Card>
+                </Link>
               ))}
             </div>
           )}

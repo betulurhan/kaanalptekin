@@ -82,6 +82,7 @@ export const Projects = () => {
         </div>
       </CardContent>
     </Card>
+    </Link>
   );
 
   return (

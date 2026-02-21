@@ -19,6 +19,7 @@ import AdminContent from "./pages/admin/AdminContent";
 import AdminMessages from "./pages/admin/AdminMessages";
 import AdminCarousel from "./pages/admin/AdminCarousel";
 import AdminUsers from "./pages/admin/AdminUsers";
+import ProjectDetail from "./pages/ProjectDetail";
 
 function App() {
   return (
@@ -30,6 +31,7 @@ function App() {
             <Route path="/" element={<><Navbar /><Home /><Footer /></>} />
             <Route path="/hakkimda" element={<><Navbar /><About /><Footer /></>} />
             <Route path="/projeler" element={<><Navbar /><Projects /><Footer /></>} />
+            <Route path="/projeler/:id" element={<><Navbar /><ProjectDetail /><Footer /></>} />
             <Route path="/blog" element={<><Navbar /><Blog /><Footer /></>} />
             <Route path="/iletisim" element={<><Navbar /><Contact /><Footer /></>} />
 
