@@ -21,18 +21,7 @@ export const Home = () => {
     loadData();
   }, []);
 
-  // Autoplay effect - 3 second interval
-  useEffect(() => {
-    if (!carouselApi || carouselSlides.length < 2) return;
-    
-    const autoplay = setInterval(() => {
-      carouselApi.scrollNext();
-    }, 3000);
-    
-    return () => clearInterval(autoplay);
-  }, [carouselApi, carouselSlides.length]);
-
-  // Track current slide
+  // Track current slide (autoplay disabled)
   useEffect(() => {
     if (!carouselApi) return;
     
