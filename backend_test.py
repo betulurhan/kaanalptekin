@@ -7,7 +7,7 @@ from datetime import datetime
 from typing import Dict, Any
 
 class RealEstateCMSAPITester:
-    def __init__(self, base_url="https://insaat-yonetim-4.preview.emergentagent.com"):
+    def __init__(self, base_url="https://property-admin-52.preview.emergentagent.com"):
         self.base_url = base_url
         self.api_url = f"{base_url}/api"
         self.token = None
