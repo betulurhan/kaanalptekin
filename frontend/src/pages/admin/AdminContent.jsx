@@ -155,6 +155,16 @@ export const AdminContent = () => {
     }
   };
 
+  const handleSaveSiteSettings = async (e) => {
+    e.preventDefault();
+    try {
+      await contentAPI.updateSiteSettings(token, siteSettings);
+      toast({ title: 'Başarılı', description: 'Site ayarları güncellendi' });
+    } catch (error) {
+      toast({ title: 'Hata', description: 'Güncellenemedi', variant: 'destructive' });
+    }
+  };
+
   const addFeature = () => {
     const newFeature = {
       id: Date.now().toString(),
