@@ -8,9 +8,12 @@ import { Label } from '../components/ui/label';
 import { contactInfo } from '../mock/mockData';
 import { useToast } from '../hooks/use-toast';
 import { messagesAPI } from '../services/api';
+import { SEOHead } from '../components/SEOHead';
+import { useSEO } from '../context/SEOContext';
 
 export const Contact = () => {
   const { toast } = useToast();
+  const { seoSettings } = useSEO();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
