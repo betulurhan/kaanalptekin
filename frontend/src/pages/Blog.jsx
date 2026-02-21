@@ -153,7 +153,7 @@ export const Blog = () => {
                     </div>
                     <div className="flex items-center gap-1">
                       <Clock className="w-4 h-4" />
-                      {post.readTime}
+                      {post.read_time}
                     </div>
                   </div>
                 </CardContent>
@@ -167,6 +167,8 @@ export const Blog = () => {
           )}
         </div>
       </section>
+        </>
+      )}
 
       {/* Newsletter Section */}
       <section className="py-16 bg-slate-800 text-white">
