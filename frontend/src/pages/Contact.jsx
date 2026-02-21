@@ -7,6 +7,7 @@ import { Button } from '../components/ui/button';
 import { Label } from '../components/ui/label';
 import { contactInfo } from '../mock/mockData';
 import { useToast } from '../hooks/use-toast';
+import { messagesAPI } from '../services/api';
 
 export const Contact = () => {
   const { toast } = useToast();
@@ -27,20 +28,29 @@ export const Contact = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Mock form submission
-    console.log('Form submitted:', formData);
-    toast({
-      title: 'Mesajınız Gönderildi!',
-      description: 'En kısa sürede size geri dönüş yapacağız.',
-    });
-    // Reset form
-    setFormData({
-      name: '',
-      email: '',
-      phone: '',
-      subject: '',
-      message: '',
-    });
+    // Send to backend
+    messagesAPI.create(formData)
+      .then(() => {
+        toast({
+          title: 'Mesajınız Gönderildi!',
+          description: 'En kısa sürede size geri dönüş yapacağız.',
+        });
+        // Reset form
+        setFormData({
+          name: '',
+          email: '',
+          phone: '',
+          subject: '',
+          message: '',
+        });
+      })
+      .catch((error) => {
+        toast({
+          title: 'Hata!',
+          description: 'Mesaj gönderilemedi. Lütfen tekrar deneyin.',
+          variant: 'destructive'
+        });
+      });
   };
 
   const contactCards = [
