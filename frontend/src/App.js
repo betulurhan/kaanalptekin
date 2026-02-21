@@ -9,6 +9,7 @@ import Blog from "./pages/Blog";
 import Contact from "./pages/Contact";
 import { Toaster } from "./components/ui/sonner";
 import { AuthProvider } from "./context/AuthContext";
+import { SEOProvider } from "./context/SEOContext";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import AdminLogin from "./pages/admin/AdminLogin";
 import AdminLayout from "./pages/admin/AdminLayout";
@@ -19,37 +20,41 @@ import AdminContent from "./pages/admin/AdminContent";
 import AdminMessages from "./pages/admin/AdminMessages";
 import AdminCarousel from "./pages/admin/AdminCarousel";
 import AdminUsers from "./pages/admin/AdminUsers";
+import AdminSEO from "./pages/admin/AdminSEO";
 import ProjectDetail from "./pages/ProjectDetail";
 
 function App() {
   return (
     <div className="App">
       <AuthProvider>
-        <BrowserRouter>
-          <Routes>
-            {/* Public Routes */}
-            <Route path="/" element={<><Navbar /><Home /><Footer /></>} />
-            <Route path="/hakkimda" element={<><Navbar /><About /><Footer /></>} />
-            <Route path="/projeler" element={<><Navbar /><Projects /><Footer /></>} />
-            <Route path="/projeler/:id" element={<><Navbar /><ProjectDetail /><Footer /></>} />
-            <Route path="/blog" element={<><Navbar /><Blog /><Footer /></>} />
-            <Route path="/iletisim" element={<><Navbar /><Contact /><Footer /></>} />
+        <SEOProvider>
+          <BrowserRouter>
+            <Routes>
+              {/* Public Routes */}
+              <Route path="/" element={<><Navbar /><Home /><Footer /></>} />
+              <Route path="/hakkimda" element={<><Navbar /><About /><Footer /></>} />
+              <Route path="/projeler" element={<><Navbar /><Projects /><Footer /></>} />
+              <Route path="/projeler/:id" element={<><Navbar /><ProjectDetail /><Footer /></>} />
+              <Route path="/blog" element={<><Navbar /><Blog /><Footer /></>} />
+              <Route path="/iletisim" element={<><Navbar /><Contact /><Footer /></>} />
 
-            {/* Admin Routes */}
-            <Route path="/admin/login" element={<AdminLogin />} />
-            <Route path="/admin" element={<ProtectedRoute><AdminLayout /></ProtectedRoute>}>
-              <Route index element={<Navigate to="/admin/dashboard" replace />} />
-              <Route path="dashboard" element={<AdminDashboard />} />
-              <Route path="carousel" element={<AdminCarousel />} />
-              <Route path="projects" element={<AdminProjects />} />
-              <Route path="blog" element={<AdminBlog />} />
-              <Route path="content" element={<AdminContent />} />
-              <Route path="messages" element={<AdminMessages />} />
-              <Route path="users" element={<AdminUsers />} />
-            </Route>
-          </Routes>
-          <Toaster />
-        </BrowserRouter>
+              {/* Admin Routes */}
+              <Route path="/admin/login" element={<AdminLogin />} />
+              <Route path="/admin" element={<ProtectedRoute><AdminLayout /></ProtectedRoute>}>
+                <Route index element={<Navigate to="/admin/dashboard" replace />} />
+                <Route path="dashboard" element={<AdminDashboard />} />
+                <Route path="carousel" element={<AdminCarousel />} />
+                <Route path="projects" element={<AdminProjects />} />
+                <Route path="blog" element={<AdminBlog />} />
+                <Route path="content" element={<AdminContent />} />
+                <Route path="messages" element={<AdminMessages />} />
+                <Route path="users" element={<AdminUsers />} />
+                <Route path="seo" element={<AdminSEO />} />
+              </Route>
+            </Routes>
+            <Toaster />
+          </BrowserRouter>
+        </SEOProvider>
       </AuthProvider>
     </div>
   );
