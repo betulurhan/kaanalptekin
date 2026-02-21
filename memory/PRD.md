@@ -1,7 +1,7 @@
 # Özpınarlar İnşaat Grubu - Product Requirements Document
 
 ## Original Problem Statement
-Özpınarlar İnşaat Grubu için gayrimenkul ve inşaat şirketi websitesi. WordPress benzeri admin paneli ile tüm içeriklerin (projeler, blog, görseller, slider) yönetimi yapılabilecek.
+Özpınarlar İnşaat Grubu için gayrimenkul ve inşaat şirketi websitesi. WordPress benzeri admin paneli ile tüm içeriklerin (projeler, blog, görseller, slider, logo) yönetimi yapılabilecek.
 
 ## Tech Stack
 - **Frontend**: React 19, React Router v7, Tailwind CSS, Shadcn/UI, Axios
@@ -46,6 +46,16 @@
 - Varsayılan şifre bilgisi kaldırıldı
 - Responsive tasarım %100 uyumlu
 
+### Phase 6: Logo Yönetimi & UI İyileştirmeleri (21 Şubat 2026)
+- ✅ Logo yönetimi sistemi (SiteSettings model)
+- ✅ Admin panelinde Logo sekmesi
+- ✅ Navbar logosu yüklenebilir
+- ✅ Footer logosu yüklenebilir
+- ✅ Site adı düzenlenebilir
+- ✅ Slider üzerinde menü yazıları açık renkli (beyaz)
+- ✅ Diğer sayfalarda menü yazıları koyu renkli
+- ✅ Scroll sonrası navbar renk geçişi
+
 ## Security Measures
 - ✅ JWT ile token-based authentication
 - ✅ Güçlü rastgele JWT_SECRET_KEY
@@ -67,13 +77,14 @@
 - GET `/api/auth/verify` - Token doğrulama
 - `/api/projects` - Proje CRUD
 - `/api/content/hero-features` - Slider özellikleri
+- `/api/content/site-settings` - Logo ve site ayarları
 - `/api/carousel` - Carousel slide'ları
 - `/api/blog` - Blog CRUD
 - `/api/messages` - İletişim mesajları
 - `/api/upload` - Dosya yükleme
 
 ## Test Reports
-- `/app/test_reports/iteration_3.json` - Son test (100% başarılı)
+- `/app/test_reports/iteration_4.json` - Son test (100% başarılı)
 
 ## Remaining Tasks
 - P1: Admin şifre değiştirme özelliği
