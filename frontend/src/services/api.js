@@ -145,6 +145,18 @@ export const contentAPI = {
       headers: { Authorization: `Bearer ${token}` }
     });
     return response.data;
+  },
+  
+  getHeroFeatures: async () => {
+    const response = await axios.get(`${API}/content/hero-features`);
+    return response.data;
+  },
+  
+  updateHeroFeatures: async (token, data) => {
+    const response = await axios.put(`${API}/content/hero-features`, data, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    return response.data;
   }
 };
 
