@@ -1,9 +1,26 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Award, Target, Heart, TrendingUp } from 'lucide-react';
 import { Card, CardContent } from '../components/ui/card';
-import { aboutData } from '../mock/mockData';
+import { contentAPI } from '../services/api';
 
 export const About = () => {
+  const [aboutData, setAboutData] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    loadAbout();
+  }, []);
+
+  const loadAbout = async () => {
+    try {
+      const data = await contentAPI.getAbout();
+      setAboutData(data);
+    } catch (error) {
+      console.error('Failed to load about content:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
   const values = [
     {
       icon: Heart,
