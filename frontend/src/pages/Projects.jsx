@@ -92,6 +92,10 @@ export const Projects = () => {
 
   return (
     <div className="min-h-screen pt-20 bg-slate-50">
+      <SEOHead 
+        title={seoSettings?.projects_title || 'Projelerimiz | ' + (seoSettings?.site_title || '')} 
+        description={seoSettings?.projects_description || seoSettings?.site_description} 
+      />
       {/* Hero Section */}
       {loading ? (
         <div className="flex items-center justify-center py-20">
