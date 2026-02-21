@@ -106,161 +106,195 @@ export const Home = () => {
                       className="absolute inset-0 bg-cover bg-center"
                       style={{ backgroundImage: `url('${slide.image}')` }}
                     >
-                      <div className="absolute inset-0 bg-gradient-to-r from-slate-900/90 via-slate-900/60 to-slate-900/30"></div>
+                      <div className={`absolute inset-0 ${index === 0 ? 'bg-gradient-to-r from-slate-900/90 via-slate-900/60 to-slate-900/30' : 'bg-gradient-to-t from-slate-900/80 via-slate-900/40 to-slate-900/20'}`}></div>
                     </div>
                     
-                    {/* Content */}
-                    <div className="relative z-10 h-full flex items-center">
-                      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
-                        <div className="grid lg:grid-cols-2 gap-12 items-center">
-                          {/* Left Content */}
-                          <div className="text-left">
-                            {/* Badge */}
-                            <div className="inline-flex items-center gap-2 px-4 py-2 bg-amber-500/20 backdrop-blur-sm border border-amber-500/30 rounded-full mb-6">
-                              <Star className="w-4 h-4 text-amber-400 fill-amber-400" />
-                              <span className="text-amber-400 text-sm font-medium">Profesyonel Gayrimenkul Danışmanlığı</span>
-                            </div>
-                            
-                            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 leading-tight">
-                              {slide.title}
-                            </h1>
-                            {slide.subtitle && (
-                              <p className="text-2xl md:text-3xl lg:text-4xl font-bold bg-gradient-to-r from-amber-400 via-amber-300 to-amber-500 bg-clip-text text-transparent mb-6">
-                                {slide.subtitle}
-                              </p>
-                            )}
-                            {slide.description && (
-                              <p className="text-lg text-slate-300 mb-8 max-w-xl leading-relaxed">
-                                {slide.description}
-                              </p>
-                            )}
-                            
-                            {/* CTA Buttons */}
-                            <div className="flex flex-wrap gap-4 mb-10">
-                              {slide.cta_text && slide.cta_link && (
+                    {/* Content - Different layout for first slide vs others */}
+                    {index === 0 ? (
+                      /* FIRST SLIDE - Premium Design with Card */
+                      <div className="relative z-10 h-full flex items-center">
+                        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+                          <div className="grid lg:grid-cols-2 gap-12 items-center">
+                            {/* Left Content */}
+                            <div className="text-left">
+                              {/* Badge */}
+                              <div className="inline-flex items-center gap-2 px-4 py-2 bg-amber-500/20 backdrop-blur-sm border border-amber-500/30 rounded-full mb-6">
+                                <Star className="w-4 h-4 text-amber-400 fill-amber-400" />
+                                <span className="text-amber-400 text-sm font-medium">Profesyonel Gayrimenkul Danışmanlığı</span>
+                              </div>
+                              
+                              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 leading-tight">
+                                {slide.title}
+                              </h1>
+                              {slide.subtitle && (
+                                <p className="text-2xl md:text-3xl lg:text-4xl font-bold bg-gradient-to-r from-amber-400 via-amber-300 to-amber-500 bg-clip-text text-transparent mb-6">
+                                  {slide.subtitle}
+                                </p>
+                              )}
+                              {slide.description && (
+                                <p className="text-lg text-slate-300 mb-8 max-w-xl leading-relaxed">
+                                  {slide.description}
+                                </p>
+                              )}
+                              
+                              {/* CTA Buttons */}
+                              <div className="flex flex-wrap gap-4 mb-10">
+                                {slide.cta_text && slide.cta_link && (
+                                  <Button
+                                    asChild
+                                    size="lg"
+                                    className="bg-amber-500 hover:bg-amber-600 text-white px-8 py-6 text-lg rounded-xl shadow-lg shadow-amber-500/25 hover:shadow-xl hover:shadow-amber-500/30 transform hover:scale-105 transition-all duration-300"
+                                  >
+                                    <Link to={slide.cta_link}>
+                                      {slide.cta_text}
+                                      <ArrowRight className="ml-2 w-5 h-5" />
+                                    </Link>
+                                  </Button>
+                                )}
                                 <Button
                                   asChild
                                   size="lg"
-                                  className="bg-amber-500 hover:bg-amber-600 text-white px-8 py-6 text-lg rounded-xl shadow-lg shadow-amber-500/25 hover:shadow-xl hover:shadow-amber-500/30 transform hover:scale-105 transition-all duration-300"
+                                  variant="outline"
+                                  className="border-white/30 bg-white/5 backdrop-blur-sm text-white hover:bg-white/10 px-8 py-6 text-lg rounded-xl transition-all duration-300"
                                 >
-                                  <Link to={slide.cta_link}>
-                                    {slide.cta_text}
-                                    <ArrowRight className="ml-2 w-5 h-5" />
+                                  <Link to="/iletisim">
+                                    <Phone className="mr-2 w-5 h-5" />
+                                    Bize Ulaşın
                                   </Link>
                                 </Button>
-                              )}
-                              <Button
-                                asChild
-                                size="lg"
-                                variant="outline"
-                                className="border-white/30 bg-white/5 backdrop-blur-sm text-white hover:bg-white/10 px-8 py-6 text-lg rounded-xl transition-all duration-300"
-                              >
-                                <Link to="/iletisim">
-                                  <Phone className="mr-2 w-5 h-5" />
-                                  Bize Ulaşın
-                                </Link>
-                              </Button>
+                              </div>
+                              
+                              {/* Trust Indicators */}
+                              <div className="flex flex-wrap gap-6">
+                                <div className="flex items-center gap-2 text-slate-300">
+                                  <div className="w-10 h-10 rounded-full bg-green-500/20 flex items-center justify-center">
+                                    <CheckCircle2 className="w-5 h-5 text-green-400" />
+                                  </div>
+                                  <span className="text-sm">Lisanslı Danışman</span>
+                                </div>
+                                <div className="flex items-center gap-2 text-slate-300">
+                                  <div className="w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center">
+                                    <Shield className="w-5 h-5 text-blue-400" />
+                                  </div>
+                                  <span className="text-sm">Güvenli İşlem</span>
+                                </div>
+                                <div className="flex items-center gap-2 text-slate-300">
+                                  <div className="w-10 h-10 rounded-full bg-amber-500/20 flex items-center justify-center">
+                                    <Award className="w-5 h-5 text-amber-400" />
+                                  </div>
+                                  <span className="text-sm">15+ Yıl Tecrübe</span>
+                                </div>
+                              </div>
                             </div>
                             
-                            {/* Trust Indicators */}
-                            <div className="flex flex-wrap gap-6">
-                              <div className="flex items-center gap-2 text-slate-300">
-                                <div className="w-10 h-10 rounded-full bg-green-500/20 flex items-center justify-center">
-                                  <CheckCircle2 className="w-5 h-5 text-green-400" />
-                                </div>
-                                <span className="text-sm">Lisanslı Danışman</span>
-                              </div>
-                              <div className="flex items-center gap-2 text-slate-300">
-                                <div className="w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center">
-                                  <Shield className="w-5 h-5 text-blue-400" />
-                                </div>
-                                <span className="text-sm">Güvenli İşlem</span>
-                              </div>
-                              <div className="flex items-center gap-2 text-slate-300">
-                                <div className="w-10 h-10 rounded-full bg-amber-500/20 flex items-center justify-center">
-                                  <Award className="w-5 h-5 text-amber-400" />
-                                </div>
-                                <span className="text-sm">15+ Yıl Tecrübe</span>
-                              </div>
-                            </div>
-                          </div>
-                          
-                          {/* Right Side - Floating Info Card with Clickable Items */}
-                          <div className="hidden lg:block">
-                            <div className="relative">
-                              {/* Main Card - Light & Clean Design */}
-                              <div className="bg-white rounded-3xl p-8 shadow-2xl">
-                                <div className="flex items-center gap-3 mb-6">
-                                  <div className="w-12 h-12 bg-gradient-to-br from-amber-400 to-amber-600 rounded-xl flex items-center justify-center shadow-lg">
-                                    <HomeIcon className="w-6 h-6 text-white" />
+                            {/* Right Side - Floating Info Card with Clickable Items */}
+                            <div className="hidden lg:block">
+                              <div className="relative">
+                                {/* Main Card - Light & Clean Design */}
+                                <div className="bg-white rounded-3xl p-8 shadow-2xl">
+                                  <div className="flex items-center gap-3 mb-6">
+                                    <div className="w-12 h-12 bg-gradient-to-br from-amber-400 to-amber-600 rounded-xl flex items-center justify-center shadow-lg">
+                                      <HomeIcon className="w-6 h-6 text-white" />
+                                    </div>
+                                    <div>
+                                      <p className="text-slate-800 font-bold text-lg">
+                                        {heroFeatures?.card_title || 'Hızlı Değerleme'}
+                                      </p>
+                                      <p className="text-slate-500 text-sm">
+                                        {heroFeatures?.card_subtitle || 'Ücretsiz mülk değerlendirme'}
+                                      </p>
+                                    </div>
                                   </div>
-                                  <div>
-                                    <p className="text-slate-800 font-bold text-lg">
-                                      {heroFeatures?.card_title || 'Hızlı Değerleme'}
-                                    </p>
-                                    <p className="text-slate-500 text-sm">
-                                      {heroFeatures?.card_subtitle || 'Ücretsiz mülk değerlendirme'}
-                                    </p>
+                                  
+                                  {/* Clickable Feature Links */}
+                                  <div className="space-y-3 mb-6">
+                                    {(heroFeatures?.features || [
+                                      { icon: 'key', title: 'Satılık & Kiralık Portföy', link: '/projeler' },
+                                      { icon: 'building', title: '200+ Tamamlanan Proje', link: '/projeler' },
+                                      { icon: 'map-pin', title: 'Türkiye Geneli Hizmet', link: '/iletisim' }
+                                    ]).filter(f => f.is_active !== false).map((feature, idx) => {
+                                      const IconComponent = getIcon(feature.icon);
+                                      return (
+                                        <Link 
+                                          key={idx} 
+                                          to={feature.link}
+                                          className="flex items-center gap-3 p-4 bg-slate-50 hover:bg-amber-50 rounded-xl transition-all duration-300 group border border-transparent hover:border-amber-200 hover:shadow-md"
+                                        >
+                                          <div className="w-10 h-10 bg-amber-100 group-hover:bg-amber-500 rounded-lg flex items-center justify-center transition-colors duration-300">
+                                            <IconComponent className="w-5 h-5 text-amber-600 group-hover:text-white transition-colors duration-300" />
+                                          </div>
+                                          <span className="text-slate-700 font-medium group-hover:text-amber-700 transition-colors duration-300">{feature.title}</span>
+                                          <ArrowRight className="w-4 h-4 text-slate-400 group-hover:text-amber-500 ml-auto opacity-0 group-hover:opacity-100 transform translate-x-0 group-hover:translate-x-1 transition-all duration-300" />
+                                        </Link>
+                                      );
+                                    })}
+                                  </div>
+                                  
+                                  <Button asChild className="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 py-6 rounded-xl text-lg shadow-lg shadow-amber-500/25">
+                                    <Link to={heroFeatures?.cta_link || '/projeler'}>
+                                      {heroFeatures?.cta_text || 'Projeleri Keşfet'}
+                                      <ArrowRight className="ml-2 w-5 h-5" />
+                                    </Link>
+                                  </Button>
+                                </div>
+                                
+                                {/* Floating Stats - Clean Style */}
+                                <div className="absolute -bottom-6 -left-6 bg-white border border-slate-100 rounded-2xl p-4 shadow-xl">
+                                  <div className="flex items-center gap-3">
+                                    <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
+                                      <Users className="w-6 h-6 text-green-600" />
+                                    </div>
+                                    <div>
+                                      <p className="text-2xl font-bold text-slate-800">{heroFeatures?.stats_count || '500+'}</p>
+                                      <p className="text-slate-500 text-sm">{heroFeatures?.stats_label || 'Mutlu Müşteri'}</p>
+                                    </div>
                                   </div>
                                 </div>
                                 
-                                {/* Clickable Feature Links */}
-                                <div className="space-y-3 mb-6">
-                                  {(heroFeatures?.features || [
-                                    { icon: 'key', title: 'Satılık & Kiralık Portföy', link: '/projeler' },
-                                    { icon: 'building', title: '200+ Tamamlanan Proje', link: '/projeler' },
-                                    { icon: 'map-pin', title: 'Türkiye Geneli Hizmet', link: '/iletisim' }
-                                  ]).filter(f => f.is_active !== false).map((feature, idx) => {
-                                    const IconComponent = getIcon(feature.icon);
-                                    return (
-                                      <Link 
-                                        key={idx} 
-                                        to={feature.link}
-                                        className="flex items-center gap-3 p-4 bg-slate-50 hover:bg-amber-50 rounded-xl transition-all duration-300 group border border-transparent hover:border-amber-200 hover:shadow-md"
-                                      >
-                                        <div className="w-10 h-10 bg-amber-100 group-hover:bg-amber-500 rounded-lg flex items-center justify-center transition-colors duration-300">
-                                          <IconComponent className="w-5 h-5 text-amber-600 group-hover:text-white transition-colors duration-300" />
-                                        </div>
-                                        <span className="text-slate-700 font-medium group-hover:text-amber-700 transition-colors duration-300">{feature.title}</span>
-                                        <ArrowRight className="w-4 h-4 text-slate-400 group-hover:text-amber-500 ml-auto opacity-0 group-hover:opacity-100 transform translate-x-0 group-hover:translate-x-1 transition-all duration-300" />
-                                      </Link>
-                                    );
-                                  })}
-                                </div>
-                                
-                                <Button asChild className="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 py-6 rounded-xl text-lg shadow-lg shadow-amber-500/25">
-                                  <Link to={heroFeatures?.cta_link || '/projeler'}>
-                                    {heroFeatures?.cta_text || 'Projeleri Keşfet'}
-                                    <ArrowRight className="ml-2 w-5 h-5" />
-                                  </Link>
-                                </Button>
-                              </div>
-                              
-                              {/* Floating Stats - Clean Style */}
-                              <div className="absolute -bottom-6 -left-6 bg-white border border-slate-100 rounded-2xl p-4 shadow-xl">
-                                <div className="flex items-center gap-3">
-                                  <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
-                                    <Users className="w-6 h-6 text-green-600" />
+                                <div className="absolute -top-4 -right-4 bg-gradient-to-br from-amber-400 to-amber-600 rounded-2xl p-4 shadow-xl">
+                                  <div className="flex items-center gap-2">
+                                    <Star className="w-5 h-5 text-white fill-white" />
+                                    <span className="text-white font-bold">{heroFeatures?.rating || '4.9/5'}</span>
                                   </div>
-                                  <div>
-                                    <p className="text-2xl font-bold text-slate-800">{heroFeatures?.stats_count || '500+'}</p>
-                                    <p className="text-slate-500 text-sm">{heroFeatures?.stats_label || 'Mutlu Müşteri'}</p>
-                                  </div>
+                                  <p className="text-white/80 text-xs">{heroFeatures?.rating_label || 'Müşteri Puanı'}</p>
                                 </div>
-                              </div>
-                              
-                              <div className="absolute -top-4 -right-4 bg-gradient-to-br from-amber-400 to-amber-600 rounded-2xl p-4 shadow-xl">
-                                <div className="flex items-center gap-2">
-                                  <Star className="w-5 h-5 text-white fill-white" />
-                                  <span className="text-white font-bold">{heroFeatures?.rating || '4.9/5'}</span>
-                                </div>
-                                <p className="text-white/80 text-xs">{heroFeatures?.rating_label || 'Müşteri Puanı'}</p>
                               </div>
                             </div>
                           </div>
                         </div>
                       </div>
-                    </div>
+                    ) : (
+                      /* OTHER SLIDES - Simple Design with Image and Text */
+                      <div className="relative z-10 h-full flex items-center justify-center">
+                        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                          <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight">
+                            {slide.title}
+                          </h2>
+                          {slide.subtitle && (
+                            <p className="text-xl md:text-2xl text-amber-400 font-semibold mb-4">
+                              {slide.subtitle}
+                            </p>
+                          )}
+                          {slide.description && (
+                            <p className="text-lg md:text-xl text-slate-300 mb-8 max-w-2xl mx-auto">
+                              {slide.description}
+                            </p>
+                          )}
+                          {slide.cta_text && slide.cta_link && (
+                            <Button
+                              asChild
+                              size="lg"
+                              className="bg-amber-500 hover:bg-amber-600 text-white px-10 py-6 text-lg rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
+                            >
+                              <Link to={slide.cta_link}>
+                                {slide.cta_text}
+                                <ArrowRight className="ml-2 w-5 h-5" />
+                              </Link>
+                            </Button>
+                          )}
+                        </div>
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
