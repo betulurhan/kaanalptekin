@@ -1,145 +1,148 @@
 # Gayrimenkul Danışmanı Website - Product Requirements Document
 
 ## Original Problem Statement
-Gayrimenkul danışmanı için websitesi. Websitesinde hakkımda, blog, projeler, iletişim kısımları. Ana sayfada kısa hakkımda yazısı ve projeler görsellerle süslensin. Güven veren ve tasarımsal olarak güzel bir yapı. Mobil kullanımda tamamlanan, devam eden projeler, hakkımda gibi kısımlar dashboard tarzında butonlar şeklinde kullanıcı deneyimine uygun vaziyette olsun.
+Gayrimenkul danışmanı için tam özellikli CMS (WordPress benzeri) admin paneli ile yönetilebilir websitesi. Kullanıcı adı ve şifre ile admin paneline giriş yapılacak. Admin panelinden projeler, blog, hakkımda, iletişim bilgileri ve ana sayfa görsellerinin yönetimi yapılabilecek.
 
-Referans site: https://www.ozpinarlar.com.tr/
+## Tech Stack
+**Frontend**: React 19, React Router v7, Tailwind CSS, Shadcn/UI, Axios
+**Backend**: FastAPI, MongoDB (Motor), JWT Auth, Python-Jose, Bcrypt
+**File Upload**: Local storage with chunked upload support
 
-## User Choices & Inputs
-- **İlk aşama**: Sadece frontend tasarımı (mock data ile)
-- **Renk paleti**: Profesyonel, güven veren (Navy blue, amber/gold accents, white)
-- **Tasarım**: Modern, minimal, lüks
-- **Görsel içerik**: 15 adet profesyonel gayrimenkul görseli (Unsplash & Pexels)
-- **Proje sayısı**: 8 adet (5 tamamlanmış, 3 devam eden)
-- **Blog yazısı**: 6 adet örnek blog post
+## Implemented Features (December 21, 2024)
 
-## Architecture & Tech Stack
-- **Frontend**: React 19, React Router v7, Tailwind CSS
-- **UI Components**: Shadcn/UI components
-- **Icons**: Lucide React
-- **State Management**: React hooks
-- **Mock Data**: Centralized in `/frontend/src/mock/mockData.js`
+### Phase 1: Frontend with Mock Data ✅
+- 5 sayfalık profesyonel web sitesi (Ana Sayfa, Hakkımda, Projeler, Blog, İletişim)
+- Responsive tasarım ve mobil dashboard-style menü
+- Profesyonel görsel ve içeriklerle tam çalışır frontend
 
-## User Personas
-1. **Ev Arayan Aileler**: Güvenilir, detaylı bilgi arayan
-2. **Yatırımcılar**: ROI odaklı, piyasa analizi isteyen
-3. **İlk Kez Ev Alanlar**: Rehberlik ve destek arayan
+### Phase 2: Full-Stack Admin Panel ✅
+**Backend API**:
+- ✅ JWT tabanlı authentication (login, token verification)
+- ✅ Multi-user support (user CRUD operations)
+- ✅ Projects API (CRUD with filters)
+- ✅ Blog API (CRUD with categories)
+- ✅ Content Management API (About, Contact, Hero sections)
+- ✅ Contact Messages API (create, read, mark as read, delete)
+- ✅ File Upload API (image upload with size/type validation)
+- ✅ Database seeding (default admin + initial content)
 
-## Core Requirements (Static)
+**Admin Panel Frontend**:
+- ✅ Login page with authentication
+- ✅ Protected routes with JWT
+- ✅ Admin Dashboard (statistics, quick actions)
+- ✅ Projects Management (add, edit, delete, image upload)
+- ✅ Blog Management (add, edit, delete with categories)
+- ✅ Content Editor (Hero, About, Contact info)
+- ✅ Messages Inbox (view, mark as read, delete)
+- ✅ User Management (add, delete users)
+- ✅ Responsive admin layout with sidebar
 
-### Must Have (P0)
-- ✅ Ana sayfa (Hero + About preview + Featured projects + Stats + CTA)
-- ✅ Hakkımda sayfası (Full bio + Values + Expertise areas)
-- ✅ Projeler sayfası (Tamamlanan/Devam eden tabs + Filtering)
-- ✅ Blog sayfası (Featured post + Grid + Category filter)
-- ✅ İletişim sayfası (Contact form + Info cards + Map + FAQ)
-- ✅ Responsive navigation (Desktop menu + Mobile dashboard-style)
-- ✅ Footer (Links + Contact info + Social media)
+**Public Site Integration**:
+- ✅ Contact form integrated with backend
+- 🔄 Projects/Blog/Content still using mock data (to be integrated)
 
-### Nice to Have (P1)
-- Proje detay sayfaları
-- Blog yazı detay sayfaları
-- Görsel galeriler
-- Sanal tur entegrasyonu
-- Testimonials section
-- Newsletter functionality
+## API Endpoints
 
-### Future Considerations (P2)
-- Backend API integration
-- Admin panel for content management
-- User authentication
-- Favorites/saved properties
-- Search & advanced filtering
-- Chat support integration
+### Authentication
+- POST `/api/auth/register` - Register new admin user
+- POST `/api/auth/login` - Login and get JWT token
+- GET `/api/auth/verify` - Verify JWT token
+- GET `/api/auth/users` - Get all users (protected)
+- DELETE `/api/auth/users/{id}` - Delete user (protected)
 
-## What's Been Implemented (December 21, 2024)
+### Projects
+- GET `/api/projects` - Get all projects (optional filters)
+- GET `/api/projects/{id}` - Get single project
+- POST `/api/projects` - Create project (protected)
+- PUT `/api/projects/{id}` - Update project (protected)
+- DELETE `/api/projects/{id}` - Delete project (protected)
 
-### Frontend Structure
+### Blog
+- GET `/api/blog` - Get all blog posts
+- POST `/api/blog` - Create blog post (protected)
+- PUT `/api/blog/{id}` - Update blog post (protected)
+- DELETE `/api/blog/{id}` - Delete blog post (protected)
+
+### Content
+- GET `/api/content/about` - Get about content
+- PUT `/api/content/about` - Update about content (protected)
+- GET `/api/content/contact` - Get contact info
+- PUT `/api/content/contact` - Update contact info (protected)
+- GET `/api/content/hero` - Get hero content
+- PUT `/api/content/hero` - Update hero content (protected)
+
+### Messages
+- POST `/api/messages` - Create message (public)
+- GET `/api/messages` - Get all messages (protected)
+- GET `/api/messages/{id}` - Get single message (protected)
+- PATCH `/api/messages/{id}/read` - Mark as read (protected)
+- DELETE `/api/messages/{id}` - Delete message (protected)
+- GET `/api/messages/stats/unread-count` - Get unread count (protected)
+
+### File Upload
+- POST `/api/upload/image` - Upload image (protected)
+- GET `/api/upload/files/{filename}` - Get uploaded file
+- DELETE `/api/upload/files/{filename}` - Delete file (protected)
+
+## Default Credentials
+- **Username**: admin
+- **Password**: admin123
+- ⚠️ Change after first login!
+
+## Next Action Items (Priority Order)
+
+### P0 (Critical)
+1. **Backend Testing**: Test all API endpoints with testing_agent_v3
+2. **Frontend Integration**: Connect Projects, Blog, About pages to backend API
+3. **Image Management**: Test file upload functionality thoroughly
+
+### P1 (High Priority)
+4. **Email Notifications**: Add email alerts for new contact messages
+5. **Password Change**: Add change password functionality
+6. **Rich Text Editor**: Add WYSIWYG editor for blog content
+7. **Image Gallery**: Multiple images per project
+
+### P2 (Nice to Have)
+8. **Activity Logs**: Track admin actions
+9. **Dashboard Analytics**: Visitor stats, popular content
+10. **Backup/Export**: Export content as JSON
+11. **SEO Management**: Meta tags editor for each page
+
+## Security Features
+- JWT tokens with 24-hour expiration
+- Bcrypt password hashing
+- Protected routes (authentication required)
+- File upload validation (size, type)
+- CORS enabled for frontend
+
+## File Structure
 ```
+/app/backend/
+├── server.py (Main FastAPI app)
+├── models.py (Pydantic models)
+├── auth.py (JWT utilities)
+├── seed_db.py (Database seeding)
+├── routes/
+│   ├── auth_routes.py
+│   ├── project_routes.py
+│   ├── blog_routes.py
+│   ├── content_routes.py
+│   ├── message_routes.py
+│   └── upload_routes.py
+└── uploads/ (Uploaded files)
+
 /app/frontend/src/
-├── components/
-│   ├── Navbar.jsx (Desktop + Mobile dashboard menu)
-│   ├── Footer.jsx (Full footer with links & social)
-│   └── ui/ (Shadcn components)
-├── pages/
-│   ├── Home.jsx (Complete landing page)
-│   ├── About.jsx (Full about page with values)
-│   ├── Projects.jsx (Tabs with filtering)
-│   ├── Blog.jsx (Featured + Grid layout)
-│   └── Contact.jsx (Form + Map + FAQ)
-├── mock/
-│   └── mockData.js (All mock content)
-├── App.js (Router setup)
-├── App.css (Custom animations & styles)
-└── index.css (Tailwind + theme)
+├── services/api.js (API client)
+├── context/AuthContext.jsx
+├── components/ProtectedRoute.jsx
+├── pages/admin/
+│   ├── AdminLogin.jsx
+│   ├── AdminLayout.jsx
+│   ├── AdminDashboard.jsx
+│   ├── AdminProjects.jsx
+│   ├── AdminBlog.jsx
+│   ├── AdminContent.jsx
+│   ├── AdminMessages.jsx
+│   └── AdminUsers.jsx
+└── pages/ (Public pages)
 ```
-
-### Key Features Implemented
-1. **Hero Section**: Full-screen with gradient overlay, CTA buttons, scroll indicator
-2. **Stats Section**: 4 statistics cards with icons
-3. **About Preview**: Two-column layout with image and key points
-4. **Featured Projects**: 3-column grid with hover effects
-5. **Mobile Navigation**: Dashboard-style 2x3 grid menu
-6. **Projects Page**: 
-   - Tabs for Completed (5) / Ongoing (3)
-   - Type filter (All, Rezidans, Apartman, Villa, Ticari)
-   - Project cards with hover animations
-7. **Blog Page**: 
-   - Featured post with large image
-   - Category filtering
-   - 6 blog posts grid
-8. **Contact Page**: 
-   - Working form with toast notifications (frontend only)
-   - 4 info cards
-   - Embedded map
-   - FAQ section
-9. **Design Elements**:
-   - Smooth animations and transitions
-   - Hover effects on cards and images
-   - Professional color scheme (slate, amber accents)
-   - Glass-morphism effects on mobile menu
-   - Shadow and transform animations
-
-### Mock Data
-- **About**: Full bio, experience, stats
-- **Projects**: 8 projects (5 completed, 3 ongoing)
-- **Blog**: 6 posts with categories
-- **Contact**: Phone, email, address, hours, social links
-
-## Prioritized Backlog
-
-### Next Tasks (In Order)
-1. **User Feedback**: Gather feedback on design and UX
-2. **Content Updates**: Replace mock data with real content
-3. **Backend Planning**: 
-   - Design API contracts for projects, blog posts
-   - Database schema design
-   - Authentication strategy (if needed)
-4. **Backend Implementation**:
-   - FastAPI endpoints for CRUD operations
-   - MongoDB models
-   - File upload for images
-5. **Frontend-Backend Integration**:
-   - Replace mock data with API calls
-   - Add loading states
-   - Error handling
-6. **Advanced Features**:
-   - Project detail pages
-   - Blog post detail pages
-   - Admin panel for content management
-   - Search functionality
-
-## Technical Notes
-- All routes use clean URLs (e.g., `/hakkimda`, `/projeler`)
-- Images sourced from Unsplash & Pexels (high quality, free)
-- Mobile-first responsive design
-- No emoji icons used (Lucide React only)
-- Form submission currently frontend-only with toast notification
-- No backend integration yet (Phase 1 complete)
-
-## Success Metrics (For Future)
-- Page load time < 2s
-- Mobile responsiveness score > 95
-- User engagement (time on site, pages per visit)
-- Contact form submission rate
-- Project inquiry conversion rate
