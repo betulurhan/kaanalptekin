@@ -16,7 +16,6 @@ export const Home = () => {
   const [selectedType, setSelectedType] = useState('all');
   const [loading, setLoading] = useState(true);
   const [currentSlide, setCurrentSlide] = useState(0);
-  const autoplayRef = useRef(null);
   
   // Embla carousel
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true });
