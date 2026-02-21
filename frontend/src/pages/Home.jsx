@@ -16,15 +16,29 @@ export const Home = () => {
   const [selectedType, setSelectedType] = useState('all');
   const [loading, setLoading] = useState(true);
   const [currentSlide, setCurrentSlide] = useState(0);
+  const autoplayRef = useRef(null);
   
-  // Autoplay carousel with 1.5 second interval
-  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true }, [
-    Autoplay({ delay: 1500, stopOnInteraction: false })
-  ]);
+  // Embla carousel
+  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true });
 
   useEffect(() => {
     loadData();
   }, []);
+
+  // Autoplay effect - 1.5 second interval
+  useEffect(() => {
+    if (emblaApi && carouselSlides.length > 1) {
+      autoplayRef.current = setInterval(() => {
+        emblaApi.scrollNext();
+      }, 1500);
+      
+      return () => {
+        if (autoplayRef.current) {
+          clearInterval(autoplayRef.current);
+        }
+      };
+    }
+  }, [emblaApi, carouselSlides.length]);
 
   useEffect(() => {
     if (emblaApi) {
