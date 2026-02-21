@@ -89,6 +89,10 @@ export const Home = () => {
 
   return (
     <div className="min-h-screen">
+      <SEOHead 
+        title={seoSettings?.home_title || seoSettings?.site_title} 
+        description={seoSettings?.home_description || seoSettings?.site_description} 
+      />
       {/* Hero Carousel Section */}
       <section className="relative h-screen overflow-hidden">
         {loading || carouselSlides.length === 0 ? (
