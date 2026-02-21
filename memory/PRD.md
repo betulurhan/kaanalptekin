@@ -1,148 +1,171 @@
-# Gayrimenkul Danışmanı Website - Product Requirements Document
+# Özpınarlar İnşaat Grubu - Product Requirements Document
 
 ## Original Problem Statement
-Gayrimenkul danışmanı için tam özellikli CMS (WordPress benzeri) admin paneli ile yönetilebilir websitesi. Kullanıcı adı ve şifre ile admin paneline giriş yapılacak. Admin panelinden projeler, blog, hakkımda, iletişim bilgileri ve ana sayfa görsellerinin yönetimi yapılabilecek.
+Özpınarlar İnşaat Grubu için gayrimenkul ve inşaat şirketi websitesi. WordPress benzeri admin paneli ile tüm içeriklerin (projeler, blog, görseller) yönetimi yapılabilecek. Her proje için detaylı sayfalar, daire bilgileri (m², fiyat, durum), kat planları ve ödeme planları gösterilebilecek.
 
 ## Tech Stack
 **Frontend**: React 19, React Router v7, Tailwind CSS, Shadcn/UI, Axios
 **Backend**: FastAPI, MongoDB (Motor), JWT Auth, Python-Jose, Bcrypt
 **File Upload**: Local storage with chunked upload support
 
-## Implemented Features (December 21, 2024)
+## Implemented Features
 
-### Phase 1: Frontend with Mock Data ✅
+### Phase 1: Public Website ✅
 - 5 sayfalık profesyonel web sitesi (Ana Sayfa, Hakkımda, Projeler, Blog, İletişim)
-- Responsive tasarım ve mobil dashboard-style menü
-- Profesyonel görsel ve içeriklerle tam çalışır frontend
+- Responsive tasarım
+- Ana sayfa carousel/slider
+- Kategori bazlı proje filtreleme (Rezidans, Apartman, Villa, Ticari)
 
-### Phase 2: Full-Stack Admin Panel ✅
-**Backend API**:
-- ✅ JWT tabanlı authentication (login, token verification)
-- ✅ Multi-user support (user CRUD operations)
-- ✅ Projects API (CRUD with filters)
-- ✅ Blog API (CRUD with categories)
-- ✅ Content Management API (About, Contact, Hero sections)
-- ✅ Contact Messages API (create, read, mark as read, delete)
-- ✅ File Upload API (image upload with size/type validation)
-- ✅ Database seeding (default admin + initial content)
+### Phase 2: Admin Panel ✅
+- JWT tabanlı authentication
+- Proje Yönetimi (CRUD + görsel yükleme)
+- Blog Yönetimi (CRUD)
+- İçerik Yönetimi (Hero, About, Contact)
+- Mesaj Yönetimi
+- Kullanıcı Yönetimi
+- Carousel/Slider Yönetimi
 
-**Admin Panel Frontend**:
-- ✅ Login page with authentication
-- ✅ Protected routes with JWT
-- ✅ Admin Dashboard (statistics, quick actions)
-- ✅ Projects Management (add, edit, delete, image upload)
-- ✅ Blog Management (add, edit, delete with categories)
-- ✅ Content Editor (Hero, About, Contact info)
-- ✅ Messages Inbox (view, mark as read, delete)
-- ✅ User Management (add, delete users)
-- ✅ Responsive admin layout with sidebar
+### Phase 3: Proje Detay Sayfası ✅
+- Proje detay sayfası (/projeler/{id})
+- 3'lü görsel grid
+- Fiyat ve teslim tarihi bilgi kartları
+- Sekmeli içerik (Açıklama, Özellikler, Daireler, Ödeme, Kat Planı)
+- Daire listesi tablosu
+- Ünite tipleri gösterimi
 
-**Public Site Integration**:
-- ✅ Contact form integrated with backend
-- 🔄 Projects/Blog/Content still using mock data (to be integrated)
+### Phase 4: Daire Yönetimi Arayüzü ✅ (21 Şubat 2026)
+- **JSON textarea yerine tablo bazlı kullanıcı dostu form**
+- Her daire için: Daire No, Kat, Tip (dropdown), m², Fiyat, Durum (dropdown), Sil butonu
+- Tip seçenekleri: 1+0, 1+1, 2+1, 3+1, 4+1, 5+1
+- Durum seçenekleri: Satışta, Satıldı, Rezerve
+- Özet bilgiler (Toplam, Satışta, Satıldı, Rezerve)
+- Responsive tasarım (mobil ve masaüstü)
 
 ## API Endpoints
 
 ### Authentication
-- POST `/api/auth/register` - Register new admin user
-- POST `/api/auth/login` - Login and get JWT token
-- GET `/api/auth/verify` - Verify JWT token
-- GET `/api/auth/users` - Get all users (protected)
-- DELETE `/api/auth/users/{id}` - Delete user (protected)
+- POST `/api/auth/token` - Login
+- GET `/api/auth/verify` - Token verification
+- GET `/api/auth/users` - List users
+- DELETE `/api/auth/users/{id}` - Delete user
 
 ### Projects
-- GET `/api/projects` - Get all projects (optional filters)
-- GET `/api/projects/{id}` - Get single project
-- POST `/api/projects` - Create project (protected)
-- PUT `/api/projects/{id}` - Update project (protected)
-- DELETE `/api/projects/{id}` - Delete project (protected)
+- GET `/api/projects` - List all projects
+- GET `/api/projects/{id}` - Get project details
+- POST `/api/projects` - Create project
+- PUT `/api/projects/{id}` - Update project
+- DELETE `/api/projects/{id}` - Delete project
 
-### Blog
-- GET `/api/blog` - Get all blog posts
-- POST `/api/blog` - Create blog post (protected)
-- PUT `/api/blog/{id}` - Update blog post (protected)
-- DELETE `/api/blog/{id}` - Delete blog post (protected)
-
-### Content
-- GET `/api/content/about` - Get about content
-- PUT `/api/content/about` - Update about content (protected)
-- GET `/api/content/contact` - Get contact info
-- PUT `/api/content/contact` - Update contact info (protected)
-- GET `/api/content/hero` - Get hero content
-- PUT `/api/content/hero` - Update hero content (protected)
-
-### Messages
-- POST `/api/messages` - Create message (public)
-- GET `/api/messages` - Get all messages (protected)
-- GET `/api/messages/{id}` - Get single message (protected)
-- PATCH `/api/messages/{id}/read` - Mark as read (protected)
-- DELETE `/api/messages/{id}` - Delete message (protected)
-- GET `/api/messages/stats/unread-count` - Get unread count (protected)
+### Blog, Content, Messages, Carousel
+- Standard CRUD endpoints
 
 ### File Upload
-- POST `/api/upload/image` - Upload image (protected)
-- GET `/api/upload/files/{filename}` - Get uploaded file
-- DELETE `/api/upload/files/{filename}` - Delete file (protected)
+- POST `/api/upload` - Upload image
+- Static files served from /api/uploads/
+
+## Database Schema
+
+### projects collection
+```json
+{
+  "id": "uuid",
+  "title": "string",
+  "location": "string",
+  "type": "Rezidans|Apartman|Villa|Ticari",
+  "status": "completed|ongoing",
+  "image": "url",
+  "images": ["url"],
+  "description": "string",
+  "price": "₺X.XXX.XXX",
+  "features": ["string"],
+  "completion_date": "2025",
+  "payment_plan": "string",
+  "floor_plan": "url",
+  "units": [
+    {
+      "unit_number": "A101",
+      "floor": 1,
+      "rooms": "2+1",
+      "area_m2": 120,
+      "price": "₺5.500.000",
+      "status": "available|sold|reserved"
+    }
+  ]
+}
+```
 
 ## Default Credentials
+- **URL**: /admin/login
 - **Username**: admin
 - **Password**: admin123
-- ⚠️ Change after first login!
+
+## Completed Tasks ✅
+1. ✅ Frontend tasarımı
+2. ✅ Admin paneli (tüm CRUD işlemleri)
+3. ✅ Backend API entegrasyonu
+4. ✅ Görsel yükleme
+5. ✅ Ana sayfa carousel
+6. ✅ Kategori bazlı proje filtreleme
+7. ✅ Proje detay sayfası
+8. ✅ Daire yönetimi arayüzü iyileştirmesi
 
 ## Next Action Items (Priority Order)
 
-### P0 (Critical)
-1. **Backend Testing**: Test all API endpoints with testing_agent_v3
-2. **Frontend Integration**: Connect Projects, Blog, About pages to backend API
-3. **Image Management**: Test file upload functionality thoroughly
-
 ### P1 (High Priority)
-4. **Email Notifications**: Add email alerts for new contact messages
-5. **Password Change**: Add change password functionality
-6. **Rich Text Editor**: Add WYSIWYG editor for blog content
-7. **Image Gallery**: Multiple images per project
+1. **Admin Şifre Değiştirme**: İlk girişten sonra şifre değiştirme
+2. **Zengin Metin Editörü**: Blog ve içerik için WYSIWYG editör (TipTap/TinyMCE)
 
 ### P2 (Nice to Have)
-8. **Activity Logs**: Track admin actions
-9. **Dashboard Analytics**: Visitor stats, popular content
-10. **Backup/Export**: Export content as JSON
-11. **SEO Management**: Meta tags editor for each page
+3. **Öne Çıkan Proje Sistemi**: Ana sayfada hangi projelerin gösterileceğini seçme
+4. **E-posta Bildirimleri**: Yeni mesaj geldiğinde e-posta uyarısı
+5. **SEO Yönetimi**: Sayfa meta tag'leri düzenleme
+6. **Çoklu Dil Desteği**: İngilizce/Türkçe dil seçeneği
 
-## Security Features
-- JWT tokens with 24-hour expiration
-- Bcrypt password hashing
-- Protected routes (authentication required)
-- File upload validation (size, type)
-- CORS enabled for frontend
+## Test Reports
+- `/app/test_reports/iteration_1.json` - Initial testing
+- `/app/test_reports/iteration_2.json` - Daire yönetimi testleri (100% başarılı)
+- `/app/backend/tests/test_project_units.py` - Unit tests
 
 ## File Structure
 ```
 /app/backend/
-├── server.py (Main FastAPI app)
-├── models.py (Pydantic models)
-├── auth.py (JWT utilities)
-├── seed_db.py (Database seeding)
+├── server.py
+├── models.py (ProjectUnit model dahil)
+├── auth.py
+├── seed_db.py
 ├── routes/
 │   ├── auth_routes.py
 │   ├── project_routes.py
 │   ├── blog_routes.py
 │   ├── content_routes.py
 │   ├── message_routes.py
+│   ├── carousel_routes.py
 │   └── upload_routes.py
-└── uploads/ (Uploaded files)
+└── uploads/
 
 /app/frontend/src/
-├── services/api.js (API client)
+├── services/api.js
 ├── context/AuthContext.jsx
-├── components/ProtectedRoute.jsx
-├── pages/admin/
-│   ├── AdminLogin.jsx
-│   ├── AdminLayout.jsx
-│   ├── AdminDashboard.jsx
-│   ├── AdminProjects.jsx
-│   ├── AdminBlog.jsx
-│   ├── AdminContent.jsx
-│   ├── AdminMessages.jsx
-│   └── AdminUsers.jsx
-└── pages/ (Public pages)
+├── components/
+│   ├── ui/ (Shadcn components)
+│   ├── Navbar.jsx
+│   ├── Footer.jsx
+│   └── ProtectedRoute.jsx
+├── pages/
+│   ├── Home.jsx
+│   ├── About.jsx
+│   ├── Projects.jsx
+│   ├── ProjectDetail.jsx
+│   ├── Blog.jsx
+│   ├── Contact.jsx
+│   └── admin/
+│       ├── AdminLogin.jsx
+│       ├── AdminLayout.jsx
+│       ├── AdminDashboard.jsx
+│       ├── AdminProjects.jsx (Daire yönetimi dahil)
+│       ├── AdminBlog.jsx
+│       ├── AdminContent.jsx
+│       ├── AdminMessages.jsx
+│       ├── AdminCarousel.jsx
+│       └── AdminUsers.jsx
 ```
