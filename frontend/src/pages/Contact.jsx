@@ -85,6 +85,10 @@ export const Contact = () => {
 
   return (
     <div className="min-h-screen pt-20 bg-slate-50">
+      <SEOHead 
+        title={seoSettings?.contact_title || 'İletişim | ' + (seoSettings?.site_title || '')} 
+        description={seoSettings?.contact_description || seoSettings?.site_description} 
+      />
       {/* Hero Section */}
       <section className="bg-slate-800 text-white py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
