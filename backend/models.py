@@ -245,3 +245,38 @@ class CarouselSlideUpdate(BaseModel):
     cta_link: Optional[str] = None
     order: Optional[int] = None
     is_active: Optional[bool] = None
+
+
+
+# Hero Features Model (Quick links on slider)
+class HeroFeatureItem(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    icon: str  # icon name: home, key, building, map-pin, etc.
+    title: str
+    link: str
+    order: int = 0
+    is_active: bool = True
+
+class HeroFeatures(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    card_title: str = "Hızlı Değerleme"
+    card_subtitle: str = "Ücretsiz mülk değerlendirme"
+    features: List[HeroFeatureItem] = []
+    cta_text: str = "Projeleri Keşfet"
+    cta_link: str = "/projeler"
+    stats_count: str = "500+"
+    stats_label: str = "Mutlu Müşteri"
+    rating: str = "4.9/5"
+    rating_label: str = "Müşteri Puanı"
+    updated_at: datetime = Field(default_factory=datetime.utcnow)
+
+class HeroFeaturesUpdate(BaseModel):
+    card_title: Optional[str] = None
+    card_subtitle: Optional[str] = None
+    features: Optional[List[HeroFeatureItem]] = None
+    cta_text: Optional[str] = None
+    cta_link: Optional[str] = None
+    stats_count: Optional[str] = None
+    stats_label: Optional[str] = None
+    rating: Optional[str] = None
+    rating_label: Optional[str] = None
