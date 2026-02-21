@@ -1,12 +1,30 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { MapPin, Calendar, Tag, TrendingUp, CheckCircle2 } from 'lucide-react';
 import { Card, CardContent } from '../components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
 import { Badge } from '../components/ui/badge';
-import { projects } from '../mock/mockData';
+import { projectsAPI } from '../services/api';
 
 export const Projects = () => {
+  const [projects, setProjects] = useState([]);
   const [selectedType, setSelectedType] = useState('all');
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    loadProjects();
+  }, []);
+
+  const loadProjects = async () => {
+    try {
+      const data = await projectsAPI.getAll();
+      setProjects(data);
+    } catch (error) {
+      console.error('Failed to load projects:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const completedProjects = projects.filter((p) => p.status === 'completed');
   const ongoingProjects = projects.filter((p) => p.status === 'ongoing');
 
