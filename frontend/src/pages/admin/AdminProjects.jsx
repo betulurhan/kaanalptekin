@@ -293,25 +293,203 @@ export const AdminProjects = () => {
               </div>
             </div>
 
-            <div>
-              <Label>Daireler (JSON formatında)</Label>
-              <Textarea 
-                value={formData.units ? JSON.stringify(formData.units, null, 2) : '[]'} 
-                onChange={(e) => {
-                  try {
-                    const units = JSON.parse(e.target.value);
-                    setFormData({ ...formData, units });
-                  } catch (err) {
-                    // Invalid JSON, don't update
-                  }
-                }} 
-                placeholder='[{"unit_number":"A1","floor":1,"rooms":"2+1","area_m2":120,"price":"₺5.500.000","status":"available"}]'
-                rows={6}
-                className="font-mono text-sm"
-              />
-              <p className="text-xs text-slate-500 mt-1">
-                Örnek: {`[{"unit_number":"A1","floor":1,"rooms":"2+1","area_m2":120,"price":"₺5.500.000","status":"available"}]`}
-              </p>
+            {/* Unit Management Section */}
+            <div className="border rounded-lg p-4 bg-slate-50">
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-2">
+                  <Building2 className="w-5 h-5 text-amber-600" />
+                  <Label className="text-lg font-semibold">Daire Yönetimi</Label>
+                </div>
+                <Button 
+                  type="button" 
+                  size="sm" 
+                  onClick={() => {
+                    const newUnit = {
+                      unit_number: '',
+                      floor: 1,
+                      rooms: '2+1',
+                      area_m2: 0,
+                      price: '',
+                      status: 'available'
+                    };
+                    setFormData({ ...formData, units: [...(formData.units || []), newUnit] });
+                  }}
+                  className="bg-amber-500 hover:bg-amber-600"
+                >
+                  <Plus className="w-4 h-4 mr-1" />
+                  Daire Ekle
+                </Button>
+              </div>
+
+              {formData.units && formData.units.length > 0 ? (
+                <div className="space-y-3">
+                  {/* Header Row */}
+                  <div className="hidden md:grid md:grid-cols-7 gap-2 px-3 py-2 bg-slate-800 text-white text-sm font-medium rounded-t">
+                    <div>Daire No</div>
+                    <div>Kat</div>
+                    <div>Tip</div>
+                    <div>m²</div>
+                    <div>Fiyat</div>
+                    <div>Durum</div>
+                    <div>İşlem</div>
+                  </div>
+                  
+                  {/* Unit Rows */}
+                  {formData.units.map((unit, index) => (
+                    <div key={index} className="grid grid-cols-2 md:grid-cols-7 gap-2 p-3 bg-white rounded border hover:shadow-md transition-shadow">
+                      <div>
+                        <Label className="md:hidden text-xs text-slate-500">Daire No</Label>
+                        <Input 
+                          value={unit.unit_number || ''} 
+                          onChange={(e) => {
+                            const newUnits = [...formData.units];
+                            newUnits[index] = { ...newUnits[index], unit_number: e.target.value };
+                            setFormData({ ...formData, units: newUnits });
+                          }}
+                          placeholder="A1"
+                          className="h-9"
+                        />
+                      </div>
+                      <div>
+                        <Label className="md:hidden text-xs text-slate-500">Kat</Label>
+                        <Input 
+                          type="number"
+                          value={unit.floor || ''} 
+                          onChange={(e) => {
+                            const newUnits = [...formData.units];
+                            newUnits[index] = { ...newUnits[index], floor: parseInt(e.target.value) || 0 };
+                            setFormData({ ...formData, units: newUnits });
+                          }}
+                          placeholder="1"
+                          className="h-9"
+                        />
+                      </div>
+                      <div>
+                        <Label className="md:hidden text-xs text-slate-500">Tip</Label>
+                        <Select 
+                          value={unit.rooms || '2+1'} 
+                          onValueChange={(val) => {
+                            const newUnits = [...formData.units];
+                            newUnits[index] = { ...newUnits[index], rooms: val };
+                            setFormData({ ...formData, units: newUnits });
+                          }}
+                        >
+                          <SelectTrigger className="h-9">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="1+0">1+0</SelectItem>
+                            <SelectItem value="1+1">1+1</SelectItem>
+                            <SelectItem value="2+1">2+1</SelectItem>
+                            <SelectItem value="3+1">3+1</SelectItem>
+                            <SelectItem value="4+1">4+1</SelectItem>
+                            <SelectItem value="5+1">5+1</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div>
+                        <Label className="md:hidden text-xs text-slate-500">m²</Label>
+                        <Input 
+                          type="number"
+                          value={unit.area_m2 || ''} 
+                          onChange={(e) => {
+                            const newUnits = [...formData.units];
+                            newUnits[index] = { ...newUnits[index], area_m2: parseFloat(e.target.value) || 0 };
+                            setFormData({ ...formData, units: newUnits });
+                          }}
+                          placeholder="120"
+                          className="h-9"
+                        />
+                      </div>
+                      <div>
+                        <Label className="md:hidden text-xs text-slate-500">Fiyat</Label>
+                        <Input 
+                          value={unit.price || ''} 
+                          onChange={(e) => {
+                            const newUnits = [...formData.units];
+                            newUnits[index] = { ...newUnits[index], price: e.target.value };
+                            setFormData({ ...formData, units: newUnits });
+                          }}
+                          placeholder="₺5.500.000"
+                          className="h-9"
+                        />
+                      </div>
+                      <div>
+                        <Label className="md:hidden text-xs text-slate-500">Durum</Label>
+                        <Select 
+                          value={unit.status || 'available'} 
+                          onValueChange={(val) => {
+                            const newUnits = [...formData.units];
+                            newUnits[index] = { ...newUnits[index], status: val };
+                            setFormData({ ...formData, units: newUnits });
+                          }}
+                        >
+                          <SelectTrigger className={`h-9 ${unit.status === 'sold' ? 'border-red-300 bg-red-50' : 'border-green-300 bg-green-50'}`}>
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="available">
+                              <span className="flex items-center gap-1">
+                                <span className="w-2 h-2 bg-green-500 rounded-full"></span>
+                                Satışta
+                              </span>
+                            </SelectItem>
+                            <SelectItem value="sold">
+                              <span className="flex items-center gap-1">
+                                <span className="w-2 h-2 bg-red-500 rounded-full"></span>
+                                Satıldı
+                              </span>
+                            </SelectItem>
+                            <SelectItem value="reserved">
+                              <span className="flex items-center gap-1">
+                                <span className="w-2 h-2 bg-amber-500 rounded-full"></span>
+                                Rezerve
+                              </span>
+                            </SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="flex items-end">
+                        <Button 
+                          type="button" 
+                          variant="ghost" 
+                          size="sm"
+                          className="text-red-600 hover:bg-red-50 hover:text-red-700 h-9 w-full md:w-auto"
+                          onClick={() => {
+                            const newUnits = formData.units.filter((_, i) => i !== index);
+                            setFormData({ ...formData, units: newUnits });
+                          }}
+                        >
+                          <Trash2 className="w-4 h-4" />
+                          <span className="md:hidden ml-1">Sil</span>
+                        </Button>
+                      </div>
+                    </div>
+                  ))}
+                  
+                  {/* Summary */}
+                  <div className="flex flex-wrap gap-2 mt-4 pt-4 border-t">
+                    <Badge variant="secondary" className="bg-slate-200">
+                      Toplam: {formData.units.length} daire
+                    </Badge>
+                    <Badge className="bg-green-100 text-green-700">
+                      Satışta: {formData.units.filter(u => u.status === 'available').length}
+                    </Badge>
+                    <Badge className="bg-red-100 text-red-700">
+                      Satıldı: {formData.units.filter(u => u.status === 'sold').length}
+                    </Badge>
+                    <Badge className="bg-amber-100 text-amber-700">
+                      Rezerve: {formData.units.filter(u => u.status === 'reserved').length}
+                    </Badge>
+                  </div>
+                </div>
+              ) : (
+                <div className="text-center py-8 text-slate-500 bg-white rounded border border-dashed">
+                  <Home className="w-12 h-12 mx-auto mb-3 text-slate-300" />
+                  <p>Henüz daire eklenmedi</p>
+                  <p className="text-sm">Yukarıdaki "Daire Ekle" butonuna tıklayarak başlayın</p>
+                </div>
+              )}
             </div>
 
             <div className="flex gap-2 pt-4">
