@@ -1,19 +1,36 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Calendar, User, Clock, Tag, ArrowRight } from 'lucide-react';
 import { Card, CardContent } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
-import { blogPosts } from '../mock/mockData';
+import { blogAPI } from '../services/api';
 
 export const Blog = () => {
+  const [posts, setPosts] = useState([]);
+  const [loading, setLoading] = useState(true);
   const categories = ['Tümü', 'Piyasa Analizi', 'Satın Alma Rehberi', 'Yatırım', 'Finansman', 'Yaşam', 'Değerleme'];
-  const [selectedCategory, setSelectedCategory] = React.useState('Tümü');
+  const [selectedCategory, setSelectedCategory] = useState('Tümü');
+
+  useEffect(() => {
+    loadPosts();
+  }, []);
+
+  const loadPosts = async () => {
+    try {
+      const data = await blogAPI.getAll();
+      setPosts(data);
+    } catch (error) {
+      console.error('Failed to load blog posts:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const filteredPosts =
     selectedCategory === 'Tümü'
-      ? blogPosts
-      : blogPosts.filter((post) => post.category === selectedCategory);
+      ? posts
+      : posts.filter((post) => post.category === selectedCategory);
 
-  const featuredPost = blogPosts[0];
+  const featuredPost = posts[0];
 
   return (
     <div className="min-h-screen pt-20 bg-slate-50">
@@ -27,8 +44,18 @@ export const Blog = () => {
         </div>
       </section>
 
+      {loading ? (
+        <div className="flex justify-center py-20">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-slate-800"></div>
+        </div>
+      ) : posts.length === 0 ? (
+        <div className="text-center py-20">
+          <p className="text-slate-500 text-lg">Henüz blog yazısı yok</p>
+        </div>
+      ) : (
+        <>
       {/* Featured Post */}
-      <section className="py-12 bg-white">
+      {featuredPost && (
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <Card className="overflow-hidden border-none shadow-xl hover:shadow-2xl transition-shadow duration-300">
             <div className="grid md:grid-cols-2 gap-0">
@@ -71,6 +98,7 @@ export const Blog = () => {
           </Card>
         </div>
       </section>
+      )}
 
       {/* Category Filter */}
       <section className="py-8 bg-slate-50">
