@@ -10,7 +10,8 @@ import {
   Users, 
   LogOut,
   Menu,
-  X
+  X,
+  Image as ImageIcon
 } from 'lucide-react';
 import { Button } from '../../components/ui/button';
 
@@ -27,6 +28,7 @@ export const AdminLayout = () => {
 
   const menuItems = [
     { path: '/admin/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+    { path: '/admin/carousel', label: 'Slider', icon: ImageIcon },
     { path: '/admin/projects', label: 'Projeler', icon: FolderOpen },
     { path: '/admin/blog', label: 'Blog', icon: BookOpen },
     { path: '/admin/content', label: 'İçerik', icon: FileText },
