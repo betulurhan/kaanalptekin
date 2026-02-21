@@ -34,7 +34,8 @@ export const Projects = () => {
   };
 
   const ProjectCard = ({ project }) => (
-    <Card className="overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border-none">
+    <Link to={`/projeler/${project.id}`}>
+      <Card className="overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border-none cursor-pointer">
       <div className="relative h-72 overflow-hidden group">
         <img
           src={project.image}
