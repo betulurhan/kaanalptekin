@@ -324,7 +324,7 @@ export const AdminProjects = () => {
               {formData.units && formData.units.length > 0 ? (
                 <div className="space-y-3">
                   {/* Header Row */}
-                  <div className="hidden md:grid md:grid-cols-7 gap-2 px-3 py-2 bg-slate-800 text-white text-sm font-medium rounded-t">
+                  <div className="hidden lg:grid lg:grid-cols-[1fr_0.7fr_0.7fr_0.7fr_1.2fr_1fr_0.5fr] gap-2 px-3 py-2 bg-slate-800 text-white text-sm font-medium rounded-t">
                     <div>Daire No</div>
                     <div>Kat</div>
                     <div>Tip</div>
@@ -336,7 +336,7 @@ export const AdminProjects = () => {
                   
                   {/* Unit Rows */}
                   {formData.units.map((unit, index) => (
-                    <div key={index} className="grid grid-cols-2 md:grid-cols-7 gap-2 p-3 bg-white rounded border hover:shadow-md transition-shadow">
+                    <div key={index} className="grid grid-cols-2 lg:grid-cols-[1fr_0.7fr_0.7fr_0.7fr_1.2fr_1fr_0.5fr] gap-2 p-3 bg-white rounded border hover:shadow-md transition-shadow">
                       <div>
                         <Label className="md:hidden text-xs text-slate-500">Daire No</Label>
                         <Input 
