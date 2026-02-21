@@ -11,7 +11,8 @@ import {
   LogOut,
   Menu,
   X,
-  Image as ImageIcon
+  Image as ImageIcon,
+  Search
 } from 'lucide-react';
 import { Button } from '../../components/ui/button';
 
@@ -34,6 +35,7 @@ export const AdminLayout = () => {
     { path: '/admin/content', label: 'İçerik', icon: FileText },
     { path: '/admin/messages', label: 'Mesajlar', icon: Mail },
     { path: '/admin/users', label: 'Kullanıcılar', icon: Users },
+    { path: '/admin/seo', label: 'SEO', icon: Search },
   ];
 
   const isActive = (path) => location.pathname === path;
