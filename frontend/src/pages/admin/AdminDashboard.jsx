@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { useAuth } from '../../context/AuthContext';
-import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/card';
+import { useAuth } from '../../../context/AuthContext';
+import { Card, CardContent, CardHeader, CardTitle } from '../../../components/ui/card';
 import { 
   FolderOpen, 
   BookOpen, 
@@ -9,7 +9,7 @@ import {
   TrendingUp,
   CheckCircle
 } from 'lucide-react';
-import { projectsAPI, blogAPI, messagesAPI, authAPI } from '../../services/api';
+import { projectsAPI, blogAPI, messagesAPI, authAPI } from '../../../services/api';
 
 export const AdminDashboard = () => {
   const { token } = useAuth();
