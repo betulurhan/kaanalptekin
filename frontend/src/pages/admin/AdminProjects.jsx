@@ -26,10 +26,14 @@ export const AdminProjects = () => {
     type: 'Rezidans',
     status: 'ongoing',
     image: '',
+    images: [],
     description: '',
     price: '',
     features: [],
-    completion_date: ''
+    completion_date: '',
+    payment_plan: '',
+    floor_plan: '',
+    units: []
   });
 
   useEffect(() => {
@@ -107,10 +111,14 @@ export const AdminProjects = () => {
       type: 'Rezidans',
       status: 'ongoing',
       image: '',
+      images: [],
       description: '',
       price: '',
       features: [],
-      completion_date: ''
+      completion_date: '',
+      payment_plan: '',
+      floor_plan: '',
+      units: []
     });
     setEditingProject(null);
   };
@@ -225,6 +233,51 @@ export const AdminProjects = () => {
                 placeholder="Deniz Manzarası, Kapalı Havuz, Spor Salonu"
                 required
               />
+            </div>
+
+            <div>
+              <Label>Ödeme Planı</Label>
+              <Textarea 
+                value={formData.payment_plan || ''} 
+                onChange={(e) => setFormData({ ...formData, payment_plan: e.target.value })} 
+                placeholder="Ödeme planı detaylarını buraya yazın..."
+                rows={4}
+              />
+            </div>
+
+            <div>
+              <Label>Kat Planı Görseli</Label>
+              <div className="space-y-2">
+                <div className="flex gap-2">
+                  <Input type="file" onChange={(e) => {
+                    const file = e.target.files[0];
+                    if (file) {
+                      setUploading(true);
+                      uploadAPI.uploadImage(token, file)
+                        .then(result => {
+                          const fullUrl = `${process.env.REACT_APP_BACKEND_URL}${result.url}`;
+                          setFormData({ ...formData, floor_plan: fullUrl });
+                          toast({ title: 'Başarılı', description: 'Kat planı yüklendi' });
+                        })
+                        .catch(() => toast({ title: 'Hata', description: 'Yüklenemedi', variant: 'destructive' }))
+                        .finally(() => setUploading(false));
+                    }
+                  }} accept="image/*" disabled={uploading} className="flex-1" />
+                </div>
+                <Input value={formData.floor_plan || ''} onChange={(e) => setFormData({ ...formData, floor_plan: e.target.value })} placeholder="veya Kat planı URL'si" />
+                {formData.floor_plan && <img src={formData.floor_plan} alt="Floor Plan" className="w-full h-32 object-contain rounded bg-slate-50" />}
+              </div>
+            </div>
+
+            <div>
+              <Label>Ek Görseller (virgülle ayırın)</Label>
+              <Textarea 
+                value={formData.images?.join(', ') || ''} 
+                onChange={(e) => setFormData({ ...formData, images: e.target.value.split(',').map(url => url.trim()).filter(url => url) })} 
+                placeholder="https://example.com/image1.jpg, https://example.com/image2.jpg"
+                rows={2}
+              />
+              <p className="text-xs text-slate-500 mt-1">Galeri için ek görseller ekleyin (URL'ler virgülle ayrılmalı)</p>
             </div>
 
             <div>
