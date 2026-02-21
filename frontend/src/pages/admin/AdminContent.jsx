@@ -8,7 +8,7 @@ import { Label } from '../../components/ui/label';
 import { Textarea } from '../../components/ui/textarea';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../components/ui/select';
-import { Save, Upload, Image as ImageIcon, Plus, Trash2, Home, Key, Building2, MapPin, Users, Award, Star, Phone } from 'lucide-react';
+import { Save, Upload, Image as ImageIcon, Plus, Trash2, Home, Key, Building2, MapPin, Users, Award, Star, Phone, CheckCircle2, Shield } from 'lucide-react';
 import { useToast } from '../../hooks/use-toast';
 
 export const AdminContent = () => {
@@ -20,6 +20,10 @@ export const AdminContent = () => {
   const [contactData, setContactData] = useState({});
   const [heroData, setHeroData] = useState({});
   const [heroFeatures, setHeroFeatures] = useState({
+    badge_text: 'Profesyonel Gayrimenkul Danışmanlığı',
+    secondary_cta_text: 'Bize Ulaşın',
+    secondary_cta_link: '/iletisim',
+    trust_indicators: [],
     card_title: 'Hızlı Değerleme',
     card_subtitle: 'Ücretsiz mülk değerlendirme',
     features: [],
@@ -40,6 +44,22 @@ export const AdminContent = () => {
     { value: 'award', label: 'Ödül', icon: Award },
     { value: 'star', label: 'Yıldız', icon: Star },
     { value: 'phone', label: 'Telefon', icon: Phone }
+  ];
+
+  const trustIconOptions = [
+    { value: 'check-circle', label: 'Onay', icon: CheckCircle2 },
+    { value: 'shield', label: 'Kalkan', icon: Shield },
+    { value: 'award', label: 'Ödül', icon: Award },
+    { value: 'star', label: 'Yıldız', icon: Star },
+    { value: 'users', label: 'Kullanıcılar', icon: Users }
+  ];
+
+  const colorOptions = [
+    { value: 'green', label: 'Yeşil' },
+    { value: 'blue', label: 'Mavi' },
+    { value: 'amber', label: 'Turuncu' },
+    { value: 'red', label: 'Kırmızı' },
+    { value: 'purple', label: 'Mor' }
   ];
 
   useEffect(() => { loadContent(); }, []);
