@@ -440,22 +440,20 @@ export const Home = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-gradient-to-r from-amber-500 to-amber-600">
+      <section className="py-20 bg-slate-800 text-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
-            Hayalinizdeki Gayrimenkul İçin İlk Adımı Atın
+          <h2 className="text-3xl md:text-4xl font-bold mb-6">
+            Hayalinizdeki Gayrimenkul İçin Benimle İletişime Geçin
           </h2>
-          <p className="text-white/90 mb-8 text-lg">
-            Uzman ekibimiz size en uygun seçenekleri sunmak için hazır. Hemen iletişime geçin!
+          <p className="text-slate-300 mb-8 text-lg">
+            15 yıllık deneyimimle, size en uygun mülk seçeneklerini sunmak için hazırım.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button asChild size="lg" className="bg-white text-amber-600 hover:bg-slate-100">
-              <Link to="/iletisim">Bizimle İletişime Geçin</Link>
-            </Button>
-            <Button asChild size="lg" variant="outline" className="border-white text-white hover:bg-white/10">
-              <Link to="/projeler">Projeleri İnceleyin</Link>
-            </Button>
-          </div>
+          <a
+            href="/iletisim"
+            className="inline-block bg-amber-500 hover:bg-amber-600 text-white font-semibold px-10 py-4 rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg"
+          >
+            Ücretsiz Danışmanlık Alın
+          </a>
         </div>
       </section>
     </div>
