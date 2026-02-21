@@ -35,6 +35,14 @@ class Token(BaseModel):
 
 
 # Project Models
+class ProjectUnit(BaseModel):
+    unit_number: str
+    floor: int
+    rooms: str  # e.g., "2+1", "3+1"
+    area_m2: float
+    price: str
+    status: str  # "available" or "sold"
+
 class Project(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     title: str
@@ -42,10 +50,14 @@ class Project(BaseModel):
     type: str
     status: str  # completed or ongoing
     image: str
+    images: Optional[List[str]] = []  # Multiple images for gallery
     description: str
     price: str
     features: List[str]
     completion_date: str
+    payment_plan: Optional[str] = None
+    floor_plan: Optional[str] = None  # Floor plan image URL
+    units: Optional[List[ProjectUnit]] = []  # List of units/apartments
     created_at: datetime = Field(default_factory=datetime.utcnow)
     updated_at: datetime = Field(default_factory=datetime.utcnow)
 
@@ -55,10 +67,14 @@ class ProjectCreate(BaseModel):
     type: str
     status: str
     image: str
+    images: Optional[List[str]] = []
     description: str
     price: str
     features: List[str]
     completion_date: str
+    payment_plan: Optional[str] = None
+    floor_plan: Optional[str] = None
+    units: Optional[List[ProjectUnit]] = []
 
 class ProjectUpdate(BaseModel):
     title: Optional[str] = None
@@ -66,10 +82,14 @@ class ProjectUpdate(BaseModel):
     type: Optional[str] = None
     status: Optional[str] = None
     image: Optional[str] = None
+    images: Optional[List[str]] = None
     description: Optional[str] = None
     price: Optional[str] = None
     features: Optional[List[str]] = None
     completion_date: Optional[str] = None
+    payment_plan: Optional[str] = None
+    floor_plan: Optional[str] = None
+    units: Optional[List[ProjectUnit]] = None
 
 
 # Blog Models
