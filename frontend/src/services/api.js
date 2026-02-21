@@ -34,6 +34,14 @@ export const authAPI = {
       headers: { Authorization: `Bearer ${token}` }
     });
     return response.data;
+  },
+  
+  changePassword: async (token, currentPassword, newPassword) => {
+    const response = await axios.put(`${API}/auth/change-password`, 
+      { current_password: currentPassword, new_password: newPassword },
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+    return response.data;
   }
 };
 
