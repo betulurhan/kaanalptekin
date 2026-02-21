@@ -454,14 +454,14 @@ export const AdminProjects = () => {
                           type="button" 
                           variant="ghost" 
                           size="sm"
-                          className="text-red-600 hover:bg-red-50 hover:text-red-700 h-9 w-full md:w-auto"
+                          className="text-red-600 hover:bg-red-50 hover:text-red-700 h-9 w-full lg:w-auto"
                           onClick={() => {
                             const newUnits = formData.units.filter((_, i) => i !== index);
                             setFormData({ ...formData, units: newUnits });
                           }}
                         >
                           <Trash2 className="w-4 h-4" />
-                          <span className="md:hidden ml-1">Sil</span>
+                          <span className="lg:hidden ml-1">Sil</span>
                         </Button>
                       </div>
                     </div>
