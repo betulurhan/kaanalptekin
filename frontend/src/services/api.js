@@ -165,6 +165,18 @@ export const contentAPI = {
       headers: { Authorization: `Bearer ${token}` }
     });
     return response.data;
+  },
+  
+  getSiteSettings: async () => {
+    const response = await axios.get(`${API}/content/site-settings`);
+    return response.data;
+  },
+  
+  updateSiteSettings: async (token, data) => {
+    const response = await axios.put(`${API}/content/site-settings`, data, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    return response.data;
   }
 };
 
