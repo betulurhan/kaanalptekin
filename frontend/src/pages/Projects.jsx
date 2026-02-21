@@ -77,7 +77,7 @@ export const Projects = () => {
           </div>
           <div className="text-right">
             <p className="text-xs text-slate-500 mb-1">Teslim</p>
-            <p className="text-slate-800 font-semibold">{project.completionDate}</p>
+            <p className="text-slate-800 font-semibold">{project.completion_date}</p>
           </div>
         </div>
       </CardContent>
