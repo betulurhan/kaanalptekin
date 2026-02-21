@@ -17,6 +17,7 @@ import AdminProjects from "./pages/admin/AdminProjects";
 import AdminBlog from "./pages/admin/AdminBlog";
 import AdminContent from "./pages/admin/AdminContent";
 import AdminMessages from "./pages/admin/AdminMessages";
+import AdminCarousel from "./pages/admin/AdminCarousel";
 import AdminUsers from "./pages/admin/AdminUsers";
 
 function App() {
@@ -37,6 +38,7 @@ function App() {
             <Route path="/admin" element={<ProtectedRoute><AdminLayout /></ProtectedRoute>}>
               <Route index element={<Navigate to="/admin/dashboard" replace />} />
               <Route path="dashboard" element={<AdminDashboard />} />
+              <Route path="carousel" element={<AdminCarousel />} />
               <Route path="projects" element={<AdminProjects />} />
               <Route path="blog" element={<AdminBlog />} />
               <Route path="content" element={<AdminContent />} />
