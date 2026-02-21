@@ -1,12 +1,31 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, CheckCircle2, Award, Users, Building2, TrendingUp } from 'lucide-react';
+import { ArrowRight, CheckCircle2, Award, Users, Building2, TrendingUp, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { Card, CardContent } from '../components/ui/card';
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '../components/ui/carousel';
 import { aboutData, projects } from '../mock/mockData';
+import { carouselAPI } from '../services/api';
 
 export const Home = () => {
+  const [carouselSlides, setCarouselSlides] = useState([]);
+  const [loading, setLoading] = useState(true);
   const featuredProjects = projects.filter(p => p.status === 'completed').slice(0, 3);
+
+  useEffect(() => {
+    loadCarousel();
+  }, []);
+
+  const loadCarousel = async () => {
+    try {
+      const slides = await carouselAPI.getAll(true);
+      setCarouselSlides(slides);
+    } catch (error) {
+      console.error('Failed to load carousel:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
   
   const stats = [
     { icon: Award, value: '15+', label: 'Yıl Deneyim' },
@@ -17,51 +36,63 @@ export const Home = () => {
 
   return (
     <div className="min-h-screen">
-      {/* Hero Section */}
-      <section className="relative h-screen flex items-center justify-center overflow-hidden">
-        {/* Background Image */}
-        <div
-          className="absolute inset-0 bg-cover bg-center"
-          style={{
-            backgroundImage: `url('https://images.unsplash.com/photo-1613977257365-aaae5a9817ff')`,
-          }}
-        >
-          <div className="absolute inset-0 bg-gradient-to-r from-slate-900/90 via-slate-900/70 to-slate-900/50"></div>
-        </div>
-
-        {/* Hero Content */}
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white mb-6 animate-fade-in">
-            Hayalinizdeki Ev
-            <span className="block mt-2 bg-gradient-to-r from-amber-400 to-amber-200 bg-clip-text text-transparent">
-              Bir Tık Uzağınızda
-            </span>
-          </h1>
-          <p className="text-lg md:text-xl text-slate-200 mb-8 max-w-2xl mx-auto">
-            {aboutData.shortBio}
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button
-              asChild
-              size="lg"
-              className="bg-amber-500 hover:bg-amber-600 text-white px-8 py-6 text-lg rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
-            >
-              <Link to="/projeler">
-                Projeleri İncele
-                <ArrowRight className="ml-2 w-5 h-5" />
-              </Link>
-            </Button>
-            <Button
-              asChild
-              size="lg"
-              variant="outline"
-              className="bg-white/10 backdrop-blur-sm border-white/30 text-white hover:bg-white/20 px-8 py-6 text-lg rounded-xl transition-all duration-300"
-            >
-              <Link to="/iletisim">İletişime Geç</Link>
-            </Button>
+      {/* Hero Carousel Section */}
+      <section className="relative h-screen">
+        {loading || carouselSlides.length === 0 ? (
+          <div className="h-full flex items-center justify-center bg-slate-900">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white"></div>
           </div>
-        </div>
-
+        ) : (
+          <Carousel className="h-full" opts={{ loop: true }}>
+            <CarouselContent>
+              {carouselSlides.map((slide, index) => (
+                <CarouselItem key={slide.id}>
+                  <div className="relative h-screen">
+                    <div
+                      className="absolute inset-0 bg-cover bg-center"
+                      style={{ backgroundImage: `url('${slide.image}')` }}
+                    >
+                      <div className="absolute inset-0 bg-gradient-to-r from-slate-900/90 via-slate-900/70 to-slate-900/50"></div>
+                    </div>
+                    
+                    <div className="relative z-10 h-full flex items-center justify-center">
+                      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                        <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white mb-6 animate-fade-in">
+                          {slide.title}
+                          {slide.subtitle && (
+                            <span className="block mt-2 bg-gradient-to-r from-amber-400 to-amber-200 bg-clip-text text-transparent">
+                              {slide.subtitle}
+                            </span>
+                          )}
+                        </h1>
+                        {slide.description && (
+                          <p className="text-lg md:text-xl text-slate-200 mb-8 max-w-2xl mx-auto">
+                            {slide.description}
+                          </p>
+                        )}
+                        {slide.cta_text && slide.cta_link && (
+                          <Button
+                            asChild
+                            size="lg"
+                            className="bg-amber-500 hover:bg-amber-600 text-white px-8 py-6 text-lg rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
+                          >
+                            <Link to={slide.cta_link}>
+                              {slide.cta_text}
+                              <ArrowRight className="ml-2 w-5 h-5" />
+                            </Link>
+                          </Button>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+            <CarouselPrevious className="left-4" />
+            <CarouselNext className="right-4" />
+          </Carousel>
+        )}
+        
         {/* Scroll Indicator */}
         <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
           <div className="w-6 h-10 border-2 border-white/50 rounded-full flex items-start justify-center p-2">
