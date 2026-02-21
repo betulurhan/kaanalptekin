@@ -100,12 +100,6 @@ export const AdminLogin = () => {
               )}
             </Button>
           </form>
-
-          <div className="mt-6 p-4 bg-slate-50 rounded-lg text-sm text-slate-600">
-            <p className="font-semibold mb-1">Varsayılan Giriş Bilgileri:</p>
-            <p>Kullanıcı Adı: <span className="font-mono">admin</span></p>
-            <p>Şifre: <span className="font-mono">admin123</span></p>
-          </div>
         </CardContent>
       </Card>
     </div>
