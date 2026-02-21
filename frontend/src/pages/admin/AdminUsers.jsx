@@ -6,7 +6,7 @@ import { Button } from '../../components/ui/button';
 import { Input } from '../../components/ui/input';
 import { Label } from '../../components/ui/label';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../../components/ui/dialog';
-import { Plus, Trash2, User, Mail, Calendar } from 'lucide-react';
+import { Plus, Trash2, User, Mail, Calendar, Key, Lock } from 'lucide-react';
 import { useToast } from '../../hooks/use-toast';
 
 export const AdminUsers = () => {
@@ -15,7 +15,9 @@ export const AdminUsers = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [passwordDialogOpen, setPasswordDialogOpen] = useState(false);
   const [formData, setFormData] = useState({ username: '', email: '', password: '' });
+  const [passwordData, setPasswordData] = useState({ currentPassword: '', newPassword: '', confirmPassword: '' });
 
   useEffect(() => { loadUsers(); }, []);
 
@@ -41,6 +43,29 @@ export const AdminUsers = () => {
     }
   };
 
+  const handleChangePassword = async (e) => {
+    e.preventDefault();
+    
+    if (passwordData.newPassword !== passwordData.confirmPassword) {
+      toast({ title: 'Hata', description: 'Yeni şifreler eşleşmiyor', variant: 'destructive' });
+      return;
+    }
+    
+    if (passwordData.newPassword.length < 6) {
+      toast({ title: 'Hata', description: 'Şifre en az 6 karakter olmalıdır', variant: 'destructive' });
+      return;
+    }
+    
+    try {
+      await authAPI.changePassword(token, passwordData.currentPassword, passwordData.newPassword);
+      toast({ title: 'Başarılı', description: 'Şifreniz değiştirildi' });
+      setPasswordDialogOpen(false);
+      setPasswordData({ currentPassword: '', newPassword: '', confirmPassword: '' });
+    } catch (error) {
+      toast({ title: 'Hata', description: error.response?.data?.detail || 'Şifre değiştirilemedi', variant: 'destructive' });
+    }
+  };
+
   const handleDelete = async (userId) => {
     if (!window.confirm('Bu kullanıcıyı silmek istediğinizden emin misiniz?')) return;
     try {
@@ -56,11 +81,16 @@ export const AdminUsers = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
+      <div className="flex flex-wrap justify-between items-center gap-4">
         <h1 className="text-3xl font-bold text-slate-800">Kullanıcı Yönetimi</h1>
-        <Button onClick={() => setDialogOpen(true)} className="bg-amber-500 hover:bg-amber-600">
-          <Plus className="w-4 h-4 mr-2" /> Yeni Kullanıcı
-        </Button>
+        <div className="flex gap-2">
+          <Button onClick={() => setPasswordDialogOpen(true)} variant="outline" className="border-amber-500 text-amber-600 hover:bg-amber-50">
+            <Key className="w-4 h-4 mr-2" /> Şifre Değiştir
+          </Button>
+          <Button onClick={() => setDialogOpen(true)} className="bg-amber-500 hover:bg-amber-600">
+            <Plus className="w-4 h-4 mr-2" /> Yeni Kullanıcı
+          </Button>
+        </div>
       </div>
 
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -98,6 +128,7 @@ export const AdminUsers = () => {
         ))}
       </div>
 
+      {/* New User Dialog */}
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogContent>
           <DialogHeader><DialogTitle>Yeni Kullanıcı Ekle</DialogTitle></DialogHeader>
@@ -108,6 +139,51 @@ export const AdminUsers = () => {
             <div className="flex gap-2 pt-4">
               <Button type="submit" className="flex-1 bg-amber-500 hover:bg-amber-600">Kullanıcı Ekle</Button>
               <Button type="button" variant="outline" onClick={() => setDialogOpen(false)}>İptal</Button>
+            </div>
+          </form>
+        </DialogContent>
+      </Dialog>
+
+      {/* Change Password Dialog */}
+      <Dialog open={passwordDialogOpen} onOpenChange={setPasswordDialogOpen}>
+        <DialogContent>
+          <DialogHeader><DialogTitle className="flex items-center gap-2"><Lock className="w-5 h-5" /> Şifre Değiştir</DialogTitle></DialogHeader>
+          <form onSubmit={handleChangePassword} className="space-y-4">
+            <div>
+              <Label>Mevcut Şifre *</Label>
+              <Input 
+                type="password" 
+                value={passwordData.currentPassword} 
+                onChange={(e) => setPasswordData({ ...passwordData, currentPassword: e.target.value })} 
+                required 
+                placeholder="Mevcut şifrenizi girin"
+              />
+            </div>
+            <div>
+              <Label>Yeni Şifre *</Label>
+              <Input 
+                type="password" 
+                value={passwordData.newPassword} 
+                onChange={(e) => setPasswordData({ ...passwordData, newPassword: e.target.value })} 
+                required 
+                minLength={6}
+                placeholder="En az 6 karakter"
+              />
+            </div>
+            <div>
+              <Label>Yeni Şifre (Tekrar) *</Label>
+              <Input 
+                type="password" 
+                value={passwordData.confirmPassword} 
+                onChange={(e) => setPasswordData({ ...passwordData, confirmPassword: e.target.value })} 
+                required 
+                minLength={6}
+                placeholder="Yeni şifreyi tekrar girin"
+              />
+            </div>
+            <div className="flex gap-2 pt-4">
+              <Button type="submit" className="flex-1 bg-amber-500 hover:bg-amber-600">Şifreyi Değiştir</Button>
+              <Button type="button" variant="outline" onClick={() => setPasswordDialogOpen(false)}>İptal</Button>
             </div>
           </form>
         </DialogContent>
