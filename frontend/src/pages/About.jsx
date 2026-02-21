@@ -65,6 +65,10 @@ export const About = () => {
 
   return (
     <div className="min-h-screen pt-20">
+      <SEOHead 
+        title={seoSettings?.about_title || 'Hakkımızda | ' + (seoSettings?.site_title || '')} 
+        description={seoSettings?.about_description || seoSettings?.site_description} 
+      />
       {/* Hero Section */}
       <section className="relative py-20 bg-slate-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
