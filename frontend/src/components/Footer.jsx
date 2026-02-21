@@ -1,10 +1,25 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Facebook, Instagram, Linkedin, Twitter, Phone, Mail, MapPin, Clock } from 'lucide-react';
 import { contactInfo } from '../mock/mockData';
+import { contentAPI } from '../services/api';
 
 export const Footer = () => {
   const currentYear = new Date().getFullYear();
+  const [siteSettings, setSiteSettings] = useState(null);
+
+  useEffect(() => {
+    loadSiteSettings();
+  }, []);
+
+  const loadSiteSettings = async () => {
+    try {
+      const settings = await contentAPI.getSiteSettings();
+      setSiteSettings(settings);
+    } catch (error) {
+      console.error('Failed to load site settings:', error);
+    }
+  };
 
   return (
     <footer className="bg-slate-900 text-slate-300">
@@ -12,7 +27,17 @@ export const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* About Section */}
           <div>
-            <h3 className="text-white text-xl font-bold mb-4">GayrimenkulRehberi</h3>
+            {siteSettings?.footer_logo ? (
+              <img 
+                src={siteSettings.footer_logo} 
+                alt={siteSettings?.site_name || 'Logo'} 
+                className="h-12 w-auto object-contain mb-4"
+              />
+            ) : (
+              <h3 className="text-white text-xl font-bold mb-4">
+                {siteSettings?.site_name || 'GayrimenkulRehberi'}
+              </h3>
+            )}
             <p className="text-sm leading-relaxed">
               15 yıllık deneyimimle, hayalinizdeki mülkü bulmanızda güvenilir çözüm ortağınız.
             </p>
