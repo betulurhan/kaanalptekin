@@ -15,10 +15,15 @@ export const AdminContent = () => {
   const { token } = useAuth();
   const { toast } = useToast();
   const [loading, setLoading] = useState(true);
-  const [uploading, setUploading] = useState({ hero: false, about: false });
+  const [uploading, setUploading] = useState({ hero: false, about: false, navbar_logo: false, footer_logo: false });
   const [aboutData, setAboutData] = useState({});
   const [contactData, setContactData] = useState({});
   const [heroData, setHeroData] = useState({});
+  const [siteSettings, setSiteSettings] = useState({
+    site_name: 'GayrimenkulRehberi',
+    navbar_logo: null,
+    footer_logo: null
+  });
   const [heroFeatures, setHeroFeatures] = useState({
     badge_text: 'Profesyonel Gayrimenkul Danışmanlığı',
     secondary_cta_text: 'Bize Ulaşın',
