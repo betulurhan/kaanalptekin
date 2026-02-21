@@ -2,10 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { Award, Target, Heart, TrendingUp } from 'lucide-react';
 import { Card, CardContent } from '../components/ui/card';
 import { contentAPI } from '../services/api';
+import { SEOHead } from '../components/SEOHead';
+import { useSEO } from '../context/SEOContext';
 
 export const About = () => {
   const [aboutData, setAboutData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const { seoSettings } = useSEO();
 
   useEffect(() => {
     loadAbout();
