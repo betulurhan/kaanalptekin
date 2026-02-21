@@ -2,10 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, X, Home, User, FolderOpen, BookOpen, Mail } from 'lucide-react';
 import { Button } from './ui/button';
+import { contentAPI } from '../services/api';
 
 export const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [siteSettings, setSiteSettings] = useState(null);
   const location = useLocation();
 
   useEffect(() => {
@@ -16,6 +18,19 @@ export const Navbar = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  useEffect(() => {
+    loadSiteSettings();
+  }, []);
+
+  const loadSiteSettings = async () => {
+    try {
+      const settings = await contentAPI.getSiteSettings();
+      setSiteSettings(settings);
+    } catch (error) {
+      console.error('Failed to load site settings:', error);
+    }
+  };
+
   const navLinks = [
     { path: '/', label: 'Ana Sayfa', icon: Home },
     { path: '/hakkimda', label: 'Hakkımda', icon: User },
@@ -25,6 +40,7 @@ export const Navbar = () => {
   ];
 
   const isActive = (path) => location.pathname === path;
+  const isHomePage = location.pathname === '/';
 
   return (
     <nav
@@ -39,9 +55,23 @@ export const Navbar = () => {
           {/* Logo */}
           <Link
             to="/"
-            className="text-2xl font-bold bg-gradient-to-r from-slate-800 to-slate-600 bg-clip-text text-transparent hover:from-slate-700 hover:to-slate-500 transition-all duration-300"
+            className="flex items-center"
           >
-            GayrimenkulRehberi
+            {siteSettings?.navbar_logo ? (
+              <img 
+                src={siteSettings.navbar_logo} 
+                alt={siteSettings?.site_name || 'Logo'} 
+                className="h-12 w-auto object-contain"
+              />
+            ) : (
+              <span className={`text-2xl font-bold transition-all duration-300 ${
+                isScrolled || !isHomePage
+                  ? 'bg-gradient-to-r from-slate-800 to-slate-600 bg-clip-text text-transparent'
+                  : 'text-white'
+              }`}>
+                {siteSettings?.site_name || 'GayrimenkulRehberi'}
+              </span>
+            )}
           </Link>
 
           {/* Desktop Navigation */}
@@ -50,10 +80,12 @@ export const Navbar = () => {
               <Link
                 key={link.path}
                 to={link.path}
-                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 ${
+                className={`px-4 py-2 rounded-lg text-base font-semibold transition-all duration-300 ${
                   isActive(link.path)
                     ? 'bg-slate-800 text-white'
-                    : 'text-slate-700 hover:bg-slate-100'
+                    : isScrolled || !isHomePage
+                      ? 'text-slate-700 hover:bg-slate-100'
+                      : 'text-white/90 hover:text-white hover:bg-white/10'
                 }`}
               >
                 {link.label}
@@ -64,13 +96,17 @@ export const Navbar = () => {
           {/* Mobile Menu Button */}
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="md:hidden p-2 rounded-lg hover:bg-slate-100 transition-colors"
+            className={`md:hidden p-2 rounded-lg transition-colors ${
+              isScrolled || !isHomePage
+                ? 'hover:bg-slate-100'
+                : 'hover:bg-white/10'
+            }`}
             aria-label="Toggle menu"
           >
             {isMobileMenuOpen ? (
-              <X className="w-6 h-6 text-slate-700" />
+              <X className={`w-6 h-6 ${isScrolled || !isHomePage ? 'text-slate-700' : 'text-white'}`} />
             ) : (
-              <Menu className="w-6 h-6 text-slate-700" />
+              <Menu className={`w-6 h-6 ${isScrolled || !isHomePage ? 'text-slate-700' : 'text-white'}`} />
             )}
           </button>
         </div>
