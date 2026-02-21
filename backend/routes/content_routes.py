@@ -140,6 +140,14 @@ async def get_hero_features(db: AsyncIOMotorDatabase = Depends(get_db)):
         # Return default if not exists
         default_features = {
             "id": str(uuid.uuid4()),
+            "badge_text": "Profesyonel Gayrimenkul Danışmanlığı",
+            "secondary_cta_text": "Bize Ulaşın",
+            "secondary_cta_link": "/iletisim",
+            "trust_indicators": [
+                {"id": str(uuid.uuid4()), "icon": "check-circle", "text": "Lisanslı Danışman", "color": "green", "is_active": True},
+                {"id": str(uuid.uuid4()), "icon": "shield", "text": "Güvenli İşlem", "color": "blue", "is_active": True},
+                {"id": str(uuid.uuid4()), "icon": "award", "text": "15+ Yıl Tecrübe", "color": "amber", "is_active": True}
+            ],
             "card_title": "Hızlı Değerleme",
             "card_subtitle": "Ücretsiz mülk değerlendirme",
             "features": [
@@ -173,6 +181,10 @@ async def update_hero_features(
         # Create default first
         default_features = {
             "id": str(uuid.uuid4()),
+            "badge_text": "Profesyonel Gayrimenkul Danışmanlığı",
+            "secondary_cta_text": "Bize Ulaşın",
+            "secondary_cta_link": "/iletisim",
+            "trust_indicators": [],
             "card_title": "Hızlı Değerleme",
             "card_subtitle": "Ücretsiz mülk değerlendirme",
             "features": [],
@@ -190,8 +202,8 @@ async def update_hero_features(
     update_data = {}
     for k, v in features_data.dict().items():
         if v is not None:
-            if k == "features" and v:
-                # Convert features to dict format
+            if k in ["features", "trust_indicators"] and v:
+                # Convert to dict format
                 update_data[k] = [f.dict() if hasattr(f, 'dict') else f for f in v]
             else:
                 update_data[k] = v
