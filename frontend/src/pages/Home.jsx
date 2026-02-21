@@ -7,6 +7,8 @@ import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious
 import { Badge } from '../components/ui/badge';
 import { aboutData } from '../mock/mockData';
 import { carouselAPI, projectsAPI, contentAPI } from '../services/api';
+import { SEOHead } from '../components/SEOHead';
+import { useSEO } from '../context/SEOContext';
 
 export const Home = () => {
   const [carouselSlides, setCarouselSlides] = useState([]);
@@ -16,6 +18,7 @@ export const Home = () => {
   const [loading, setLoading] = useState(true);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [carouselApi, setCarouselApi] = useState(null);
+  const { seoSettings } = useSEO();
 
   useEffect(() => {
     loadData();
