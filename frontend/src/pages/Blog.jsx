@@ -56,6 +56,7 @@ export const Blog = () => {
         <>
       {/* Featured Post */}
       {featuredPost && (
+      <section className="py-12 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <Card className="overflow-hidden border-none shadow-xl hover:shadow-2xl transition-shadow duration-300">
             <div className="grid md:grid-cols-2 gap-0">
