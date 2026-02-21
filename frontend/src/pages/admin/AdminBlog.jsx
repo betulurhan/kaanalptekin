@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { useAuth } from '../../../context/AuthContext';
-import { blogAPI, uploadAPI } from '../../../services/api';
-import { Card, CardContent } from '../../../components/ui/card';
-import { Button } from '../../../components/ui/button';
-import { Input } from '../../../components/ui/input';
-import { Label } from '../../../components/ui/label';
-import { Textarea } from '../../../components/ui/textarea';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../../../components/ui/dialog';
+import { useAuth } from '../../context/AuthContext';
+import { blogAPI, uploadAPI } from '../../services/api';
+import { Card, CardContent } from '../../components/ui/card';
+import { Button } from '../../components/ui/button';
+import { Input } from '../../components/ui/input';
+import { Label } from '../../components/ui/label';
+import { Textarea } from '../../components/ui/textarea';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../../components/ui/dialog';
 import { Plus, Pencil, Trash2 } from 'lucide-react';
-import { useToast } from '../../../hooks/use-toast';
+import { useToast } from '../../hooks/use-toast';
 
 export const AdminBlog = () => {
   const { token } = useAuth();

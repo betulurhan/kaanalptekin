@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { useAuth } from '../../../context/AuthContext';
-import { authAPI } from '../../../services/api';
-import { Card, CardContent } from '../../../components/ui/card';
-import { Button } from '../../../components/ui/button';
-import { Input } from '../../../components/ui/input';
-import { Label } from '../../../components/ui/label';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../../../components/ui/dialog';
+import { useAuth } from '../../context/AuthContext';
+import { authAPI } from '../../services/api';
+import { Card, CardContent } from '../../components/ui/card';
+import { Button } from '../../components/ui/button';
+import { Input } from '../../components/ui/input';
+import { Label } from '../../components/ui/label';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../../components/ui/dialog';
 import { Plus, Trash2, User, Mail, Calendar } from 'lucide-react';
-import { useToast } from '../../../hooks/use-toast';
+import { useToast } from '../../hooks/use-toast';
 
 export const AdminUsers = () => {
   const { token, user: currentUser } = useAuth();

@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { useAuth } from '../../../context/AuthContext';
-import { messagesAPI } from '../../../services/api';
-import { Card, CardContent } from '../../../components/ui/card';
-import { Button } from '../../../components/ui/button';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../../../components/ui/dialog';
+import { useAuth } from '../../context/AuthContext';
+import { messagesAPI } from '../../services/api';
+import { Card, CardContent } from '../../components/ui/card';
+import { Button } from '../../components/ui/button';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../../components/ui/dialog';
 import { Mail, MailOpen, Trash2, Phone, Calendar } from 'lucide-react';
-import { useToast } from '../../../hooks/use-toast';
+import { useToast } from '../../hooks/use-toast';
 
 export const AdminMessages = () => {
   const { token } = useAuth();

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
-import { useAuth } from '../../../context/AuthContext';
+import { useAuth } from '../../context/AuthContext';
 import { 
   LayoutDashboard, 
   FolderOpen, 
@@ -12,7 +12,7 @@ import {
   Menu,
   X
 } from 'lucide-react';
-import { Button } from '../../../components/ui/button';
+import { Button } from '../../components/ui/button';
 
 export const AdminLayout = () => {
   const { user, logout } = useAuth();
