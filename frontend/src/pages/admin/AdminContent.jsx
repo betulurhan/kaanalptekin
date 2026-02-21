@@ -101,6 +101,10 @@ export const AdminContent = () => {
         setHeroData({ ...heroData, image: fullUrl });
       } else if (section === 'about') {
         setAboutData({ ...aboutData, image: fullUrl });
+      } else if (section === 'navbar_logo') {
+        setSiteSettings({ ...siteSettings, navbar_logo: fullUrl });
+      } else if (section === 'footer_logo') {
+        setSiteSettings({ ...siteSettings, footer_logo: fullUrl });
       }
       
       toast({ title: 'Başarılı', description: 'Görsel yüklendi' });
