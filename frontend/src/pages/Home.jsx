@@ -27,18 +27,18 @@ export const Home = () => {
 
   // Autoplay effect - 1.5 second interval
   useEffect(() => {
-    if (emblaApi && carouselSlides.length > 1) {
-      autoplayRef.current = setInterval(() => {
+    if (!emblaApi) return;
+    
+    const autoplay = setInterval(() => {
+      if (emblaApi.canScrollNext()) {
         emblaApi.scrollNext();
-      }, 1500);
-      
-      return () => {
-        if (autoplayRef.current) {
-          clearInterval(autoplayRef.current);
-        }
-      };
-    }
-  }, [emblaApi, carouselSlides.length]);
+      } else {
+        emblaApi.scrollTo(0);
+      }
+    }, 1500);
+    
+    return () => clearInterval(autoplay);
+  }, [emblaApi]);
 
   useEffect(() => {
     if (emblaApi) {
