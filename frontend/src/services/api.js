@@ -148,6 +148,29 @@ export const contentAPI = {
   }
 };
 
+// Upload API
+export const uploadAPI = {
+  uploadImage: async (token, file) => {
+    const formData = new FormData();
+    formData.append('file', file);
+    
+    const response = await axios.post(`${API}/upload/image`, formData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'multipart/form-data'
+      }
+    });
+    return response.data;
+  },
+  
+  deleteFile: async (token, filename) => {
+    const response = await axios.delete(`${API}/upload/files/${filename}`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    return response.data;
+  }
+};
+
 // Messages API
 export const messagesAPI = {
   create: async (data) => {
