@@ -217,3 +217,57 @@ async def update_hero_features(
     
     updated = await db.hero_features.find_one({"id": existing["id"]})
     return {k: v for k, v in updated.items() if k != "_id"}
+
+
+# Site Settings Endpoints (Logo management)
+@router.get("/site-settings")
+async def get_site_settings(db: AsyncIOMotorDatabase = Depends(get_db)):
+    """Get site settings including logos"""
+    settings = await db.site_settings.find_one()
+    if not settings:
+        # Return default if not exists
+        default_settings = {
+            "id": str(uuid.uuid4()),
+            "site_name": "GayrimenkulRehberi",
+            "navbar_logo": None,
+            "footer_logo": None,
+            "favicon": None,
+            "updated_at": datetime.utcnow()
+        }
+        await db.site_settings.insert_one(default_settings)
+        return {k: v for k, v in default_settings.items() if k != "_id"}
+    return {k: v for k, v in settings.items() if k != "_id"}
+
+
+@router.put("/site-settings")
+async def update_site_settings(
+    settings_data: SiteSettingsUpdate,
+    payload: dict = Depends(verify_token),
+    db: AsyncIOMotorDatabase = Depends(get_db)
+):
+    """Update site settings (admin only)"""
+    existing = await db.site_settings.find_one()
+    
+    if not existing:
+        # Create default first
+        default_settings = {
+            "id": str(uuid.uuid4()),
+            "site_name": "GayrimenkulRehberi",
+            "navbar_logo": None,
+            "footer_logo": None,
+            "favicon": None,
+            "updated_at": datetime.utcnow()
+        }
+        await db.site_settings.insert_one(default_settings)
+        existing = await db.site_settings.find_one()
+    
+    update_data = {k: v for k, v in settings_data.dict().items() if v is not None}
+    update_data["updated_at"] = datetime.utcnow()
+    
+    await db.site_settings.update_one(
+        {"id": existing["id"]},
+        {"$set": update_data}
+    )
+    
+    updated = await db.site_settings.find_one({"id": existing["id"]})
+    return {k: v for k, v in updated.items() if k != "_id"}
