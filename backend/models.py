@@ -316,3 +316,51 @@ class SiteSettingsUpdate(BaseModel):
     footer_logo: Optional[str] = None
     favicon: Optional[str] = None
 
+
+# SEO Settings Model
+class SEOSettings(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    # Global SEO
+    site_title: str = "Özpınarlar İnşaat Grubu | Gayrimenkul Danışmanlığı"
+    site_description: str = "15 yıllık deneyimle profesyonel gayrimenkul danışmanlığı. Satılık ve kiralık konut, rezidans, villa ve ticari gayrimenkul portföyü."
+    site_keywords: str = "gayrimenkul, emlak, konut, satılık daire, kiralık daire, rezidans, villa, inşaat, Türkiye"
+    # Analytics
+    google_analytics_id: Optional[str] = None  # G-XXXXXXXX format
+    # Organization Info for Schema.org
+    organization_name: str = "Özpınarlar İnşaat Grubu"
+    organization_phone: str = "+90 532 123 45 67"
+    organization_email: str = "info@ozpinarlar.com"
+    organization_address: str = "Ankara, Türkiye"
+    # Page-specific SEO
+    home_title: Optional[str] = None
+    home_description: Optional[str] = None
+    projects_title: Optional[str] = None
+    projects_description: Optional[str] = None
+    about_title: Optional[str] = None
+    about_description: Optional[str] = None
+    blog_title: Optional[str] = None
+    blog_description: Optional[str] = None
+    contact_title: Optional[str] = None
+    contact_description: Optional[str] = None
+    updated_at: datetime = Field(default_factory=datetime.utcnow)
+
+class SEOSettingsUpdate(BaseModel):
+    site_title: Optional[str] = None
+    site_description: Optional[str] = None
+    site_keywords: Optional[str] = None
+    google_analytics_id: Optional[str] = None
+    organization_name: Optional[str] = None
+    organization_phone: Optional[str] = None
+    organization_email: Optional[str] = None
+    organization_address: Optional[str] = None
+    home_title: Optional[str] = None
+    home_description: Optional[str] = None
+    projects_title: Optional[str] = None
+    projects_description: Optional[str] = None
+    about_title: Optional[str] = None
+    about_description: Optional[str] = None
+    blog_title: Optional[str] = None
+    blog_description: Optional[str] = None
+    contact_title: Optional[str] = None
+    contact_description: Optional[str] = None
+
