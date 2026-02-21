@@ -104,3 +104,51 @@ async def delete_user(
         )
     
     return {"message": "User deleted successfully"}
+
+
+@router.put("/change-password")
+async def change_password(
+    password_data: dict,
+    payload: dict = Depends(verify_token),
+    db: AsyncIOMotorDatabase = Depends(get_db)
+):
+    """Change user password"""
+    current_password = password_data.get("current_password")
+    new_password = password_data.get("new_password")
+    
+    if not current_password or not new_password:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Current password and new password are required"
+        )
+    
+    if len(new_password) < 6:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="New password must be at least 6 characters"
+        )
+    
+    # Get current user
+    user = await db.users.find_one({"id": payload.get("user_id")})
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User not found"
+        )
+    
+    # Verify current password
+    if not verify_password(current_password, user["hashed_password"]):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Current password is incorrect"
+        )
+    
+    # Update password
+    new_hashed_password = get_password_hash(new_password)
+    await db.users.update_one(
+        {"id": payload.get("user_id")},
+        {"$set": {"hashed_password": new_hashed_password}}
+    )
+    
+    return {"message": "Password changed successfully"}
+
