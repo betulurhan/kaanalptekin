@@ -236,13 +236,38 @@ export const AdminProjects = () => {
     }));
   };
 
-  const handleReorder = async (projectId, direction) => {
-    try {
-      await projectsAPI.reorder(token, projectId, direction);
-      await loadProjects();
-      toast({ title: 'Başarılı', description: `Proje ${direction === 'up' ? 'yukarı' : 'aşağı'} taşındı` });
-    } catch (error) {
-      toast({ title: 'Hata', description: 'Sıralama yapılamadı', variant: 'destructive' });
+  // Drag and drop sensors
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 8,
+      },
+    }),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
+
+  const handleDragEnd = async (event) => {
+    const { active, over } = event;
+
+    if (active.id !== over?.id) {
+      const oldIndex = projects.findIndex((p) => p.id === active.id);
+      const newIndex = projects.findIndex((p) => p.id === over.id);
+
+      const newOrder = arrayMove(projects, oldIndex, newIndex);
+      setProjects(newOrder);
+
+      // Save new order to backend
+      try {
+        const projectIds = newOrder.map(p => p.id);
+        await projectsAPI.reorderAll(token, projectIds);
+        toast({ title: 'Başarılı', description: 'Sıralama kaydedildi' });
+      } catch (error) {
+        toast({ title: 'Hata', description: 'Sıralama kaydedilemedi', variant: 'destructive' });
+        // Reload to get correct order
+        loadProjects();
+      }
     }
   };
 
@@ -255,7 +280,7 @@ export const AdminProjects = () => {
       <div className="flex justify-between items-center">
         <div>
           <h1 className="text-3xl font-bold text-slate-800">Projeler</h1>
-          <p className="text-slate-600">Tüm projeleri yönetin • Sıralamak için ok butonlarını kullanın</p>
+          <p className="text-slate-600">Sıralamak için projeleri sürükleyip bırakın</p>
         </div>
         <Button onClick={() => { resetForm(); setDialogOpen(true); }} className="bg-amber-500 hover:bg-amber-600">
           <Plus className="w-4 h-4 mr-2" />
@@ -263,59 +288,21 @@ export const AdminProjects = () => {
         </Button>
       </div>
 
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {projects.map((project, index) => (
-          <Card key={project.id} className="overflow-hidden hover:shadow-lg transition-shadow relative">
-            {/* Sort Order Badge */}
-            <div className="absolute top-2 left-2 z-10 bg-slate-800 text-white px-2 py-1 rounded-full text-xs font-bold">
-              #{index + 1}
-            </div>
-            {/* Reorder Buttons */}
-            <div className="absolute top-2 right-2 z-10 flex flex-col gap-1">
-              <Button 
-                onClick={() => handleReorder(project.id, 'up')} 
-                variant="secondary" 
-                size="icon" 
-                className="h-7 w-7 bg-white/90 hover:bg-white shadow"
-                disabled={index === 0}
-              >
-                <ArrowUp className="w-4 h-4" />
-              </Button>
-              <Button 
-                onClick={() => handleReorder(project.id, 'down')} 
-                variant="secondary" 
-                size="icon" 
-                className="h-7 w-7 bg-white/90 hover:bg-white shadow"
-                disabled={index === projects.length - 1}
-              >
-                <ArrowDown className="w-4 h-4" />
-              </Button>
-            </div>
-            <div className="h-48 bg-slate-200">
-              <img src={project.image} alt={project.title} className="w-full h-full object-cover" />
-            </div>
-            <CardContent className="p-4">
-              <div className="flex items-start justify-between mb-2">
-                <h3 className="font-bold text-lg">{project.title}</h3>
-                <span className={`px-2 py-1 rounded text-xs ${project.status === 'completed' ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700'}`}>
-                  {project.status === 'completed' ? 'Tamamlandı' : 'Devam Ediyor'}
-                </span>
-              </div>
-              <p className="text-sm text-slate-600 mb-2">{project.location}</p>
-              <p className="text-amber-600 font-semibold mb-4">{project.price}</p>
-              <div className="flex gap-2">
-                <Button onClick={() => openEditDialog(project)} variant="outline" size="sm" className="flex-1">
-                  <Pencil className="w-4 h-4 mr-1" />
-                  Düzenle
-                </Button>
-                <Button onClick={() => handleDelete(project.id)} variant="outline" size="sm" className="text-red-600 hover:bg-red-50">
-                  <Trash2 className="w-4 h-4" />
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+      <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+        <SortableContext items={projects.map(p => p.id)} strategy={rectSortingStrategy}>
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {projects.map((project, index) => (
+              <SortableProjectCard
+                key={project.id}
+                project={project}
+                index={index}
+                onEdit={openEditDialog}
+                onDelete={handleDelete}
+              />
+            ))}
+          </div>
+        </SortableContext>
+      </DndContext>
 
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
