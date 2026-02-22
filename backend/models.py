@@ -58,6 +58,7 @@ class Project(BaseModel):
     payment_plan: Optional[str] = None
     floor_plans: Optional[List[str]] = []  # Multiple floor plan images
     units: Optional[List[ProjectUnit]] = []  # List of units/apartments
+    sort_order: int = 0  # For custom ordering
     created_at: datetime = Field(default_factory=datetime.utcnow)
     updated_at: datetime = Field(default_factory=datetime.utcnow)
 
@@ -75,6 +76,7 @@ class ProjectCreate(BaseModel):
     payment_plan: Optional[str] = None
     floor_plans: Optional[List[str]] = []
     units: Optional[List[ProjectUnit]] = []
+    sort_order: Optional[int] = 0
 
 class ProjectUpdate(BaseModel):
     title: Optional[str] = None
@@ -90,6 +92,7 @@ class ProjectUpdate(BaseModel):
     payment_plan: Optional[str] = None
     floor_plans: Optional[List[str]] = None
     units: Optional[List[ProjectUnit]] = None
+    sort_order: Optional[int] = None
 
 
 # Blog Models
