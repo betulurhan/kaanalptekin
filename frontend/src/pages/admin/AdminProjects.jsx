@@ -233,7 +233,6 @@ export const AdminProjects = () => {
                 <Button onClick={() => handleDelete(project.id)} variant="outline" size="sm" className="text-red-600 hover:bg-red-50">
                   <Trash2 className="w-4 h-4" />
                 </Button>
-                </Button>
               </div>
             </CardContent>
           </Card>
