@@ -281,38 +281,75 @@ export const AdminProjects = () => {
             </div>
 
             <div>
-              <Label>Kat Planı Görseli</Label>
-              <div className="space-y-2">
+              <Label>Kat Planları</Label>
+              <div className="space-y-3">
                 <div className="flex gap-2">
-                  <Input type="file" onChange={(e) => {
-                    const file = e.target.files[0];
-                    if (file) {
-                      setUploading(true);
-                      uploadAPI.uploadImage(token, file)
-                        .then(result => {
-                          const fullUrl = `${process.env.REACT_APP_BACKEND_URL}${result.url}`;
-                          setFormData({ ...formData, floor_plan: fullUrl });
-                          toast({ title: 'Başarılı', description: 'Kat planı yüklendi' });
-                        })
-                        .catch(() => toast({ title: 'Hata', description: 'Yüklenemedi', variant: 'destructive' }))
-                        .finally(() => setUploading(false));
-                    }
-                  }} accept="image/*" disabled={uploading} className="flex-1" />
+                  <Input 
+                    type="file" 
+                    multiple
+                    onChange={(e) => handleMultipleImageUpload(e, 'floor_plans')} 
+                    accept="image/*" 
+                    disabled={uploading} 
+                    className="flex-1" 
+                  />
+                  {uploading && <span className="text-sm text-slate-500">Yükleniyor...</span>}
                 </div>
-                <Input value={formData.floor_plan || ''} onChange={(e) => setFormData({ ...formData, floor_plan: e.target.value })} placeholder="veya Kat planı URL'si" />
-                {formData.floor_plan && <img src={formData.floor_plan} alt="Floor Plan" className="w-full h-32 object-contain rounded bg-slate-50" />}
+                <p className="text-xs text-slate-500">Birden fazla kat planı seçebilirsiniz</p>
+                
+                {formData.floor_plans && formData.floor_plans.length > 0 && (
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                    {formData.floor_plans.map((url, index) => (
+                      <div key={index} className="relative group">
+                        <img src={url} alt={`Kat Planı ${index + 1}`} className="w-full h-24 object-contain rounded bg-slate-100 border" />
+                        <button
+                          type="button"
+                          onClick={() => removeImage('floor_plans', index)}
+                          className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                        >
+                          <X className="w-3 h-3" />
+                        </button>
+                        <span className="absolute bottom-1 left-1 bg-black/50 text-white text-xs px-1 rounded">{index + 1}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
 
             <div>
-              <Label>Ek Görseller (virgülle ayırın)</Label>
-              <Textarea 
-                value={formData.images?.join(', ') || ''} 
-                onChange={(e) => setFormData({ ...formData, images: e.target.value.split(',').map(url => url.trim()).filter(url => url) })} 
-                placeholder="https://example.com/image1.jpg, https://example.com/image2.jpg"
-                rows={2}
-              />
-              <p className="text-xs text-slate-500 mt-1">Galeri için ek görseller ekleyin (URL'ler virgülle ayrılmalı)</p>
+              <Label>Proje Görselleri (Galeri)</Label>
+              <div className="space-y-3">
+                <div className="flex gap-2">
+                  <Input 
+                    type="file" 
+                    multiple
+                    onChange={(e) => handleMultipleImageUpload(e, 'images')} 
+                    accept="image/*" 
+                    disabled={uploading} 
+                    className="flex-1" 
+                  />
+                  {uploading && <span className="text-sm text-slate-500">Yükleniyor...</span>}
+                </div>
+                <p className="text-xs text-slate-500">Birden fazla proje görseli seçebilirsiniz</p>
+                
+                {formData.images && formData.images.length > 0 && (
+                  <div className="grid grid-cols-3 md:grid-cols-4 gap-2">
+                    {formData.images.map((url, index) => (
+                      <div key={index} className="relative group">
+                        <img src={url} alt={`Görsel ${index + 1}`} className="w-full h-20 object-cover rounded border" />
+                        <button
+                          type="button"
+                          onClick={() => removeImage('images', index)}
+                          className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                        >
+                          <X className="w-3 h-3" />
+                        </button>
+                        <span className="absolute bottom-1 left-1 bg-black/50 text-white text-xs px-1 rounded">{index + 1}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
 
             <div>
