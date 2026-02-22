@@ -8,7 +8,7 @@ import { Label } from '../../components/ui/label';
 import { Textarea } from '../../components/ui/textarea';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../../components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../components/ui/select';
-import { Plus, Pencil, Trash2, Upload, X, Home, Building2 } from 'lucide-react';
+import { Plus, Pencil, Trash2, Upload, X, Home, Building2, ArrowUp, ArrowDown, GripVertical } from 'lucide-react';
 import { useToast } from '../../hooks/use-toast';
 import { Badge } from '../../components/ui/badge';
 
