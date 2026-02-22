@@ -218,7 +218,7 @@ export const ProjectDetail = () => {
               <TabsTrigger value="ozellikler" className="rounded-lg">Özellikler</TabsTrigger>
               <TabsTrigger value="daireler" className="rounded-lg">Daireler</TabsTrigger>
               {project.payment_plan && <TabsTrigger value="odeme" className="rounded-lg">Ödeme</TabsTrigger>}
-              {project.floor_plan && <TabsTrigger value="kat" className="rounded-lg">Kat Planı</TabsTrigger>}
+              {(project.floor_plans?.length > 0 || project.floor_plan) && <TabsTrigger value="kat" className="rounded-lg">Kat Planları</TabsTrigger>}
             </TabsList>
 
             <TabsContent value="aciklama">
