@@ -173,7 +173,7 @@ export const Contact = () => {
             {/* Form */}
             <Card className="border-none shadow-xl">
               <CardContent className="p-8">
-                <h2 className="text-2xl font-bold text-slate-800 mb-6">Mesaj Gönderin</h2>
+                <h2 className="text-2xl font-bold text-slate-800 mb-6">Bilgi Alın</h2>
                 <form onSubmit={handleSubmit} className="space-y-5">
                   <div>
                     <Label htmlFor="name">Adınız Soyadınız *</Label>
@@ -188,60 +188,55 @@ export const Contact = () => {
                     />
                   </div>
                   <div>
-                    <Label htmlFor="email">E-posta *</Label>
-                    <Input
-                      id="email"
-                      name="email"
-                      type="email"
-                      value={formData.email}
-                      onChange={handleChange}
-                      required
-                      className="mt-2"
-                      placeholder="ornek@email.com"
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="phone">Telefon</Label>
+                    <Label htmlFor="phone">Telefon *</Label>
                     <Input
                       id="phone"
                       name="phone"
                       type="tel"
                       value={formData.phone}
                       onChange={handleChange}
+                      required
                       className="mt-2"
                       placeholder="+90 5XX XXX XX XX"
                     />
                   </div>
                   <div>
-                    <Label htmlFor="subject">Konu *</Label>
+                    <Label htmlFor="email">E-posta</Label>
                     <Input
-                      id="subject"
-                      name="subject"
-                      value={formData.subject}
+                      id="email"
+                      name="email"
+                      type="email"
+                      value={formData.email}
                       onChange={handleChange}
-                      required
                       className="mt-2"
-                      placeholder="Mesaj konusu"
+                      placeholder="ornek@email.com"
                     />
                   </div>
                   <div>
-                    <Label htmlFor="message">Mesajınız *</Label>
-                    <Textarea
-                      id="message"
-                      name="message"
-                      value={formData.message}
-                      onChange={handleChange}
-                      required
-                      className="mt-2 min-h-[150px]"
-                      placeholder="Mesajınızı buraya yazın..."
-                    />
+                    <Label htmlFor="project">İlgilendiğiniz Proje *</Label>
+                    <Select 
+                      value={formData.project} 
+                      onValueChange={(value) => setFormData({ ...formData, project: value })}
+                    >
+                      <SelectTrigger className="mt-2">
+                        <SelectValue placeholder="Proje seçin" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="Tüm Projeler">Tüm Projeler</SelectItem>
+                        {projects.map((project) => (
+                          <SelectItem key={project.id} value={project.title}>
+                            {project.title}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </div>
                   <Button
                     type="submit"
                     className="w-full bg-amber-500 hover:bg-amber-600 text-white py-6 text-lg rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
                   >
                     <Send className="w-5 h-5 mr-2" />
-                    Mesajı Gönder
+                    Gönder
                   </Button>
                 </form>
               </CardContent>
