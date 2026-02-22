@@ -101,7 +101,12 @@ export const AdminProjects = () => {
 
   const openEditDialog = (project) => {
     setEditingProject(project);
-    setFormData(project);
+    // Handle migration from old floor_plan to floor_plans
+    const updatedProject = {
+      ...project,
+      floor_plans: project.floor_plans || (project.floor_plan ? [project.floor_plan] : [])
+    };
+    setFormData(updatedProject);
     setDialogOpen(true);
   };
 
@@ -118,10 +123,39 @@ export const AdminProjects = () => {
       features: [],
       completion_date: '',
       payment_plan: '',
-      floor_plan: '',
+      floor_plans: [],
       units: []
     });
     setEditingProject(null);
+  };
+
+  const handleMultipleImageUpload = async (e, field) => {
+    const files = Array.from(e.target.files);
+    if (files.length === 0) return;
+
+    setUploading(true);
+    try {
+      const uploadPromises = files.map(file => uploadAPI.uploadImage(token, file));
+      const results = await Promise.all(uploadPromises);
+      const newUrls = results.map(result => `${process.env.REACT_APP_BACKEND_URL}${result.url}`);
+      
+      setFormData(prev => ({
+        ...prev,
+        [field]: [...(prev[field] || []), ...newUrls]
+      }));
+      toast({ title: 'Başarılı', description: `${files.length} görsel yüklendi` });
+    } catch (error) {
+      toast({ title: 'Hata', description: 'Görseller yüklenemedi', variant: 'destructive' });
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const removeImage = (field, index) => {
+    setFormData(prev => ({
+      ...prev,
+      [field]: prev[field].filter((_, i) => i !== index)
+    }));
   };
 
   if (loading) {
