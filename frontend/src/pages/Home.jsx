@@ -114,7 +114,7 @@ export const Home = () => {
                       className="absolute inset-0 bg-cover bg-center"
                       style={{ backgroundImage: `url('${slide.image}')` }}
                     >
-                      <div className={`absolute inset-0 ${index === 0 ? 'bg-gradient-to-r from-white/95 via-white/70 to-white/30' : 'bg-gradient-to-t from-slate-900/80 via-slate-900/40 to-slate-900/20'}`}></div>
+                      <div className={`absolute inset-0 ${index === 0 ? 'bg-gradient-to-r from-white/80 via-white/50 to-transparent' : 'bg-gradient-to-t from-slate-900/80 via-slate-900/40 to-slate-900/20'}`}></div>
                     </div>
                     
                     {/* Content - Different layout for first slide vs others */}
