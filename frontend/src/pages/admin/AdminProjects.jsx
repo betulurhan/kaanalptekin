@@ -8,9 +8,87 @@ import { Label } from '../../components/ui/label';
 import { Textarea } from '../../components/ui/textarea';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../../components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../components/ui/select';
-import { Plus, Pencil, Trash2, Upload, X, Home, Building2, ArrowUp, ArrowDown, GripVertical } from 'lucide-react';
+import { Plus, Pencil, Trash2, Upload, X, Home, Building2, GripVertical } from 'lucide-react';
 import { useToast } from '../../hooks/use-toast';
 import { Badge } from '../../components/ui/badge';
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core';
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
+  rectSortingStrategy,
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
+
+// Sortable Project Card Component
+const SortableProjectCard = ({ project, index, onEdit, onDelete }) => {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: project.id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+    zIndex: isDragging ? 1000 : 1,
+  };
+
+  return (
+    <Card 
+      ref={setNodeRef} 
+      style={style} 
+      className={`overflow-hidden hover:shadow-lg transition-shadow relative ${isDragging ? 'shadow-2xl ring-2 ring-amber-500' : ''}`}
+    >
+      {/* Drag Handle */}
+      <div 
+        {...attributes} 
+        {...listeners}
+        className="absolute top-2 left-2 z-10 bg-white/90 hover:bg-white p-2 rounded-lg shadow cursor-grab active:cursor-grabbing"
+      >
+        <GripVertical className="w-5 h-5 text-slate-500" />
+      </div>
+      {/* Sort Order Badge */}
+      <div className="absolute top-2 right-2 z-10 bg-slate-800 text-white px-2 py-1 rounded-full text-xs font-bold">
+        #{index + 1}
+      </div>
+      <div className="h-48 bg-slate-200">
+        <img src={project.image} alt={project.title} className="w-full h-full object-cover" />
+      </div>
+      <CardContent className="p-4">
+        <div className="flex items-start justify-between mb-2">
+          <h3 className="font-bold text-lg">{project.title}</h3>
+          <span className={`px-2 py-1 rounded text-xs ${project.status === 'completed' ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700'}`}>
+            {project.status === 'completed' ? 'Tamamlandı' : 'Devam Ediyor'}
+          </span>
+        </div>
+        <p className="text-sm text-slate-600 mb-2">{project.location}</p>
+        <p className="text-amber-600 font-semibold mb-4">{project.price}</p>
+        <div className="flex gap-2">
+          <Button onClick={() => onEdit(project)} variant="outline" size="sm" className="flex-1">
+            <Pencil className="w-4 h-4 mr-1" />
+            Düzenle
+          </Button>
+          <Button onClick={() => onDelete(project.id)} variant="outline" size="sm" className="text-red-600 hover:bg-red-50">
+            <Trash2 className="w-4 h-4" />
+          </Button>
+        </div>
+      </CardContent>
+    </Card>
+  );
+};
 
 export const AdminProjects = () => {
   const { token } = useAuth();
