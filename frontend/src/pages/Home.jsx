@@ -114,7 +114,7 @@ export const Home = () => {
                       className="absolute inset-0 bg-cover bg-center"
                       style={{ backgroundImage: `url('${slide.image}')` }}
                     >
-                      <div className={`absolute inset-0 ${index === 0 ? 'bg-gradient-to-r from-slate-900/90 via-slate-900/60 to-slate-900/30' : 'bg-gradient-to-t from-slate-900/80 via-slate-900/40 to-slate-900/20'}`}></div>
+                      <div className={`absolute inset-0 ${index === 0 ? 'bg-gradient-to-r from-white/95 via-white/70 to-white/30' : 'bg-gradient-to-t from-slate-900/80 via-slate-900/40 to-slate-900/20'}`}></div>
                     </div>
                     
                     {/* Content - Different layout for first slide vs others */}
@@ -127,22 +127,22 @@ export const Home = () => {
                             <div className="text-left">
                               {/* Badge */}
                               <div className="inline-flex items-center gap-2 px-4 py-2 bg-amber-500/20 backdrop-blur-sm border border-amber-500/30 rounded-full mb-6">
-                                <Star className="w-4 h-4 text-amber-400 fill-amber-400" />
-                                <span className="text-amber-400 text-sm font-medium">
+                                <Star className="w-4 h-4 text-amber-500 fill-amber-500" />
+                                <span className="text-amber-600 text-sm font-medium">
                                   {heroFeatures?.badge_text || 'Profesyonel Gayrimenkul Danışmanlığı'}
                                 </span>
                               </div>
                               
-                              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 leading-tight">
+                              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-slate-800 mb-4 leading-tight">
                                 {slide.title}
                               </h1>
                               {slide.subtitle && (
-                                <p className="text-2xl md:text-3xl lg:text-4xl font-bold bg-gradient-to-r from-amber-400 via-amber-300 to-amber-500 bg-clip-text text-transparent mb-6">
+                                <p className="text-2xl md:text-3xl lg:text-4xl font-bold bg-gradient-to-r from-amber-500 via-amber-400 to-amber-600 bg-clip-text text-transparent mb-6">
                                   {slide.subtitle}
                                 </p>
                               )}
                               {slide.description && (
-                                <p className="text-lg text-slate-300 mb-8 max-w-xl leading-relaxed">
+                                <p className="text-lg text-slate-600 mb-8 max-w-xl leading-relaxed">
                                   {slide.description}
                                 </p>
                               )}
@@ -165,7 +165,7 @@ export const Home = () => {
                                   asChild
                                   size="lg"
                                   variant="outline"
-                                  className="border-white/30 bg-white/5 backdrop-blur-sm text-white hover:bg-white/10 px-8 py-6 text-lg rounded-xl transition-all duration-300"
+                                  className="border-slate-300 bg-white/50 backdrop-blur-sm text-slate-700 hover:bg-slate-100 px-8 py-6 text-lg rounded-xl transition-all duration-300"
                                 >
                                   <Link to={heroFeatures?.secondary_cta_link || '/iletisim'}>
                                     <Phone className="mr-2 w-5 h-5" />
@@ -182,11 +182,11 @@ export const Home = () => {
                                   { icon: 'award', text: '15+ Yıl Tecrübe', color: 'amber' }
                                 ]).filter(t => t.is_active !== false).map((indicator, idx) => {
                                   const colorClasses = {
-                                    green: 'bg-green-500/20 text-green-400',
-                                    blue: 'bg-blue-500/20 text-blue-400',
-                                    amber: 'bg-amber-500/20 text-amber-400',
-                                    red: 'bg-red-500/20 text-red-400',
-                                    purple: 'bg-purple-500/20 text-purple-400'
+                                    green: 'bg-green-500/20 text-green-600',
+                                    blue: 'bg-blue-500/20 text-blue-600',
+                                    amber: 'bg-amber-500/20 text-amber-600',
+                                    red: 'bg-red-500/20 text-red-600',
+                                    purple: 'bg-purple-500/20 text-purple-600'
                                   };
                                   const iconMap = {
                                     'check-circle': CheckCircle2,
@@ -197,7 +197,7 @@ export const Home = () => {
                                   };
                                   const IconComp = iconMap[indicator.icon] || CheckCircle2;
                                   return (
-                                    <div key={idx} className="flex items-center gap-2 text-slate-300">
+                                    <div key={idx} className="flex items-center gap-2 text-slate-600">
                                       <div className={`w-10 h-10 rounded-full ${colorClasses[indicator.color] || colorClasses.green} flex items-center justify-center`}>
                                         <IconComp className="w-5 h-5" />
                                       </div>
