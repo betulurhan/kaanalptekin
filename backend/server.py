@@ -35,7 +35,7 @@ async def root():
 @api_router.get("/sitemap.xml", response_class=PlainTextResponse)
 async def sitemap():
     """Generate dynamic sitemap.xml"""
-    base_url = os.environ.get('SITE_URL', 'https://ozpinarlar.com')
+    base_url = os.environ.get('SITE_URL', 'https://kaanalptekin.com')
     
     # Get all projects
     projects = await db.projects.find({}, {"id": 1, "updated_at": 1}).to_list(1000)
