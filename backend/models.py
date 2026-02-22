@@ -304,7 +304,7 @@ class HeroFeaturesUpdate(BaseModel):
 # Site Settings Model (Logo etc.)
 class SiteSettings(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
-    site_name: str = "GayrimenkulRehberi"
+    site_name: str = "Kaan Alp Tekin"
     navbar_logo: Optional[str] = None  # Logo image URL for navbar
     footer_logo: Optional[str] = None  # Logo image URL for footer
     favicon: Optional[str] = None
@@ -321,16 +321,16 @@ class SiteSettingsUpdate(BaseModel):
 class SEOSettings(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     # Global SEO
-    site_title: str = "Özpınarlar İnşaat Grubu | Gayrimenkul Danışmanlığı"
-    site_description: str = "15 yıllık deneyimle profesyonel gayrimenkul danışmanlığı. Satılık ve kiralık konut, rezidans, villa ve ticari gayrimenkul portföyü."
-    site_keywords: str = "gayrimenkul, emlak, konut, satılık daire, kiralık daire, rezidans, villa, inşaat, Türkiye"
+    site_title: str = "Kaan Alp Tekin | Antalya Gayrimenkul Danışmanı"
+    site_description: str = "Antalya satılık daire, kiralık daire, villa ve yatırımlık gayrimenkul. Kaan Alp Tekin - Profesyonel gayrimenkul danışmanlığı, proje koordinatörlüğü ve yatırım danışmanlığı hizmetleri."
+    site_keywords: str = "Antalya satılık daire, Antalya kiralık daire, Antalya satılık ev, Antalya emlak, Antalya gayrimenkul, temelden yatırım, Antalya villa, Antalya rezidans, gayrimenkul danışmanı Antalya, Kaan Alp Tekin, yatırımlık daire Antalya"
     # Analytics
     google_analytics_id: Optional[str] = None  # G-XXXXXXXX format
     # Organization Info for Schema.org
-    organization_name: str = "Özpınarlar İnşaat Grubu"
+    organization_name: str = "Kaan Alp Tekin - Gayrimenkul Danışmanlığı"
     organization_phone: str = "+90 532 123 45 67"
-    organization_email: str = "info@ozpinarlar.com"
-    organization_address: str = "Ankara, Türkiye"
+    organization_email: str = "info@kaanalptekin.com"
+    organization_address: str = "Antalya, Türkiye"
     # Page-specific SEO
     home_title: Optional[str] = None
     home_description: Optional[str] = None
