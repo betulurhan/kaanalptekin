@@ -315,22 +315,52 @@ export const ProjectDetail = () => {
               </TabsContent>
             )}
 
-            {project.floor_plan && (
+            {(project.floor_plans?.length > 0 || project.floor_plan) && (
               <TabsContent value="kat">
                 <Card className="border-none shadow-lg">
                   <CardContent className="p-8">
-                    <h2 className="text-3xl font-bold text-slate-800 mb-6">Kat Planı</h2>
-                    <div 
-                      className="cursor-pointer rounded-xl overflow-hidden hover:opacity-90 transition-opacity"
-                      onClick={() => setSelectedImage(project.floor_plan)}
-                    >
-                      <img 
-                        src={project.floor_plan} 
-                        alt="Kat Planı"
-                        className="w-full h-auto"
-                      />
-                    </div>
-                    <p className="text-sm text-slate-500 mt-3 text-center">Büyütmek için tıklayın</p>
+                    <h2 className="text-3xl font-bold text-slate-800 mb-6">Kat Planları</h2>
+                    {/* Multiple Floor Plans */}
+                    {project.floor_plans && project.floor_plans.length > 0 ? (
+                      <div className="space-y-6">
+                        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                          {project.floor_plans.map((floorPlan, idx) => (
+                            <div 
+                              key={idx}
+                              className="cursor-pointer rounded-xl overflow-hidden hover:shadow-xl transition-all border-2 border-slate-200 hover:border-amber-500 group"
+                              onClick={() => setSelectedImage(floorPlan)}
+                            >
+                              <div className="relative">
+                                <img 
+                                  src={floorPlan} 
+                                  alt={`Kat Planı ${idx + 1}`}
+                                  className="w-full h-64 object-contain bg-slate-50 group-hover:scale-105 transition-transform"
+                                />
+                                <div className="absolute top-2 left-2 bg-amber-500 text-white px-3 py-1 rounded-full text-sm font-semibold">
+                                  Plan {idx + 1}
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                        <p className="text-sm text-slate-500 text-center">Büyütmek için tıklayın</p>
+                      </div>
+                    ) : project.floor_plan ? (
+                      // Fallback for old single floor_plan field
+                      <div>
+                        <div 
+                          className="cursor-pointer rounded-xl overflow-hidden hover:opacity-90 transition-opacity"
+                          onClick={() => setSelectedImage(project.floor_plan)}
+                        >
+                          <img 
+                            src={project.floor_plan} 
+                            alt="Kat Planı"
+                            className="w-full h-auto"
+                          />
+                        </div>
+                        <p className="text-sm text-slate-500 mt-3 text-center">Büyütmek için tıklayın</p>
+                      </div>
+                    ) : null}
                   </CardContent>
                 </Card>
               </TabsContent>
