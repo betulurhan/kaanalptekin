@@ -33,7 +33,7 @@ export const AdminProjects = () => {
     features: [],
     completion_date: '',
     payment_plan: '',
-    floor_plan: '',
+    floor_plans: [],
     units: []
   });
 
