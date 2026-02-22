@@ -158,6 +158,16 @@ export const AdminProjects = () => {
     }));
   };
 
+  const handleReorder = async (projectId, direction) => {
+    try {
+      await projectsAPI.reorder(token, projectId, direction);
+      await loadProjects();
+      toast({ title: 'Başarılı', description: `Proje ${direction === 'up' ? 'yukarı' : 'aşağı'} taşındı` });
+    } catch (error) {
+      toast({ title: 'Hata', description: 'Sıralama yapılamadı', variant: 'destructive' });
+    }
+  };
+
   if (loading) {
     return <div className="flex justify-center py-12"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-slate-800"></div></div>;
   }
@@ -167,7 +177,7 @@ export const AdminProjects = () => {
       <div className="flex justify-between items-center">
         <div>
           <h1 className="text-3xl font-bold text-slate-800">Projeler</h1>
-          <p className="text-slate-600">Tüm projeleri yönetin</p>
+          <p className="text-slate-600">Tüm projeleri yönetin • Sıralamak için ok butonlarını kullanın</p>
         </div>
         <Button onClick={() => { resetForm(); setDialogOpen(true); }} className="bg-amber-500 hover:bg-amber-600">
           <Plus className="w-4 h-4 mr-2" />
@@ -176,8 +186,33 @@ export const AdminProjects = () => {
       </div>
 
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {projects.map((project) => (
-          <Card key={project.id} className="overflow-hidden hover:shadow-lg transition-shadow">
+        {projects.map((project, index) => (
+          <Card key={project.id} className="overflow-hidden hover:shadow-lg transition-shadow relative">
+            {/* Sort Order Badge */}
+            <div className="absolute top-2 left-2 z-10 bg-slate-800 text-white px-2 py-1 rounded-full text-xs font-bold">
+              #{index + 1}
+            </div>
+            {/* Reorder Buttons */}
+            <div className="absolute top-2 right-2 z-10 flex flex-col gap-1">
+              <Button 
+                onClick={() => handleReorder(project.id, 'up')} 
+                variant="secondary" 
+                size="icon" 
+                className="h-7 w-7 bg-white/90 hover:bg-white shadow"
+                disabled={index === 0}
+              >
+                <ArrowUp className="w-4 h-4" />
+              </Button>
+              <Button 
+                onClick={() => handleReorder(project.id, 'down')} 
+                variant="secondary" 
+                size="icon" 
+                className="h-7 w-7 bg-white/90 hover:bg-white shadow"
+                disabled={index === projects.length - 1}
+              >
+                <ArrowDown className="w-4 h-4" />
+              </Button>
+            </div>
             <div className="h-48 bg-slate-200">
               <img src={project.image} alt={project.title} className="w-full h-full object-cover" />
             </div>
@@ -197,6 +232,7 @@ export const AdminProjects = () => {
                 </Button>
                 <Button onClick={() => handleDelete(project.id)} variant="outline" size="sm" className="text-red-600 hover:bg-red-50">
                   <Trash2 className="w-4 h-4" />
+                </Button>
                 </Button>
               </div>
             </CardContent>
