@@ -2,11 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { Phone, Mail, MapPin, Clock, Send } from 'lucide-react';
 import { Card, CardContent } from '../components/ui/card';
 import { Input } from '../components/ui/input';
-import { Textarea } from '../components/ui/textarea';
 import { Button } from '../components/ui/button';
 import { Label } from '../components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
 import { useToast } from '../hooks/use-toast';
-import { messagesAPI, contentAPI } from '../services/api';
+import { messagesAPI, contentAPI, projectsAPI } from '../services/api';
 import { SEOHead } from '../components/SEOHead';
 import { useSEO } from '../context/SEOContext';
 
@@ -14,25 +14,29 @@ export const Contact = () => {
   const { toast } = useToast();
   const { seoSettings } = useSEO();
   const [contactInfo, setContactInfo] = useState(null);
+  const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     phone: '',
-    subject: '',
-    message: '',
+    project: 'Tüm Projeler',
   });
 
   useEffect(() => {
-    loadContactInfo();
+    loadData();
   }, []);
 
-  const loadContactInfo = async () => {
+  const loadData = async () => {
     try {
-      const data = await contentAPI.getContact();
-      setContactInfo(data);
+      const [contactData, projectsData] = await Promise.all([
+        contentAPI.getContact(),
+        projectsAPI.getAll()
+      ]);
+      setContactInfo(contactData);
+      setProjects(projectsData);
     } catch (error) {
-      console.error('Failed to load contact info:', error);
+      console.error('Failed to load data:', error);
     } finally {
       setLoading(false);
     }
@@ -48,7 +52,13 @@ export const Contact = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     // Send to backend
-    messagesAPI.create(formData)
+    messagesAPI.create({
+      name: formData.name,
+      email: formData.email,
+      phone: formData.phone,
+      subject: `İlgilenilen Proje: ${formData.project}`,
+      message: `İlgilenilen Proje: ${formData.project}`
+    })
       .then(() => {
         toast({
           title: 'Mesajınız Gönderildi!',
@@ -59,8 +69,7 @@ export const Contact = () => {
           name: '',
           email: '',
           phone: '',
-          subject: '',
-          message: '',
+          project: 'Tüm Projeler',
         });
       })
       .catch((error) => {
