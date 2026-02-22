@@ -100,7 +100,7 @@ export const About = () => {
               <div className="bg-white rounded-xl p-6 shadow-lg border-l-4 border-amber-500">
                 <h3 className="text-lg font-bold text-slate-800 mb-3">Biyografi</h3>
                 <p className="text-slate-600 leading-relaxed whitespace-pre-line">
-                  {aboutData.fullBio}
+                  {aboutData.full_bio || aboutData.fullBio}
                 </p>
               </div>
             </div>
