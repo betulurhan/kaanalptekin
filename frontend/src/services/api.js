@@ -79,6 +79,20 @@ export const projectsAPI = {
       headers: { Authorization: `Bearer ${token}` }
     });
     return response.data;
+  },
+  
+  reorder: async (token, id, direction) => {
+    const response = await axios.put(`${API}/projects/${id}/reorder?direction=${direction}`, {}, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    return response.data;
+  },
+  
+  reorderAll: async (token, projectIds) => {
+    const response = await axios.post(`${API}/projects/reorder-all`, projectIds, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    return response.data;
   }
 };
 
