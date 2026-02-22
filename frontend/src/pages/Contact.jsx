@@ -1,19 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Phone, Mail, MapPin, Clock, Send } from 'lucide-react';
 import { Card, CardContent } from '../components/ui/card';
 import { Input } from '../components/ui/input';
 import { Textarea } from '../components/ui/textarea';
 import { Button } from '../components/ui/button';
 import { Label } from '../components/ui/label';
-import { contactInfo } from '../mock/mockData';
 import { useToast } from '../hooks/use-toast';
-import { messagesAPI } from '../services/api';
+import { messagesAPI, contentAPI } from '../services/api';
 import { SEOHead } from '../components/SEOHead';
 import { useSEO } from '../context/SEOContext';
 
 export const Contact = () => {
   const { toast } = useToast();
   const { seoSettings } = useSEO();
+  const [contactInfo, setContactInfo] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -21,6 +22,21 @@ export const Contact = () => {
     subject: '',
     message: '',
   });
+
+  useEffect(() => {
+    loadContactInfo();
+  }, []);
+
+  const loadContactInfo = async () => {
+    try {
+      const data = await contentAPI.getContact();
+      setContactInfo(data);
+    } catch (error) {
+      console.error('Failed to load contact info:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleChange = (e) => {
     setFormData({
@@ -56,29 +72,37 @@ export const Contact = () => {
       });
   };
 
+  if (loading) {
+    return (
+      <div className="min-h-screen pt-20 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-slate-800"></div>
+      </div>
+    );
+  }
+
   const contactCards = [
     {
       icon: Phone,
       title: 'Telefon',
-      content: contactInfo.phone,
-      link: `tel:${contactInfo.phone}`,
+      content: contactInfo?.phone || '',
+      link: contactInfo?.phone ? `tel:${contactInfo.phone}` : '#',
     },
     {
       icon: Mail,
       title: 'E-posta',
-      content: contactInfo.email,
-      link: `mailto:${contactInfo.email}`,
+      content: contactInfo?.email || '',
+      link: contactInfo?.email ? `mailto:${contactInfo.email}` : '#',
     },
     {
       icon: MapPin,
       title: 'Adres',
-      content: contactInfo.address,
+      content: contactInfo?.address || '',
       link: '#',
     },
     {
       icon: Clock,
       title: 'Çalışma Saatleri',
-      content: contactInfo.workingHours,
+      content: contactInfo?.working_hours || '',
       link: '#',
     },
   ];
