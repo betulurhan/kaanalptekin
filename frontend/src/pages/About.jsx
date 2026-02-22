@@ -72,25 +72,36 @@ export const About = () => {
       {/* Hero Section */}
       <section className="relative py-20 bg-slate-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid md:grid-cols-2 gap-12 items-center">
+          <div className="grid md:grid-cols-2 gap-12 items-start">
+            {/* Left - Photo */}
+            <div className="flex justify-center md:justify-start">
+              <div className="relative inline-block">
+                <img
+                  src={aboutData.image}
+                  alt={aboutData.name}
+                  className="rounded-2xl shadow-2xl max-w-xs md:max-w-sm h-auto object-contain"
+                  style={{ maxHeight: '400px' }}
+                />
+                <div className="absolute -bottom-4 -right-4 bg-slate-800 text-white p-4 rounded-xl shadow-xl">
+                  <p className="text-3xl font-bold text-amber-400 mb-1">{aboutData.completedProjects}</p>
+                  <p className="text-xs">Tamamlanan Proje</p>
+                </div>
+              </div>
+            </div>
+            
+            {/* Right - Info */}
             <div>
-              <h1 className="text-4xl md:text-5xl font-bold text-slate-800 mb-6">
+              <h1 className="text-4xl md:text-5xl font-bold text-slate-800 mb-3">
                 {aboutData.name}
               </h1>
-              <p className="text-xl text-amber-600 font-semibold mb-4">{aboutData.title}</p>
-              <p className="text-slate-600 leading-relaxed whitespace-pre-line">
-                {aboutData.fullBio}
-              </p>
-            </div>
-            <div className="relative">
-              <img
-                src={aboutData.image}
-                alt={aboutData.name}
-                className="rounded-2xl shadow-2xl w-full h-[600px] object-cover"
-              />
-              <div className="absolute -bottom-6 -right-6 bg-slate-800 text-white p-8 rounded-xl shadow-xl">
-                <p className="text-5xl font-bold text-amber-400 mb-2">{aboutData.completedProjects}</p>
-                <p className="text-sm">Tamamlanan Proje</p>
+              <p className="text-xl text-amber-600 font-semibold mb-6">{aboutData.title}</p>
+              
+              {/* Biography */}
+              <div className="bg-white rounded-xl p-6 shadow-lg border-l-4 border-amber-500">
+                <h3 className="text-lg font-bold text-slate-800 mb-3">Biyografi</h3>
+                <p className="text-slate-600 leading-relaxed whitespace-pre-line">
+                  {aboutData.fullBio}
+                </p>
               </div>
             </div>
           </div>
