@@ -19,14 +19,15 @@ async def get_projects(
     type_filter: Optional[str] = None,
     db: AsyncIOMotorDatabase = Depends(get_db)
 ):
-    """Get all projects with optional filters"""
+    """Get all projects with optional filters, sorted by sort_order"""
     query = {}
     if status_filter:
         query["status"] = status_filter
     if type_filter:
         query["type"] = type_filter
     
-    projects = await db.projects.find(query).sort("created_at", -1).to_list(100)
+    # Sort by sort_order first, then by created_at
+    projects = await db.projects.find(query).sort([("sort_order", 1), ("created_at", -1)]).to_list(100)
     return [Project(**project) for project in projects]
 
 
