@@ -100,3 +100,11 @@
 - ✅ Canonical URL'ler
 - ✅ Google Analytics entegrasyonu (admin panelinden ID girişi)
 - ✅ Sayfa bazlı SEO ayarları
+- ✅ Kaan Alp Tekin & Antalya için optimize edildi
+
+## Project Multiple Images (22 Şubat 2026)
+- ✅ Çoklu kat planı yükleme (floor_plans array)
+- ✅ Çoklu proje görseli yükleme (images array)
+- ✅ Admin panelinde dosya seçici ile toplu yükleme
+- ✅ Proje detay sayfasında grid görünümde kat planları
+- ✅ Silme butonu ile görsel kaldırma
