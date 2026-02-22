@@ -1,23 +1,27 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Facebook, Instagram, Linkedin, Twitter, Phone, Mail, MapPin, Clock } from 'lucide-react';
-import { contactInfo } from '../mock/mockData';
 import { contentAPI } from '../services/api';
 
 export const Footer = () => {
   const currentYear = new Date().getFullYear();
   const [siteSettings, setSiteSettings] = useState(null);
+  const [contactInfo, setContactInfo] = useState(null);
 
   useEffect(() => {
-    loadSiteSettings();
+    loadData();
   }, []);
 
-  const loadSiteSettings = async () => {
+  const loadData = async () => {
     try {
-      const settings = await contentAPI.getSiteSettings();
+      const [settings, contact] = await Promise.all([
+        contentAPI.getSiteSettings(),
+        contentAPI.getContact()
+      ]);
       setSiteSettings(settings);
+      setContactInfo(contact);
     } catch (error) {
-      console.error('Failed to load site settings:', error);
+      console.error('Failed to load footer data:', error);
     }
   };
 
@@ -35,11 +39,11 @@ export const Footer = () => {
               />
             ) : (
               <h3 className="text-white text-xl font-bold mb-4">
-                {siteSettings?.site_name || 'GayrimenkulRehberi'}
+                {siteSettings?.site_name || 'Kaan Alp Tekin'}
               </h3>
             )}
             <p className="text-sm leading-relaxed">
-              15 yıllık deneyimimle, hayalinizdeki mülkü bulmanızda güvenilir çözüm ortağınız.
+              Antalya'da profesyonel gayrimenkul danışmanlığı, yatırım danışmanlığı ve proje koordinatörlüğü hizmetleri.
             </p>
           </div>
 
@@ -81,19 +85,19 @@ export const Footer = () => {
             <ul className="space-y-3">
               <li className="flex items-start gap-2">
                 <Phone className="w-4 h-4 mt-1 flex-shrink-0" />
-                <span className="text-sm">{contactInfo.phone}</span>
+                <span className="text-sm">{contactInfo?.phone || ''}</span>
               </li>
               <li className="flex items-start gap-2">
                 <Mail className="w-4 h-4 mt-1 flex-shrink-0" />
-                <span className="text-sm">{contactInfo.email}</span>
+                <span className="text-sm">{contactInfo?.email || ''}</span>
               </li>
               <li className="flex items-start gap-2">
                 <MapPin className="w-4 h-4 mt-1 flex-shrink-0" />
-                <span className="text-sm">{contactInfo.address}</span>
+                <span className="text-sm">{contactInfo?.address || ''}</span>
               </li>
               <li className="flex items-start gap-2">
                 <Clock className="w-4 h-4 mt-1 flex-shrink-0" />
-                <span className="text-sm">{contactInfo.workingHours}</span>
+                <span className="text-sm">{contactInfo?.working_hours || ''}</span>
               </li>
             </ul>
           </div>
@@ -102,42 +106,50 @@ export const Footer = () => {
           <div>
             <h4 className="text-white font-semibold mb-4">Bizi Takip Edin</h4>
             <div className="flex gap-3">
-              <a
-                href={contactInfo.social.facebook}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-10 h-10 rounded-lg bg-slate-800 flex items-center justify-center hover:bg-blue-600 transition-colors duration-300"
-                aria-label="Facebook"
-              >
-                <Facebook className="w-5 h-5" />
-              </a>
-              <a
-                href={contactInfo.social.instagram}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-10 h-10 rounded-lg bg-slate-800 flex items-center justify-center hover:bg-pink-600 transition-colors duration-300"
-                aria-label="Instagram"
-              >
-                <Instagram className="w-5 h-5" />
-              </a>
-              <a
-                href={contactInfo.social.linkedin}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-10 h-10 rounded-lg bg-slate-800 flex items-center justify-center hover:bg-blue-700 transition-colors duration-300"
-                aria-label="LinkedIn"
-              >
-                <Linkedin className="w-5 h-5" />
-              </a>
-              <a
-                href={contactInfo.social.twitter}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-10 h-10 rounded-lg bg-slate-800 flex items-center justify-center hover:bg-sky-500 transition-colors duration-300"
-                aria-label="Twitter"
-              >
-                <Twitter className="w-5 h-5" />
-              </a>
+              {contactInfo?.facebook && (
+                <a
+                  href={contactInfo.facebook}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-10 h-10 rounded-lg bg-slate-800 flex items-center justify-center hover:bg-blue-600 transition-colors duration-300"
+                  aria-label="Facebook"
+                >
+                  <Facebook className="w-5 h-5" />
+                </a>
+              )}
+              {contactInfo?.instagram && (
+                <a
+                  href={contactInfo.instagram}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-10 h-10 rounded-lg bg-slate-800 flex items-center justify-center hover:bg-pink-600 transition-colors duration-300"
+                  aria-label="Instagram"
+                >
+                  <Instagram className="w-5 h-5" />
+                </a>
+              )}
+              {contactInfo?.linkedin && (
+                <a
+                  href={contactInfo.linkedin}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-10 h-10 rounded-lg bg-slate-800 flex items-center justify-center hover:bg-blue-700 transition-colors duration-300"
+                  aria-label="LinkedIn"
+                >
+                  <Linkedin className="w-5 h-5" />
+                </a>
+              )}
+              {contactInfo?.twitter && (
+                <a
+                  href={contactInfo.twitter}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-10 h-10 rounded-lg bg-slate-800 flex items-center justify-center hover:bg-sky-500 transition-colors duration-300"
+                  aria-label="Twitter"
+                >
+                  <Twitter className="w-5 h-5" />
+                </a>
+              )}
             </div>
           </div>
         </div>
@@ -146,7 +158,7 @@ export const Footer = () => {
         <div className="mt-12 pt-8 border-t border-slate-800">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <p className="text-sm text-center md:text-left">
-              © {currentYear} {siteSettings?.site_name || 'GayrimenkulRehberi'}. Tüm hakları saklıdır.
+              © {currentYear} {siteSettings?.site_name || 'Kaan Alp Tekin'}. Tüm hakları saklıdır.
             </p>
             <div className="flex gap-6 text-sm">
               <a href="#" className="hover:text-white transition-colors">
