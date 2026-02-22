@@ -56,7 +56,7 @@ class Project(BaseModel):
     features: List[str]
     completion_date: str
     payment_plan: Optional[str] = None
-    floor_plan: Optional[str] = None  # Floor plan image URL
+    floor_plans: Optional[List[str]] = []  # Multiple floor plan images
     units: Optional[List[ProjectUnit]] = []  # List of units/apartments
     created_at: datetime = Field(default_factory=datetime.utcnow)
     updated_at: datetime = Field(default_factory=datetime.utcnow)
@@ -73,7 +73,7 @@ class ProjectCreate(BaseModel):
     features: List[str]
     completion_date: str
     payment_plan: Optional[str] = None
-    floor_plan: Optional[str] = None
+    floor_plans: Optional[List[str]] = []
     units: Optional[List[ProjectUnit]] = []
 
 class ProjectUpdate(BaseModel):
@@ -88,7 +88,7 @@ class ProjectUpdate(BaseModel):
     features: Optional[List[str]] = None
     completion_date: Optional[str] = None
     payment_plan: Optional[str] = None
-    floor_plan: Optional[str] = None
+    floor_plans: Optional[List[str]] = None
     units: Optional[List[ProjectUnit]] = None
 
 
