@@ -262,11 +262,11 @@ export const Contact = () => {
                   <div className="space-y-3 text-sm text-slate-600">
                     <div className="flex items-start gap-2">
                       <MapPin className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
-                      <span>{contactInfo.address}</span>
+                      <span>{contactInfo?.address || ''}</span>
                     </div>
                     <div className="flex items-start gap-2">
                       <Clock className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
-                      <span>{contactInfo.workingHours}</span>
+                      <span>{contactInfo?.working_hours || ''}</span>
                     </div>
                   </div>
                 </CardContent>
