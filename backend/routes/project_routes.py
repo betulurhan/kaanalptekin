@@ -97,3 +97,74 @@ async def delete_project(
         )
     
     return {"message": "Project deleted successfully"}
+
+
+@router.put("/{project_id}/reorder")
+async def reorder_project(
+    project_id: str,
+    direction: str,  # "up" or "down"
+    payload: dict = Depends(verify_token),
+    db: AsyncIOMotorDatabase = Depends(get_db)
+):
+    """Move a project up or down in the sort order (admin only)"""
+    # Get current project
+    project = await db.projects.find_one({"id": project_id})
+    if not project:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Project not found"
+        )
+    
+    current_order = project.get("sort_order", 0)
+    
+    # Get all projects sorted
+    all_projects = await db.projects.find({}).sort([("sort_order", 1), ("created_at", -1)]).to_list(100)
+    
+    # Find current index
+    current_index = None
+    for i, p in enumerate(all_projects):
+        if p["id"] == project_id:
+            current_index = i
+            break
+    
+    if current_index is None:
+        raise HTTPException(status_code=404, detail="Project not found in list")
+    
+    # Calculate new index
+    if direction == "up" and current_index > 0:
+        swap_index = current_index - 1
+    elif direction == "down" and current_index < len(all_projects) - 1:
+        swap_index = current_index + 1
+    else:
+        return {"message": "Cannot move further"}
+    
+    # Swap sort_order values
+    swap_project = all_projects[swap_index]
+    swap_order = swap_project.get("sort_order", 0)
+    
+    await db.projects.update_one(
+        {"id": project_id},
+        {"$set": {"sort_order": swap_order, "updated_at": datetime.utcnow()}}
+    )
+    await db.projects.update_one(
+        {"id": swap_project["id"]},
+        {"$set": {"sort_order": current_order, "updated_at": datetime.utcnow()}}
+    )
+    
+    return {"message": f"Project moved {direction}"}
+
+
+@router.post("/reorder-all")
+async def reorder_all_projects(
+    project_ids: List[str],
+    payload: dict = Depends(verify_token),
+    db: AsyncIOMotorDatabase = Depends(get_db)
+):
+    """Reorder all projects based on provided ID list (admin only)"""
+    for index, project_id in enumerate(project_ids):
+        await db.projects.update_one(
+            {"id": project_id},
+            {"$set": {"sort_order": index, "updated_at": datetime.utcnow()}}
+        )
+    
+    return {"message": "Projects reordered successfully"}
