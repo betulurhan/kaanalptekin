@@ -108,7 +108,7 @@ async def sitemap():
 @api_router.get("/robots.txt", response_class=PlainTextResponse)
 async def robots():
     """Generate robots.txt"""
-    base_url = os.environ.get('SITE_URL', 'https://ozpinarlar.com')
+    base_url = os.environ.get('SITE_URL', 'https://kaanalptekin.com')
     
     robots_txt = f'''User-agent: *
 Allow: /
