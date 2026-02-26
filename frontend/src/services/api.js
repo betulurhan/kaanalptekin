@@ -307,3 +307,51 @@ export const carouselAPI = {
     return response.data;
   }
 };
+
+
+// İlçe Verileri API
+export const ilceAPI = {
+  getAll: async (sadeceAktif = false) => {
+    const params = sadeceAktif ? '?sadece_aktif=true' : '';
+    const response = await axios.get(`${API}/ilce-verileri${params}`);
+    return response.data;
+  },
+  
+  getVarsayilanIlceler: async () => {
+    const response = await axios.get(`${API}/ilce-verileri/varsayilan-ilceler`);
+    return response.data;
+  },
+  
+  getById: async (id) => {
+    const response = await axios.get(`${API}/ilce-verileri/${id}`);
+    return response.data;
+  },
+  
+  create: async (token, data) => {
+    const response = await axios.post(`${API}/ilce-verileri`, data, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    return response.data;
+  },
+  
+  update: async (token, id, data) => {
+    const response = await axios.put(`${API}/ilce-verileri/${id}`, data, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    return response.data;
+  },
+  
+  delete: async (token, id) => {
+    const response = await axios.delete(`${API}/ilce-verileri/${id}`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    return response.data;
+  },
+  
+  topluEkle: async (token) => {
+    const response = await axios.post(`${API}/ilce-verileri/toplu-ekle`, {}, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    return response.data;
+  }
+};
