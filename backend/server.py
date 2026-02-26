@@ -9,7 +9,7 @@ from pathlib import Path
 from datetime import datetime
 
 # Import routes
-from routes import auth_routes, project_routes, blog_routes, content_routes, message_routes, upload_routes, carousel_routes
+from routes import auth_routes, project_routes, blog_routes, content_routes, message_routes, upload_routes, carousel_routes, ilce_routes
 
 
 ROOT_DIR = Path(__file__).parent
