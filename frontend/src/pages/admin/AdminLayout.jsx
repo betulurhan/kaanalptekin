@@ -12,7 +12,8 @@ import {
   Menu,
   X,
   Image as ImageIcon,
-  Search
+  Search,
+  MapPin
 } from 'lucide-react';
 import { Button } from '../../components/ui/button';
 
@@ -33,6 +34,7 @@ export const AdminLayout = () => {
     { path: '/admin/projects', label: 'Projeler', icon: FolderOpen },
     { path: '/admin/blog', label: 'Blog', icon: BookOpen },
     { path: '/admin/content', label: 'İçerik', icon: FileText },
+    { path: '/admin/ilce-verileri', label: 'İlçe Verileri', icon: MapPin },
     { path: '/admin/messages', label: 'Mesajlar', icon: Mail },
     { path: '/admin/users', label: 'Kullanıcılar', icon: Users },
     { path: '/admin/seo', label: 'SEO', icon: Search },
