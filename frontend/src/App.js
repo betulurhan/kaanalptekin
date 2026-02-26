@@ -37,6 +37,7 @@ function App() {
               <Route path="/projeler" element={<><Navbar /><Projects /><Footer /></>} />
               <Route path="/projeler/:id" element={<><Navbar /><ProjectDetail /><Footer /></>} />
               <Route path="/blog" element={<><Navbar /><Blog /><Footer /></>} />
+              <Route path="/hesaplama" element={<><Navbar /><Hesaplama /><Footer /></>} />
               <Route path="/iletisim" element={<><Navbar /><Contact /><Footer /></>} />
 
               {/* Admin Routes */}
