@@ -53,6 +53,7 @@ function App() {
                 <Route path="messages" element={<AdminMessages />} />
                 <Route path="users" element={<AdminUsers />} />
                 <Route path="seo" element={<AdminSEO />} />
+                <Route path="ilce-verileri" element={<AdminIlceVerileri />} />
               </Route>
             </Routes>
             <Toaster />
