@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, Home, User, FolderOpen, BookOpen, Mail } from 'lucide-react';
+import { Menu, X, Home, User, FolderOpen, BookOpen, Mail, Calculator } from 'lucide-react';
 import { Button } from './ui/button';
 import { contentAPI } from '../services/api';
 
@@ -35,6 +35,7 @@ export const Navbar = () => {
     { path: '/', label: 'Ana Sayfa', icon: Home },
     { path: '/hakkimda', label: 'Hakkımda', icon: User },
     { path: '/projeler', label: 'Projeler', icon: FolderOpen },
+    { path: '/hesaplama', label: 'Hesaplama', icon: Calculator },
     { path: '/blog', label: 'Blog', icon: BookOpen },
     { path: '/iletisim', label: 'İletişim', icon: Mail },
   ];
