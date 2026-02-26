@@ -22,6 +22,7 @@ import AdminMessages from "./pages/admin/AdminMessages";
 import AdminCarousel from "./pages/admin/AdminCarousel";
 import AdminUsers from "./pages/admin/AdminUsers";
 import AdminSEO from "./pages/admin/AdminSEO";
+import AdminIlceVerileri from "./pages/admin/AdminIlceVerileri";
 import ProjectDetail from "./pages/ProjectDetail";
 
 function App() {
