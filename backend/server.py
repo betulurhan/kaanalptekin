@@ -127,6 +127,7 @@ api_router.include_router(content_routes.router)
 api_router.include_router(message_routes.router)
 api_router.include_router(upload_routes.router)
 api_router.include_router(carousel_routes.router)
+api_router.include_router(ilce_routes.router)
 
 # Include the router in the main app
 app.include_router(api_router)
