@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Calculator, Home, Percent, PiggyBank, TrendingUp } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Calculator, Home, Percent, PiggyBank, TrendingUp, MapPin, Clock } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../components/ui/card';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
@@ -7,9 +7,24 @@ import { Button } from '../components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
 import { SEOHead } from '../components/SEOHead';
 import { useSEO } from '../context/SEOContext';
+import { ilceAPI } from '../services/api';
 
 export const Hesaplama = () => {
   const { seoSettings } = useSEO();
+  const [ilceVerileri, setIlceVerileri] = useState([]);
+  
+  useEffect(() => {
+    loadIlceVerileri();
+  }, []);
+
+  const loadIlceVerileri = async () => {
+    try {
+      const data = await ilceAPI.getAll(true); // sadece aktif olanlar
+      setIlceVerileri(data);
+    } catch (error) {
+      console.error('İlçe verileri yüklenemedi:', error);
+    }
+  };
   
   // Taksit Hesaplama State
   const [taksitData, setTaksitData] = useState({
@@ -34,6 +49,15 @@ export const Hesaplama = () => {
     vade: '12'
   });
   const [mevduatSonuc, setMevduatSonuc] = useState(null);
+
+  // Kira Getirisi State
+  const [kiraData, setKiraData] = useState({
+    ilce: '',
+    metrekare: '',
+    satisFiyati: '',
+    aylikKira: ''
+  });
+  const [kiraSonuc, setKiraSonuc] = useState(null);
 
   // Taksit Hesaplama
   const hesaplaTaksit = () => {
