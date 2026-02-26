@@ -367,3 +367,28 @@ class SEOSettingsUpdate(BaseModel):
     contact_title: Optional[str] = None
     contact_description: Optional[str] = None
 
+
+# İlçe Verileri Model (Kira Getirisi Hesaplama için)
+class IlceVerisi(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    ilce_adi: str
+    ortalama_m2_fiyati: float  # Satılık m² fiyatı
+    ortalama_kira_m2: float    # Kiralık m² fiyatı (aylık)
+    aciklama: Optional[str] = None
+    aktif: bool = True
+    guncelleme_tarihi: datetime = Field(default_factory=datetime.utcnow)
+
+class IlceVerisiCreate(BaseModel):
+    ilce_adi: str
+    ortalama_m2_fiyati: float
+    ortalama_kira_m2: float
+    aciklama: Optional[str] = None
+    aktif: Optional[bool] = True
+
+class IlceVerisiUpdate(BaseModel):
+    ilce_adi: Optional[str] = None
+    ortalama_m2_fiyati: Optional[float] = None
+    ortalama_kira_m2: Optional[float] = None
+    aciklama: Optional[str] = None
+    aktif: Optional[bool] = None
+
