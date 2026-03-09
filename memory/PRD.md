@@ -65,10 +65,12 @@ Antalya'da faaliyet gösteren gayrimenkul danışmanı Kaan Alp Tekin için Word
 
 ## Sıradaki Görevler (P1)
 
-### 1. Kira Getirisi Hesaplayıcısı
-- **Durum**: Backend hazır (IlceVerisi modeli, ilce_routes.py)
-- **Yapılacak**: Hesaplama.jsx'te 4. hesaplayıcı (Kira Getirisi ve Amortisman) tamamlanacak
-- **İlçe verileri**: Admin panelinden yönetilebilir
+### 1. ~~Kira Getirisi Hesaplayıcısı~~ ✅ TAMAMLANDI (9 Mart 2026)
+- İlçe seçimi ile otomatik fiyat hesaplama
+- Brüt ve net kira getirisi
+- Amortisman süresi hesaplama
+- 10 yıllık projeksiyon (değer artışı + kira geliri)
+- 6 Antalya ilçesi için örnek veriler eklendi
 
 ### 2. Mevduat Faizi API Entegrasyonu
 - **Durum**: Manuel faiz oranı girişi mevcut
