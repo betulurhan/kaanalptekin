@@ -1,110 +1,122 @@
-# Özpınarlar İnşaat Grubu - Product Requirements Document
+# Kaan Alp Tekin - Gayrimenkul Danışmanlığı Web Sitesi
 
-## Original Problem Statement
-Özpınarlar İnşaat Grubu için gayrimenkul ve inşaat şirketi websitesi. WordPress benzeri admin paneli ile tüm içeriklerin (projeler, blog, görseller, slider, logo) yönetimi yapılabilecek.
+## Proje Özeti
+Antalya'da faaliyet gösteren gayrimenkul danışmanı Kaan Alp Tekin için WordPress benzeri admin panelli profesyonel web sitesi.
 
-## Tech Stack
-- **Frontend**: React 19, React Router v7, Tailwind CSS, Shadcn/UI, Axios
-- **Backend**: FastAPI, MongoDB (Motor), JWT Auth, Python-Jose, Bcrypt
+## Teknoloji Stack
+- **Frontend**: React, TailwindCSS, Shadcn UI, react-beautiful-dnd
+- **Backend**: FastAPI, Python, Motor (MongoDB async driver)
 - **Database**: MongoDB
+- **Authentication**: JWT
 
-## Implemented Features ✅
+## Tamamlanan Özellikler
 
-### Phase 1: Public Website
-- 5 sayfalık profesyonel web sitesi
-- Responsive tasarım (mobil, tablet, masaüstü)
-- Ana sayfa carousel/slider (manuel kontrol)
-- Kategori bazlı proje filtreleme
+### P0 - Tamamlandı (9 Mart 2026)
 
-### Phase 2: Admin Panel
-- JWT tabanlı güvenli authentication
-- Proje Yönetimi (CRUD + görsel yükleme + daire yönetimi)
-- Blog Yönetimi
-- İçerik Yönetimi
-- Slider Özellikleri Yönetimi (tüm içerikler düzenlenebilir)
-- Mesaj Yönetimi
-- Kullanıcı Yönetimi
-- Carousel/Slider Yönetimi
+#### 1. Yasal Sayfalar
+- ✅ Gizlilik Politikası sayfası (`/gizlilik-politikasi`) - KVKK uyumlu profesyonel içerik
+- ✅ Kullanım Koşulları sayfası (`/kullanim-kosullari`) - Hukuki detaylı içerik
+- ✅ Footer'da yasal sayfa linkleri (Link component ile)
 
-### Phase 3: Proje Detay & Daire Yönetimi
-- Proje detay sayfası
-- Tablo bazlı daire yönetimi UI
-- Ünite tipleri gösterimi
+#### 2. Ana Sayfa Admin Kontrolü
+- ✅ İstatistik kutuları admin panelinden yönetilebilir (İstatistikler tabı)
+- ✅ CTA bölümü admin panelinden yönetilebilir (CTA tabı)
+- ✅ Backend endpoint'leri: GET/PUT `/api/content/home-stats`, `/api/content/home-cta`
 
-### Phase 4: Slider Tam Yönetim (22 Şubat 2026)
-- Badge metni düzenlenebilir
-- İkinci CTA butonu düzenlenebilir
-- Güven göstergeleri (Trust Indicators) düzenlenebilir
-- Kart içerikleri düzenlenebilir
-- İstatistikler düzenlenebilir
+#### 3. İletişim Sayfası
+- ✅ Google Maps embed URL admin panelinden yönetilebilir
+- ✅ `map_embed_url` alanı ContactInfo modeline eklendi
 
-### Phase 5: Güvenlik & Deployment Hazırlık
-- JWT Secret Key güçlendirildi
-- SQL Injection koruması
-- XSS koruması
-- Auth bypass koruması
-- Varsayılan şifre bilgisi kaldırıldı
-- Responsive tasarım %100 uyumlu
+#### 4. Blog İçerikleri
+- ✅ 4 yeni blog yazısı oluşturuldu:
+  - Antalya'da Gayrimenkul Yatırımı: 2025 Rehberi (Yatırım Tavsiyeleri)
+  - Gayrimenkul Alırken Dikkat Edilmesi Gereken Hukuki Noktalar (Hukuki Bilgiler)
+  - Küçük Alanları Büyük Göstermenin 8 Sırrı (Dekorasyon)
+  - Antalya İlçe Rehberi: Hangi Semtte Yaşamalı? (Bölge Rehberi)
 
-### Phase 6: Logo Yönetimi & UI İyileştirmeleri (21 Şubat 2026)
-- ✅ Logo yönetimi sistemi (SiteSettings model)
-- ✅ Admin panelinde Logo sekmesi
-- ✅ Navbar logosu yüklenebilir
-- ✅ Footer logosu yüklenebilir
-- ✅ Site adı düzenlenebilir
-- ✅ Slider üzerinde menü yazıları açık renkli (beyaz)
-- ✅ Diğer sayfalarda menü yazıları koyu renkli
-- ✅ Scroll sonrası navbar renk geçişi
+### Daha Önce Tamamlananlar
 
-## Security Measures
-- ✅ JWT ile token-based authentication
-- ✅ Güçlü rastgele JWT_SECRET_KEY
-- ✅ Bcrypt ile şifre hashleme
-- ✅ CORS yapılandırması
-- ✅ Input validation (Pydantic)
-- ✅ SQL Injection koruması
-- ✅ XSS koruması
-- ✅ Auth gerektiren endpoint'ler korumalı
+#### Proje Yönetimi
+- ✅ Proje CRUD işlemleri
+- ✅ Drag-and-drop proje sıralama
+- ✅ Çoklu görsel yükleme (galeri ve kat planları)
 
-## Default Admin Credentials
-- **URL**: /admin/login
-- **Username**: admin
-- **Password**: admin123
-- ⚠️ İlk girişte şifreyi değiştirin!
+#### Hesaplama Araçları (`/hesaplama`)
+- ✅ Kredi Taksit Hesaplama
+- ✅ Emlak Vergisi Hesaplama (Antalya'ya özel)
+- ✅ Mevduat Faizi Hesaplama
 
-## API Endpoints
-- POST `/api/auth/login` - Giriş
-- GET `/api/auth/verify` - Token doğrulama
-- `/api/projects` - Proje CRUD
-- `/api/content/hero-features` - Slider özellikleri
-- `/api/content/site-settings` - Logo ve site ayarları
-- `/api/carousel` - Carousel slide'ları
-- `/api/blog` - Blog CRUD
-- `/api/messages` - İletişim mesajları
-- `/api/upload` - Dosya yükleme
+#### SEO
+- ✅ Dinamik sitemap.xml ve robots.txt
+- ✅ SEO ayarları admin paneli
+- ✅ Meta tag yönetimi
+- ✅ Schema.org organization bilgileri
 
-## Test Reports
-- `/app/test_reports/iteration_4.json` - Son test (100% başarılı)
+#### Admin Panel
+- ✅ Dashboard
+- ✅ Slider yönetimi
+- ✅ Proje yönetimi (drag-and-drop)
+- ✅ Blog yönetimi
+- ✅ İçerik yönetimi (7 tab: Logo, Ana Sayfa, Slider, İstatistikler, CTA, Hakkımda, İletişim)
+- ✅ İlçe verileri yönetimi
+- ✅ Mesajlar
+- ✅ Kullanıcı yönetimi
+- ✅ SEO ayarları
 
-## Remaining Tasks
-- P1: Admin şifre değiştirme özelliği
-- P2: Rich text editör (Blog için)
-- P2: Öne çıkan proje sistemi
+## Sıradaki Görevler (P1)
 
-## SEO Features (21 Şubat 2026)
-- ✅ Admin panelinde SEO yönetim sayfası
-- ✅ Meta etiketleri (title, description, keywords)
-- ✅ Yapısal veri (Schema.org - Organization, RealEstateAgent, WebSite)
-- ✅ Sitemap.xml (dinamik oluşturma)
-- ✅ robots.txt
-- ✅ Canonical URL'ler
-- ✅ Google Analytics entegrasyonu (admin panelinden ID girişi)
-- ✅ Sayfa bazlı SEO ayarları
-- ✅ Kaan Alp Tekin & Antalya için optimize edildi
+### 1. Kira Getirisi Hesaplayıcısı
+- **Durum**: Backend hazır (IlceVerisi modeli, ilce_routes.py)
+- **Yapılacak**: Hesaplama.jsx'te 4. hesaplayıcı (Kira Getirisi ve Amortisman) tamamlanacak
+- **İlçe verileri**: Admin panelinden yönetilebilir
 
-## Project Multiple Images (22 Şubat 2026)
-- ✅ Çoklu kat planı yükleme (floor_plans array)
-- ✅ Çoklu proje görseli yükleme (images array)
-- ✅ Admin panelinde dosya seçici ile toplu yükleme
-- ✅ Proje detay sayfasında grid görünümde kat planları
-- ✅ Silme butonu ile görsel kaldırma
+### 2. Mevduat Faizi API Entegrasyonu
+- **Durum**: Manuel faiz oranı girişi mevcut
+- **Yapılacak**: Banka API'lerinden güncel faiz oranları çekilecek
+
+## Gelecek Görevler (P2)
+
+### 1. Blog Zengin Metin Editörü
+- TipTap veya benzeri rich text editor entegrasyonu
+- Bağımlılıklar zaten yüklü
+
+### 2. Öne Çıkan Proje Sistemi
+- `is_featured` boolean field eklenmesi
+- Admin panelinde toggle
+
+### 3. Admin Şifre Değiştirme UI
+- Backend endpoint mevcut: `PUT /api/auth/change-password/{user_id}`
+- AdminUsers.jsx'e modal eklenmesi gerekiyor
+
+## Dosya Yapısı
+
+```
+/app
+├── backend/
+│   ├── routes/
+│   │   ├── auth_routes.py
+│   │   ├── blog_routes.py
+│   │   ├── content_routes.py (home-stats, home-cta endpoint'leri)
+│   │   ├── ilce_routes.py
+│   │   └── project_routes.py
+│   ├── models.py (HomeStats, HomeCTA, ContactInfo.map_embed_url)
+│   └── server.py
+└── frontend/
+    ├── src/
+    │   ├── pages/
+    │   │   ├── admin/AdminContent.jsx (7 tab)
+    │   │   ├── GizlilikPolitikasi.jsx
+    │   │   ├── KullanimKosullari.jsx
+    │   │   ├── Home.jsx (dinamik stats ve CTA)
+    │   │   └── Contact.jsx (dinamik harita)
+    │   └── components/Footer.jsx (yasal sayfa linkleri)
+    └── package.json
+```
+
+## Test Raporu
+- Son test: iteration_5.json - %100 başarı (backend 8/8, frontend tümü geçti)
+- Admin: admin / admin123
+
+## Notlar
+- Tüm içerikler admin panelinden yönetilebilir (mock data yok)
+- SEO Antalya'ya özgü anahtar kelimeler için optimize edildi
