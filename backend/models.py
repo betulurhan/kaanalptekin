@@ -163,6 +163,7 @@ class ContactInfo(BaseModel):
     instagram: Optional[str] = None
     linkedin: Optional[str] = None
     twitter: Optional[str] = None
+    map_embed_url: Optional[str] = None  # Google Maps embed URL
     updated_at: datetime = Field(default_factory=datetime.utcnow)
 
 class ContactInfoUpdate(BaseModel):
@@ -174,6 +175,7 @@ class ContactInfoUpdate(BaseModel):
     instagram: Optional[str] = None
     linkedin: Optional[str] = None
     twitter: Optional[str] = None
+    map_embed_url: Optional[str] = None
 
 
 # Hero Content Model
@@ -392,3 +394,36 @@ class IlceVerisiUpdate(BaseModel):
     aciklama: Optional[str] = None
     aktif: Optional[bool] = None
 
+
+# Ana Sayfa İstatistik Kutuları
+class HomeStatItem(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    icon: str  # award, building, users, trending-up vb.
+    value: str  # "15+", "200+", "%98"
+    label: str  # "Yıllık Deneyim", "Mutlu Müşteri"
+    order: int = 0
+    is_active: bool = True
+
+class HomeStats(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    stats: List[HomeStatItem] = []
+    updated_at: datetime = Field(default_factory=datetime.utcnow)
+
+class HomeStatsUpdate(BaseModel):
+    stats: Optional[List[HomeStatItem]] = None
+
+
+# Ana Sayfa CTA (Call to Action) Bölümü
+class HomeCTA(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    title: str = "Hayalinizdeki Gayrimenkul İçin Benimle İletişime Geçin"
+    description: str = "15 yıllık deneyimimle, size en uygun mülk seçeneklerini sunmak için hazırım."
+    button_text: str = "Ücretsiz Danışmanlık Alın"
+    button_link: str = "/iletisim"
+    updated_at: datetime = Field(default_factory=datetime.utcnow)
+
+class HomeCTAUpdate(BaseModel):
+    title: Optional[str] = None
+    description: Optional[str] = None
+    button_text: Optional[str] = None
+    button_link: Optional[str] = None

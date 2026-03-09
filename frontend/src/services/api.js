@@ -203,6 +203,30 @@ export const contentAPI = {
       headers: { Authorization: `Bearer ${token}` }
     });
     return response.data;
+  },
+  
+  getHomeStats: async () => {
+    const response = await axios.get(`${API}/content/home-stats`);
+    return response.data;
+  },
+  
+  updateHomeStats: async (token, data) => {
+    const response = await axios.put(`${API}/content/home-stats`, data, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    return response.data;
+  },
+  
+  getHomeCTA: async () => {
+    const response = await axios.get(`${API}/content/home-cta`);
+    return response.data;
+  },
+  
+  updateHomeCTA: async (token, data) => {
+    const response = await axios.put(`${API}/content/home-cta`, data, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    return response.data;
   }
 };
 

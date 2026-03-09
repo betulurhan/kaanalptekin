@@ -161,12 +161,12 @@ export const Footer = () => {
               © {currentYear} {siteSettings?.site_name || 'Kaan Alp Tekin'}. Tüm hakları saklıdır.
             </p>
             <div className="flex gap-6 text-sm">
-              <a href="#" className="hover:text-white transition-colors">
+              <Link to="/gizlilik-politikasi" className="hover:text-white transition-colors">
                 Gizlilik Politikası
-              </a>
-              <a href="#" className="hover:text-white transition-colors">
+              </Link>
+              <Link to="/kullanim-kosullari" className="hover:text-white transition-colors">
                 Kullanım Koşulları
-              </a>
+              </Link>
             </div>
           </div>
         </div>

@@ -8,7 +8,7 @@ import { Label } from '../../components/ui/label';
 import { Textarea } from '../../components/ui/textarea';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../components/ui/select';
-import { Save, Upload, Image as ImageIcon, Plus, Trash2, Home, Key, Building2, MapPin, Users, Award, Star, Phone, CheckCircle2, Shield } from 'lucide-react';
+import { Save, Upload, Image as ImageIcon, Plus, Trash2, Home, Key, Building2, MapPin, Users, Award, Star, Phone, CheckCircle2, Shield, TrendingUp, BarChart3, Map } from 'lucide-react';
 import { useToast } from '../../hooks/use-toast';
 
 export const AdminContent = () => {
@@ -39,6 +39,13 @@ export const AdminContent = () => {
     rating: '4.9/5',
     rating_label: 'Müşteri Puanı'
   });
+  const [homeStats, setHomeStats] = useState({ stats: [] });
+  const [homeCTA, setHomeCTA] = useState({
+    title: '',
+    description: '',
+    button_text: '',
+    button_link: ''
+  });
 
   const iconOptions = [
     { value: 'home', label: 'Ev', icon: Home },
@@ -49,6 +56,17 @@ export const AdminContent = () => {
     { value: 'award', label: 'Ödül', icon: Award },
     { value: 'star', label: 'Yıldız', icon: Star },
     { value: 'phone', label: 'Telefon', icon: Phone }
+  ];
+
+  const statIconOptions = [
+    { value: 'award', label: 'Ödül', icon: Award },
+    { value: 'building', label: 'Bina', icon: Building2 },
+    { value: 'users', label: 'Kullanıcılar', icon: Users },
+    { value: 'trending-up', label: 'Trend', icon: TrendingUp },
+    { value: 'star', label: 'Yıldız', icon: Star },
+    { value: 'bar-chart', label: 'Grafik', icon: BarChart3 },
+    { value: 'home', label: 'Ev', icon: Home },
+    { value: 'map-pin', label: 'Konum', icon: MapPin }
   ];
 
   const trustIconOptions = [
@@ -71,18 +89,22 @@ export const AdminContent = () => {
 
   const loadContent = async () => {
     try {
-      const [about, contact, hero, features, settings] = await Promise.all([
+      const [about, contact, hero, features, settings, stats, cta] = await Promise.all([
         contentAPI.getAbout(),
         contentAPI.getContact(),
         contentAPI.getHero(),
         contentAPI.getHeroFeatures().catch(() => null),
-        contentAPI.getSiteSettings().catch(() => null)
+        contentAPI.getSiteSettings().catch(() => null),
+        contentAPI.getHomeStats().catch(() => null),
+        contentAPI.getHomeCTA().catch(() => null)
       ]);
       setAboutData(about);
       setContactData(contact);
       setHeroData(hero);
       if (features) setHeroFeatures(features);
       if (settings) setSiteSettings(settings);
+      if (stats) setHomeStats(stats);
+      if (cta) setHomeCTA(cta);
     } finally {
       setLoading(false);
     }
@@ -155,6 +177,26 @@ export const AdminContent = () => {
     }
   };
 
+  const handleSaveHomeStats = async (e) => {
+    e.preventDefault();
+    try {
+      await contentAPI.updateHomeStats(token, homeStats);
+      toast({ title: 'Başarılı', description: 'İstatistikler güncellendi' });
+    } catch (error) {
+      toast({ title: 'Hata', description: 'Güncellenemedi', variant: 'destructive' });
+    }
+  };
+
+  const handleSaveHomeCTA = async (e) => {
+    e.preventDefault();
+    try {
+      await contentAPI.updateHomeCTA(token, homeCTA);
+      toast({ title: 'Başarılı', description: 'CTA bölümü güncellendi' });
+    } catch (error) {
+      toast({ title: 'Hata', description: 'Güncellenemedi', variant: 'destructive' });
+    }
+  };
+
   const handleSaveSiteSettings = async (e) => {
     e.preventDefault();
     try {
@@ -216,6 +258,33 @@ export const AdminContent = () => {
     setHeroFeatures({ ...heroFeatures, trust_indicators: newIndicators });
   };
 
+  // Home Stats functions
+  const addStat = () => {
+    const newStat = {
+      id: Date.now().toString(),
+      icon: 'award',
+      value: '',
+      label: '',
+      order: homeStats.stats?.length || 0,
+      is_active: true
+    };
+    setHomeStats({
+      ...homeStats,
+      stats: [...(homeStats.stats || []), newStat]
+    });
+  };
+
+  const updateStat = (index, field, value) => {
+    const newStats = [...(homeStats.stats || [])];
+    newStats[index] = { ...newStats[index], [field]: value };
+    setHomeStats({ ...homeStats, stats: newStats });
+  };
+
+  const removeStat = (index) => {
+    const newStats = (homeStats.stats || []).filter((_, i) => i !== index);
+    setHomeStats({ ...homeStats, stats: newStats });
+  };
+
   if (loading) return <div className="flex justify-center py-12"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-slate-800"></div></div>;
 
   return (
@@ -223,10 +292,12 @@ export const AdminContent = () => {
       <h1 className="text-3xl font-bold text-slate-800">İçerik Yönetimi</h1>
       
       <Tabs defaultValue="logo">
-        <TabsList className="grid w-full grid-cols-5">
+        <TabsList className="grid w-full grid-cols-7">
           <TabsTrigger value="logo">Logo</TabsTrigger>
           <TabsTrigger value="hero">Ana Sayfa</TabsTrigger>
-          <TabsTrigger value="slider">Slider Özellikleri</TabsTrigger>
+          <TabsTrigger value="slider">Slider</TabsTrigger>
+          <TabsTrigger value="stats">İstatistikler</TabsTrigger>
+          <TabsTrigger value="cta">CTA</TabsTrigger>
           <TabsTrigger value="about">Hakkımda</TabsTrigger>
           <TabsTrigger value="contact">İletişim</TabsTrigger>
         </TabsList>
@@ -535,6 +606,94 @@ export const AdminContent = () => {
           </CardContent></Card>
         </TabsContent>
 
+        <TabsContent value="stats">
+          <Card><CardHeader><CardTitle>Ana Sayfa İstatistik Kutuları</CardTitle></CardHeader><CardContent>
+            <form onSubmit={handleSaveHomeStats} className="space-y-6">
+              <p className="text-sm text-slate-500">Ana sayfada slider altında gösterilen istatistik kutuları (Yıllık Deneyim, Tamamlanan Proje vb.)</p>
+              
+              <div className="flex justify-end">
+                <Button type="button" size="sm" onClick={addStat} className="bg-amber-500 hover:bg-amber-600">
+                  <Plus className="w-4 h-4 mr-1" /> İstatistik Ekle
+                </Button>
+              </div>
+              
+              {(homeStats.stats || []).length > 0 ? (
+                <div className="space-y-3">
+                  {(homeStats.stats || []).map((stat, index) => (
+                    <div key={stat.id || index} className="grid grid-cols-[120px_1fr_1fr_auto] gap-3 p-4 bg-slate-50 rounded-lg border">
+                      <div>
+                        <Label className="text-xs text-slate-500">İkon</Label>
+                        <Select value={stat.icon} onValueChange={(val) => updateStat(index, 'icon', val)}>
+                          <SelectTrigger className="h-9"><SelectValue /></SelectTrigger>
+                          <SelectContent>
+                            {statIconOptions.map(opt => (
+                              <SelectItem key={opt.value} value={opt.value}>
+                                <span className="flex items-center gap-2">
+                                  <opt.icon className="w-4 h-4" /> {opt.label}
+                                </span>
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div>
+                        <Label className="text-xs text-slate-500">Değer</Label>
+                        <Input value={stat.value} onChange={(e) => updateStat(index, 'value', e.target.value)} placeholder="15+" className="h-9" />
+                      </div>
+                      <div>
+                        <Label className="text-xs text-slate-500">Etiket</Label>
+                        <Input value={stat.label} onChange={(e) => updateStat(index, 'label', e.target.value)} placeholder="Yıllık Deneyim" className="h-9" />
+                      </div>
+                      <div className="flex items-end">
+                        <Button type="button" variant="ghost" size="sm" className="text-red-600 hover:bg-red-50 h-9" onClick={() => removeStat(index)}>
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-8 text-slate-500 bg-slate-50 rounded-lg">
+                  <BarChart3 className="w-12 h-12 mx-auto mb-2 text-slate-300" />
+                  <p>Henüz istatistik eklenmedi</p>
+                  <p className="text-xs mt-1">Yukarıdaki "İstatistik Ekle" butonunu kullanın</p>
+                </div>
+              )}
+              
+              <Button type="submit" className="bg-amber-500 hover:bg-amber-600"><Save className="w-4 h-4 mr-2" /> Kaydet</Button>
+            </form>
+          </CardContent></Card>
+        </TabsContent>
+
+        <TabsContent value="cta">
+          <Card><CardHeader><CardTitle>Ana Sayfa CTA Bölümü</CardTitle></CardHeader><CardContent>
+            <form onSubmit={handleSaveHomeCTA} className="space-y-4">
+              <p className="text-sm text-slate-500 mb-4">Ana sayfanın alt kısmında yer alan "Hayalinizdeki Gayrimenkul İçin..." bölümü</p>
+              
+              <div>
+                <Label>Başlık</Label>
+                <Input value={homeCTA.title || ''} onChange={(e) => setHomeCTA({ ...homeCTA, title: e.target.value })} placeholder="Hayalinizdeki Gayrimenkul İçin Benimle İletişime Geçin" />
+              </div>
+              <div>
+                <Label>Açıklama</Label>
+                <Textarea value={homeCTA.description || ''} onChange={(e) => setHomeCTA({ ...homeCTA, description: e.target.value })} placeholder="15 yıllık deneyimimle, size en uygun mülk seçeneklerini sunmak için hazırım." rows={3} />
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label>Buton Metni</Label>
+                  <Input value={homeCTA.button_text || ''} onChange={(e) => setHomeCTA({ ...homeCTA, button_text: e.target.value })} placeholder="Ücretsiz Danışmanlık Alın" />
+                </div>
+                <div>
+                  <Label>Buton Linki</Label>
+                  <Input value={homeCTA.button_link || ''} onChange={(e) => setHomeCTA({ ...homeCTA, button_link: e.target.value })} placeholder="/iletisim" />
+                </div>
+              </div>
+              
+              <Button type="submit" className="bg-amber-500 hover:bg-amber-600"><Save className="w-4 h-4 mr-2" /> Kaydet</Button>
+            </form>
+          </CardContent></Card>
+        </TabsContent>
+
         <TabsContent value="about">
           <Card><CardHeader><CardTitle>Hakkımda İçeriği</CardTitle></CardHeader><CardContent>
             <form onSubmit={handleSaveAbout} className="space-y-4">
@@ -579,6 +738,36 @@ export const AdminContent = () => {
                 <div><Label>LinkedIn URL</Label><Input value={contactData.linkedin || ''} onChange={(e) => setContactData({ ...contactData, linkedin: e.target.value })} /></div>
                 <div><Label>Twitter URL</Label><Input value={contactData.twitter || ''} onChange={(e) => setContactData({ ...contactData, twitter: e.target.value })} /></div>
               </div>
+              
+              {/* Google Maps */}
+              <div className="border rounded-lg p-4 bg-blue-50">
+                <div className="flex items-center gap-2 mb-3">
+                  <Map className="w-5 h-5 text-blue-600" />
+                  <Label className="text-lg font-semibold">Google Maps Embed</Label>
+                </div>
+                <Input 
+                  value={contactData.map_embed_url || ''} 
+                  onChange={(e) => setContactData({ ...contactData, map_embed_url: e.target.value })} 
+                  placeholder="https://www.google.com/maps/embed?pb=..."
+                />
+                <p className="text-xs text-slate-500 mt-2">
+                  Google Maps'ten "Paylaş" → "Harita yerleştir" → iframe kodundaki src URL'sini kopyalayın
+                </p>
+                {contactData.map_embed_url && (
+                  <div className="mt-3 rounded overflow-hidden border">
+                    <iframe
+                      src={contactData.map_embed_url}
+                      width="100%"
+                      height="200"
+                      style={{ border: 0 }}
+                      allowFullScreen=""
+                      loading="lazy"
+                      title="Map Preview"
+                    ></iframe>
+                  </div>
+                )}
+              </div>
+              
               <Button type="submit" className="bg-amber-500 hover:bg-amber-600"><Save className="w-4 h-4 mr-2" /> Kaydet</Button>
             </form>
           </CardContent></Card>

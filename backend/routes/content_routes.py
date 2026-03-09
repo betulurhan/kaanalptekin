@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, Depends, status
 from motor.motor_asyncio import AsyncIOMotorDatabase
-from models import AboutContent, AboutContentUpdate, ContactInfo, ContactInfoUpdate, HeroContent, HeroContentUpdate, HeroFeatures, HeroFeaturesUpdate, HeroFeatureItem, TrustIndicator, SiteSettings, SiteSettingsUpdate, SEOSettings, SEOSettingsUpdate
+from models import AboutContent, AboutContentUpdate, ContactInfo, ContactInfoUpdate, HeroContent, HeroContentUpdate, HeroFeatures, HeroFeaturesUpdate, HeroFeatureItem, TrustIndicator, SiteSettings, SiteSettingsUpdate, SEOSettings, SEOSettingsUpdate, HomeStats, HomeStatsUpdate, HomeStatItem, HomeCTA, HomeCTAUpdate
 from auth import verify_token
 from datetime import datetime
 import uuid
@@ -343,3 +343,112 @@ async def update_seo_settings(
     
     updated = await db.seo_settings.find_one({"id": existing["id"]})
     return {k: v for k, v in updated.items() if k != "_id"}
+
+
+# Home Stats Endpoints
+@router.get("/home-stats")
+async def get_home_stats(db: AsyncIOMotorDatabase = Depends(get_db)):
+    """Get home page statistics"""
+    stats = await db.home_stats.find_one()
+    if not stats:
+        # Return default if not exists
+        default_stats = {
+            "id": str(uuid.uuid4()),
+            "stats": [
+                {"id": str(uuid.uuid4()), "icon": "award", "value": "15+", "label": "Yıllık Deneyim", "order": 0, "is_active": True},
+                {"id": str(uuid.uuid4()), "icon": "building", "value": "200+", "label": "Tamamlanan Proje", "order": 1, "is_active": True},
+                {"id": str(uuid.uuid4()), "icon": "users", "value": "500+", "label": "Mutlu Müşteri", "order": 2, "is_active": True},
+                {"id": str(uuid.uuid4()), "icon": "trending-up", "value": "%98", "label": "Memnuniyet Oranı", "order": 3, "is_active": True}
+            ],
+            "updated_at": datetime.utcnow()
+        }
+        await db.home_stats.insert_one(default_stats)
+        return {k: v for k, v in default_stats.items() if k != "_id"}
+    return {k: v for k, v in stats.items() if k != "_id"}
+
+
+@router.put("/home-stats")
+async def update_home_stats(
+    stats_data: HomeStatsUpdate,
+    payload: dict = Depends(verify_token),
+    db: AsyncIOMotorDatabase = Depends(get_db)
+):
+    """Update home page statistics (admin only)"""
+    existing = await db.home_stats.find_one()
+    
+    if not existing:
+        default_stats = {
+            "id": str(uuid.uuid4()),
+            "stats": [],
+            "updated_at": datetime.utcnow()
+        }
+        await db.home_stats.insert_one(default_stats)
+        existing = await db.home_stats.find_one()
+    
+    update_data = {}
+    if stats_data.stats is not None:
+        update_data["stats"] = [s.dict() if hasattr(s, 'dict') else s for s in stats_data.stats]
+    
+    update_data["updated_at"] = datetime.utcnow()
+    
+    await db.home_stats.update_one(
+        {"id": existing["id"]},
+        {"$set": update_data}
+    )
+    
+    updated = await db.home_stats.find_one({"id": existing["id"]})
+    return {k: v for k, v in updated.items() if k != "_id"}
+
+
+# Home CTA Endpoints
+@router.get("/home-cta")
+async def get_home_cta(db: AsyncIOMotorDatabase = Depends(get_db)):
+    """Get home page CTA section"""
+    cta = await db.home_cta.find_one()
+    if not cta:
+        # Return default if not exists
+        default_cta = {
+            "id": str(uuid.uuid4()),
+            "title": "Hayalinizdeki Gayrimenkul İçin Benimle İletişime Geçin",
+            "description": "15 yıllık deneyimimle, size en uygun mülk seçeneklerini sunmak için hazırım.",
+            "button_text": "Ücretsiz Danışmanlık Alın",
+            "button_link": "/iletisim",
+            "updated_at": datetime.utcnow()
+        }
+        await db.home_cta.insert_one(default_cta)
+        return {k: v for k, v in default_cta.items() if k != "_id"}
+    return {k: v for k, v in cta.items() if k != "_id"}
+
+
+@router.put("/home-cta")
+async def update_home_cta(
+    cta_data: HomeCTAUpdate,
+    payload: dict = Depends(verify_token),
+    db: AsyncIOMotorDatabase = Depends(get_db)
+):
+    """Update home page CTA section (admin only)"""
+    existing = await db.home_cta.find_one()
+    
+    if not existing:
+        default_cta = {
+            "id": str(uuid.uuid4()),
+            "title": "Hayalinizdeki Gayrimenkul İçin Benimle İletişime Geçin",
+            "description": "15 yıllık deneyimimle, size en uygun mülk seçeneklerini sunmak için hazırım.",
+            "button_text": "Ücretsiz Danışmanlık Alın",
+            "button_link": "/iletisim",
+            "updated_at": datetime.utcnow()
+        }
+        await db.home_cta.insert_one(default_cta)
+        existing = await db.home_cta.find_one()
+    
+    update_data = {k: v for k, v in cta_data.dict().items() if v is not None}
+    update_data["updated_at"] = datetime.utcnow()
+    
+    await db.home_cta.update_one(
+        {"id": existing["id"]},
+        {"$set": update_data}
+    )
+    
+    updated = await db.home_cta.find_one({"id": existing["id"]})
+    return {k: v for k, v in updated.items() if k != "_id"}
+

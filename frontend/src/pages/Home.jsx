@@ -14,6 +14,8 @@ export const Home = () => {
   const [carouselSlides, setCarouselSlides] = useState([]);
   const [projects, setProjects] = useState([]);
   const [heroFeatures, setHeroFeatures] = useState(null);
+  const [homeStats, setHomeStats] = useState(null);
+  const [homeCTA, setHomeCTA] = useState(null);
   const [selectedType, setSelectedType] = useState('all');
   const [loading, setLoading] = useState(true);
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -38,14 +40,18 @@ export const Home = () => {
 
   const loadData = async () => {
     try {
-      const [slides, projectsData, features] = await Promise.all([
+      const [slides, projectsData, features, stats, cta] = await Promise.all([
         carouselAPI.getAll(true),
         projectsAPI.getAll(),
-        contentAPI.getHeroFeatures().catch(() => null)
+        contentAPI.getHeroFeatures().catch(() => null),
+        contentAPI.getHomeStats().catch(() => null),
+        contentAPI.getHomeCTA().catch(() => null)
       ]);
       setCarouselSlides(slides);
       setProjects(projectsData);
       setHeroFeatures(features);
+      setHomeStats(stats);
+      setHomeCTA(cta);
     } catch (error) {
       console.error('Failed to load data:', error);
     } finally {
@@ -63,7 +69,11 @@ export const Home = () => {
       'users': Users,
       'award': Award,
       'star': Star,
-      'phone': Phone
+      'phone': Phone,
+      'trending-up': TrendingUp,
+      'bar-chart': TrendingUp,
+      'shield': Shield,
+      'check-circle': CheckCircle2
     };
     return icons[iconName] || Key;
   };
@@ -80,12 +90,23 @@ export const Home = () => {
     ? projects.slice(0, 6)
     : projects.filter((p) => p.type === selectedType).slice(0, 6);
 
-  const stats = [
-    { icon: Award, value: '15+', label: 'Yıllık Deneyim' },
-    { icon: Building2, value: '200+', label: 'Tamamlanan Proje' },
-    { icon: Users, value: '500+', label: 'Mutlu Müşteri' },
-    { icon: TrendingUp, value: '%98', label: 'Memnuniyet Oranı' },
-  ];
+  // Dynamic stats from admin or defaults
+  const displayStats = (homeStats?.stats?.length > 0) 
+    ? homeStats.stats.filter(s => s.is_active !== false)
+    : [
+        { icon: 'award', value: '15+', label: 'Yıllık Deneyim' },
+        { icon: 'building', value: '200+', label: 'Tamamlanan Proje' },
+        { icon: 'users', value: '500+', label: 'Mutlu Müşteri' },
+        { icon: 'trending-up', value: '%98', label: 'Memnuniyet Oranı' },
+      ];
+
+  // Dynamic CTA from admin or defaults
+  const displayCTA = homeCTA || {
+    title: 'Hayalinizdeki Gayrimenkul İçin Benimle İletişime Geçin',
+    description: '15 yıllık deneyimimle, size en uygun mülk seçeneklerini sunmak için hazırım.',
+    button_text: 'Ücretsiz Danışmanlık Alın',
+    button_link: '/iletisim'
+  };
 
   return (
     <div className="min-h-screen">
@@ -353,8 +374,8 @@ export const Home = () => {
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            {stats.map((stat, index) => {
-              const Icon = stat.icon;
+            {displayStats.map((stat, index) => {
+              const Icon = getIcon(stat.icon);
               return (
                 <Card key={index} className="text-center border-none shadow-lg hover:shadow-xl transition-shadow duration-300">
                   <CardContent className="p-8">
@@ -452,16 +473,16 @@ export const Home = () => {
       <section className="py-20 bg-slate-800 text-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-3xl md:text-4xl font-bold mb-6">
-            Hayalinizdeki Gayrimenkul İçin Benimle İletişime Geçin
+            {displayCTA.title}
           </h2>
           <p className="text-slate-300 mb-8 text-lg">
-            15 yıllık deneyimimle, size en uygun mülk seçeneklerini sunmak için hazırım.
+            {displayCTA.description}
           </p>
           <a
-            href="/iletisim"
+            href={displayCTA.button_link}
             className="inline-block bg-amber-500 hover:bg-amber-600 text-white font-semibold px-10 py-4 rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg"
           >
-            Ücretsiz Danışmanlık Alın
+            {displayCTA.button_text}
           </a>
         </div>
       </section>

@@ -42,6 +42,8 @@ function App() {
               <Route path="/blog" element={<><Navbar /><Blog /><Footer /></>} />
               <Route path="/hesaplama" element={<><Navbar /><Hesaplama /><Footer /></>} />
               <Route path="/iletisim" element={<><Navbar /><Contact /><Footer /></>} />
+              <Route path="/gizlilik-politikasi" element={<><Navbar /><GizlilikPolitikasi /><Footer /></>} />
+              <Route path="/kullanim-kosullari" element={<><Navbar /><KullanimKosullari /><Footer /></>} />
 
               {/* Admin Routes */}
               <Route path="/admin/login" element={<AdminLogin />} />

@@ -246,15 +246,27 @@ export const Contact = () => {
             <div className="space-y-6">
               <Card className="border-none shadow-xl overflow-hidden">
                 <div className="h-80 bg-slate-200">
-                  <iframe
-                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3060.2741682037486!2d32.85384931573853!3d39.919740279433095!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x14d347f1b5a8cfb7%3A0x5d5c3c7a5a3b0f0!2sAtat%C3%BCrk%20Bulvar%C4%B1%2C%20%C3%87ankaya%2FAnkara!5e0!3m2!1str!2str!4v1621234567890!5m2!1str!2str"
-                    width="100%"
-                    height="100%"
-                    style={{ border: 0 }}
-                    allowFullScreen=""
-                    loading="lazy"
-                    title="Office Location"
-                  ></iframe>
+                  {contactInfo?.map_embed_url ? (
+                    <iframe
+                      src={contactInfo.map_embed_url}
+                      width="100%"
+                      height="100%"
+                      style={{ border: 0 }}
+                      allowFullScreen=""
+                      loading="lazy"
+                      title="Office Location"
+                    ></iframe>
+                  ) : (
+                    <iframe
+                      src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d102239.63555676tried!2d30.6089!3d36.8969!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x14c39aaeddadadc1%3A0x95c69f76bca6e1d1!2sAntalya%2C%20T%C3%BCrkiye!5e0!3m2!1str!2str!4v1621234567890!5m2!1str!2str"
+                      width="100%"
+                      height="100%"
+                      style={{ border: 0 }}
+                      allowFullScreen=""
+                      loading="lazy"
+                      title="Office Location"
+                    ></iframe>
+                  )}
                 </div>
               </Card>
               <Card className="border-none shadow-xl">
