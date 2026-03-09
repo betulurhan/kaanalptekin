@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { Calendar, User, Clock, Tag, ArrowRight } from 'lucide-react';
 import { Card, CardContent } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
@@ -86,21 +87,21 @@ export const Blog = () => {
                 <div className="flex items-center gap-4 text-sm text-slate-500 mb-6">
                   <div className="flex items-center gap-1">
                     <Calendar className="w-4 h-4" />
-                    {featuredPost.date}
+                    {new Date(featuredPost.created_at).toLocaleDateString('tr-TR', { day: 'numeric', month: 'short', year: 'numeric' })}
                   </div>
                   <div className="flex items-center gap-1">
                     <Clock className="w-4 h-4" />
-                    {featuredPost.readTime}
+                    {featuredPost.read_time}
                   </div>
                   <div className="flex items-center gap-1">
                     <User className="w-4 h-4" />
                     {featuredPost.author}
                   </div>
                 </div>
-                <button className="flex items-center gap-2 text-amber-600 font-semibold hover:gap-3 transition-all duration-300">
+                <Link to={`/blog/${featuredPost.id}`} className="flex items-center gap-2 text-amber-600 font-semibold hover:gap-3 transition-all duration-300">
                   Devamını Oku
                   <ArrowRight className="w-4 h-4" />
-                </button>
+                </Link>
               </CardContent>
             </div>
           </Card>
@@ -134,9 +135,9 @@ export const Blog = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {filteredPosts.slice(1).map((post) => (
+              <Link to={`/blog/${post.id}`} key={post.id}>
               <Card
-                key={post.id}
-                className="overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border-none"
+                className="overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border-none h-full"
               >
                 <div className="relative h-56 overflow-hidden group">
                   <img
@@ -150,14 +151,14 @@ export const Blog = () => {
                   <Badge variant="outline" className="mb-3">
                     {post.category}
                   </Badge>
-                  <h3 className="text-xl font-bold text-slate-800 mb-3 line-clamp-2 hover:text-amber-600 transition-colors cursor-pointer">
+                  <h3 className="text-xl font-bold text-slate-800 mb-3 line-clamp-2 hover:text-amber-600 transition-colors">
                     {post.title}
                   </h3>
                   <p className="text-slate-600 mb-4 line-clamp-2">{post.excerpt}</p>
                   <div className="flex items-center justify-between text-sm text-slate-500 pt-4 border-t border-slate-100">
                     <div className="flex items-center gap-1">
                       <Calendar className="w-4 h-4" />
-                      {post.date}
+                      {new Date(post.created_at).toLocaleDateString('tr-TR', { day: 'numeric', month: 'short', year: 'numeric' })}
                     </div>
                     <div className="flex items-center gap-1">
                       <Clock className="w-4 h-4" />
@@ -166,6 +167,7 @@ export const Blog = () => {
                   </div>
                 </CardContent>
               </Card>
+              </Link>
             ))}
           </div>
           {filteredPosts.length === 1 && (

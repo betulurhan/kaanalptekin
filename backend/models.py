@@ -126,6 +126,7 @@ class BlogPostUpdate(BaseModel):
     image: Optional[str] = None
     author: Optional[str] = None
     read_time: Optional[str] = None
+    created_at: Optional[datetime] = None
 
 
 # About Content Model

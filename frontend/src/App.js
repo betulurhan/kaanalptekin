@@ -6,6 +6,7 @@ import Home from "./pages/Home";
 import About from "./pages/About";
 import Projects from "./pages/Projects";
 import Blog from "./pages/Blog";
+import BlogDetail from "./pages/BlogDetail";
 import Contact from "./pages/Contact";
 import Hesaplama from "./pages/Hesaplama";
 import GizlilikPolitikasi from "./pages/GizlilikPolitikasi";
@@ -40,6 +41,7 @@ function App() {
               <Route path="/projeler" element={<><Navbar /><Projects /><Footer /></>} />
               <Route path="/projeler/:id" element={<><Navbar /><ProjectDetail /><Footer /></>} />
               <Route path="/blog" element={<><Navbar /><Blog /><Footer /></>} />
+              <Route path="/blog/:id" element={<><Navbar /><BlogDetail /><Footer /></>} />
               <Route path="/hesaplama" element={<><Navbar /><Hesaplama /><Footer /></>} />
               <Route path="/iletisim" element={<><Navbar /><Contact /><Footer /></>} />
               <Route path="/gizlilik-politikasi" element={<><Navbar /><GizlilikPolitikasi /><Footer /></>} />
