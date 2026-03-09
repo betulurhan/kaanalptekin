@@ -82,10 +82,6 @@ export const About = () => {
                   className="rounded-2xl shadow-2xl max-w-xs md:max-w-sm h-auto object-contain"
                   style={{ maxHeight: '400px' }}
                 />
-                <div className="absolute -bottom-4 -right-4 bg-slate-800 text-white p-4 rounded-xl shadow-xl">
-                  <p className="text-3xl font-bold text-amber-400 mb-1">{aboutData.completedProjects}</p>
-                  <p className="text-xs">Tamamlanan Proje</p>
-                </div>
               </div>
             </div>
             
