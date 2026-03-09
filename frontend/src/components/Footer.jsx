@@ -7,6 +7,7 @@ export const Footer = () => {
   const currentYear = new Date().getFullYear();
   const [siteSettings, setSiteSettings] = useState(null);
   const [contactInfo, setContactInfo] = useState(null);
+  const [logoError, setLogoError] = useState(false);
 
   useEffect(() => {
     loadData();
@@ -31,11 +32,12 @@ export const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* About Section */}
           <div>
-            {siteSettings?.footer_logo ? (
+            {siteSettings?.footer_logo && !logoError ? (
               <img 
                 src={siteSettings.footer_logo} 
                 alt={siteSettings?.site_name || 'Logo'} 
                 className="h-12 w-auto object-contain mb-4"
+                onError={() => setLogoError(true)}
               />
             ) : (
               <h3 className="text-white text-xl font-bold mb-4">

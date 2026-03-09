@@ -8,6 +8,7 @@ export const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [siteSettings, setSiteSettings] = useState(null);
+  const [logoError, setLogoError] = useState(false);
   const location = useLocation();
 
   useEffect(() => {
@@ -58,11 +59,12 @@ export const Navbar = () => {
             to="/"
             className="flex items-center"
           >
-            {siteSettings?.navbar_logo ? (
+            {siteSettings?.navbar_logo && !logoError ? (
               <img 
                 src={siteSettings.navbar_logo} 
                 alt={siteSettings?.site_name || 'Logo'} 
                 className="h-12 w-auto object-contain"
+                onError={() => setLogoError(true)}
               />
             ) : (
               <span className={`text-2xl font-bold transition-all duration-300 ${
@@ -70,7 +72,7 @@ export const Navbar = () => {
                   ? 'bg-gradient-to-r from-slate-800 to-slate-600 bg-clip-text text-transparent'
                   : 'text-white'
               }`}>
-                {siteSettings?.site_name || 'GayrimenkulRehberi'}
+                {siteSettings?.site_name || 'Kaan Alp Tekin'}
               </span>
             )}
           </Link>
