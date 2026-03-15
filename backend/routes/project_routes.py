@@ -161,10 +161,18 @@ async def reorder_all_projects(
     db: AsyncIOMotorDatabase = Depends(get_db)
 ):
     """Reorder all projects based on provided ID list (admin only)"""
-    for index, project_id in enumerate(project_ids):
-        await db.projects.update_one(
+    from pymongo import UpdateOne
+    
+    # Use bulk_write for better performance
+    operations = [
+        UpdateOne(
             {"id": project_id},
             {"$set": {"sort_order": index, "updated_at": datetime.utcnow()}}
         )
+        for index, project_id in enumerate(project_ids)
+    ]
+    
+    if operations:
+        await db.projects.bulk_write(operations)
     
     return {"message": "Projects reordered successfully"}

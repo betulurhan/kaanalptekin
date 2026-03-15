@@ -113,10 +113,14 @@ async def toplu_ilce_ekle(
     db: AsyncIOMotorDatabase = Depends(get_db)
 ):
     """Tüm Antalya ilçelerini varsayılan değerlerle ekle (admin only)"""
-    eklenen = 0
+    # Fetch all existing districts at once to avoid N+1 queries
+    existing_docs = await db.ilce_verileri.find({}, {"ilce_adi": 1}).to_list(100)
+    existing_ilceler = {doc["ilce_adi"] for doc in existing_docs}
+    
+    # Prepare batch insert
+    new_ilceler = []
     for ilce in ANTALYA_ILCELERI:
-        existing = await db.ilce_verileri.find_one({"ilce_adi": ilce})
-        if not existing:
+        if ilce not in existing_ilceler:
             ilce_data = {
                 "id": str(uuid.uuid4()),
                 "ilce_adi": ilce,
@@ -126,7 +130,9 @@ async def toplu_ilce_ekle(
                 "aktif": True,
                 "guncelleme_tarihi": datetime.utcnow()
             }
-            await db.ilce_verileri.insert_one(ilce_data)
-            eklenen += 1
+            new_ilceler.append(ilce_data)
     
-    return {"message": f"{eklenen} ilçe eklendi", "toplam_ilce": len(ANTALYA_ILCELERI)}
+    if new_ilceler:
+        await db.ilce_verileri.insert_many(new_ilceler)
+    
+    return {"message": f"{len(new_ilceler)} ilçe eklendi", "toplam_ilce": len(ANTALYA_ILCELERI)}
