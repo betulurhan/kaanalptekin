@@ -7,6 +7,8 @@ import os
 import logging
 from pathlib import Path
 from datetime import datetime
+import bcrypt
+import uuid
 
 # Import routes
 from routes import auth_routes, project_routes, blog_routes, content_routes, message_routes, upload_routes, carousel_routes, ilce_routes
@@ -150,3 +152,26 @@ logger = logging.getLogger(__name__)
 @app.on_event("shutdown")
 async def shutdown_db_client():
     client.close()
+
+@app.on_event("startup")
+async def create_default_admin():
+    """Create default admin user if no users exist"""
+    try:
+        user_count = await db.users.count_documents({})
+        if user_count == 0:
+            # Create default admin
+            hashed_password = bcrypt.hashpw("admin123".encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+            admin_user = {
+                "id": str(uuid.uuid4()),
+                "username": "admin",
+                "email": "admin@kaanalptekin.com",
+                "hashed_password": hashed_password,
+                "role": "admin",
+                "created_at": datetime.utcnow()
+            }
+            await db.users.insert_one(admin_user)
+            logger.info("Default admin user created: admin / admin123")
+        else:
+            logger.info(f"Found {user_count} existing users, skipping admin creation")
+    except Exception as e:
+        logger.error(f"Error creating default admin: {e}")
