@@ -117,16 +117,17 @@ export const AdminContent = () => {
     setUploading({ ...uploading, [section]: true });
     try {
       const result = await uploadAPI.uploadImage(token, file);
-      const fullUrl = `${process.env.REACT_APP_BACKEND_URL}${result.url}`;
+      // Use relative URL - will work on any domain
+      const imageUrl = result.url;
       
       if (section === 'hero') {
-        setHeroData({ ...heroData, image: fullUrl });
+        setHeroData({ ...heroData, image: imageUrl });
       } else if (section === 'about') {
-        setAboutData({ ...aboutData, image: fullUrl });
+        setAboutData({ ...aboutData, image: imageUrl });
       } else if (section === 'navbar_logo') {
-        setSiteSettings({ ...siteSettings, navbar_logo: fullUrl });
+        setSiteSettings({ ...siteSettings, navbar_logo: imageUrl });
       } else if (section === 'footer_logo') {
-        setSiteSettings({ ...siteSettings, footer_logo: fullUrl });
+        setSiteSettings({ ...siteSettings, footer_logo: imageUrl });
       }
       
       toast({ title: 'Başarılı', description: 'Görsel yüklendi' });

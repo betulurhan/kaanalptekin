@@ -5,6 +5,7 @@ import { Card, CardContent } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { SEOHead } from '../components/SEOHead';
 import { blogAPI } from '../services/api';
+import { resolveImageUrl } from '../utils/imageUrl';
 
 export const BlogDetail = () => {
   const { id } = useParams();
@@ -80,7 +81,7 @@ export const BlogDetail = () => {
       {/* Hero Image */}
       <div className="relative h-[400px] md:h-[500px] overflow-hidden">
         <img 
-          src={blog.image || 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=1200'} 
+          src={resolveImageUrl(blog.image) || 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=1200'} 
           alt={blog.title}
           className="w-full h-full object-cover"
         />
@@ -254,7 +255,7 @@ export const BlogDetail = () => {
                         >
                           <div className="flex gap-3">
                             <img 
-                              src={related.image || 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=100'} 
+                              src={resolveImageUrl(related.image) || 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=100'} 
                               alt={related.title}
                               className="w-16 h-16 object-cover rounded-lg flex-shrink-0"
                             />

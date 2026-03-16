@@ -137,8 +137,7 @@ export const AdminProjects = () => {
     setUploading(true);
     try {
       const result = await uploadAPI.uploadImage(token, file);
-      const fullUrl = `${process.env.REACT_APP_BACKEND_URL}${result.url}`;
-      setFormData({ ...formData, image: fullUrl });
+      setFormData({ ...formData, image: result.url });
       toast({ title: 'Başarılı', description: 'Görsel yüklendi' });
     } catch (error) {
       toast({ title: 'Hata', description: 'Görsel yüklenemedi', variant: 'destructive' });
@@ -215,7 +214,7 @@ export const AdminProjects = () => {
     try {
       const uploadPromises = files.map(file => uploadAPI.uploadImage(token, file));
       const results = await Promise.all(uploadPromises);
-      const newUrls = results.map(result => `${process.env.REACT_APP_BACKEND_URL}${result.url}`);
+      const newUrls = results.map(result => result.url);
       
       setFormData(prev => ({
         ...prev,

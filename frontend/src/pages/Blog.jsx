@@ -6,6 +6,7 @@ import { Badge } from '../components/ui/badge';
 import { blogAPI } from '../services/api';
 import { SEOHead } from '../components/SEOHead';
 import { useSEO } from '../context/SEOContext';
+import { resolveImageUrl } from '../utils/imageUrl';
 
 export const Blog = () => {
   const [posts, setPosts] = useState([]);
@@ -70,7 +71,7 @@ export const Blog = () => {
             <div className="grid md:grid-cols-2 gap-0">
               <div className="relative h-80 md:h-auto overflow-hidden">
                 <img
-                  src={featuredPost.image}
+                  src={resolveImageUrl(featuredPost.image)}
                   alt={featuredPost.title}
                   className="w-full h-full object-cover transform hover:scale-105 transition-transform duration-500"
                 />
@@ -141,7 +142,7 @@ export const Blog = () => {
               >
                 <div className="relative h-56 overflow-hidden group">
                   <img
-                    src={post.image}
+                    src={resolveImageUrl(post.image)}
                     alt={post.title}
                     className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500"
                   />

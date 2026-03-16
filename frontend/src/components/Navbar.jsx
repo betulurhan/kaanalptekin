@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { Menu, X, Home, User, FolderOpen, BookOpen, Mail, Calculator } from 'lucide-react';
 import { Button } from './ui/button';
 import { contentAPI } from '../services/api';
+import { resolveImageUrl } from '../utils/imageUrl';
 
 export const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -61,7 +62,7 @@ export const Navbar = () => {
           >
             {siteSettings?.navbar_logo && !logoError ? (
               <img 
-                src={siteSettings.navbar_logo} 
+                src={resolveImageUrl(siteSettings.navbar_logo)} 
                 alt={siteSettings?.site_name || 'Logo'} 
                 className="h-12 w-auto object-contain"
                 onError={() => setLogoError(true)}

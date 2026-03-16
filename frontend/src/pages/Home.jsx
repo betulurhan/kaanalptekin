@@ -9,6 +9,7 @@ import { aboutData } from '../mock/mockData';
 import { carouselAPI, projectsAPI, contentAPI } from '../services/api';
 import { SEOHead } from '../components/SEOHead';
 import { useSEO } from '../context/SEOContext';
+import { resolveImageUrl } from '../utils/imageUrl';
 
 export const Home = () => {
   const [carouselSlides, setCarouselSlides] = useState([]);
@@ -133,7 +134,7 @@ export const Home = () => {
                     {/* Background Image */}
                     <div
                       className="absolute inset-0 bg-cover bg-center"
-                      style={{ backgroundImage: `url('${slide.image}')` }}
+                      style={{ backgroundImage: `url('${resolveImageUrl(slide.image)}')` }}
                     >
                       <div className={`absolute inset-0 ${index === 0 ? 'bg-gradient-to-r from-white/60 via-white/30 to-transparent' : 'bg-gradient-to-t from-slate-900/80 via-slate-900/40 to-slate-900/20'}`}></div>
                     </div>
@@ -426,7 +427,7 @@ export const Home = () => {
               >
                 <div className="relative h-64 overflow-hidden">
                   <img
-                    src={project.image}
+                    src={resolveImageUrl(project.image)}
                     alt={project.title}
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                   />

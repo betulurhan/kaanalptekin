@@ -4,6 +4,7 @@ import { Card, CardContent } from '../components/ui/card';
 import { contentAPI } from '../services/api';
 import { SEOHead } from '../components/SEOHead';
 import { useSEO } from '../context/SEOContext';
+import { resolveImageUrl } from '../utils/imageUrl';
 
 export const About = () => {
   const [aboutData, setAboutData] = useState(null);
@@ -77,7 +78,7 @@ export const About = () => {
             <div className="flex justify-center md:justify-start">
               <div className="relative inline-block">
                 <img
-                  src={aboutData.image}
+                  src={resolveImageUrl(aboutData.image)}
                   alt={aboutData.name}
                   className="rounded-2xl shadow-2xl max-w-xs md:max-w-sm h-auto object-contain"
                   style={{ maxHeight: '400px' }}

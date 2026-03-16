@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Facebook, Instagram, Linkedin, Twitter, Phone, Mail, MapPin, Clock } from 'lucide-react';
 import { contentAPI } from '../services/api';
+import { resolveImageUrl } from '../utils/imageUrl';
 
 export const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -34,7 +35,7 @@ export const Footer = () => {
           <div>
             {siteSettings?.footer_logo && !logoError ? (
               <img 
-                src={siteSettings.footer_logo} 
+                src={resolveImageUrl(siteSettings.footer_logo)} 
                 alt={siteSettings?.site_name || 'Logo'} 
                 className="h-12 w-auto object-contain mb-4"
                 onError={() => setLogoError(true)}

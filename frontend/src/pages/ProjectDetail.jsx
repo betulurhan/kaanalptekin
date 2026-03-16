@@ -8,6 +8,7 @@ import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../components/ui/dialog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
 import { projectsAPI } from '../services/api';
+import { resolveImageUrl } from '../utils/imageUrl';
 
 export const ProjectDetail = () => {
   const { id } = useParams();
@@ -51,8 +52,8 @@ export const ProjectDetail = () => {
   }
 
   const allImages = project.images && project.images.length > 0 
-    ? [project.image, ...project.images] 
-    : [project.image];
+    ? [project.image, ...project.images].map(img => resolveImageUrl(img))
+    : [resolveImageUrl(project.image)];
 
   const availableUnits = project.units?.filter(u => u.status === 'available').length || 0;
   const soldUnits = project.units?.filter(u => u.status === 'sold').length || 0;
@@ -328,11 +329,11 @@ export const ProjectDetail = () => {
                             <div 
                               key={idx}
                               className="cursor-pointer rounded-xl overflow-hidden hover:shadow-xl transition-all border-2 border-slate-200 hover:border-amber-500 group"
-                              onClick={() => setSelectedImage(floorPlan)}
+                              onClick={() => setSelectedImage(resolveImageUrl(floorPlan))}
                             >
                               <div className="relative">
                                 <img 
-                                  src={floorPlan} 
+                                  src={resolveImageUrl(floorPlan)} 
                                   alt={`Kat Planı ${idx + 1}`}
                                   className="w-full h-64 object-contain bg-slate-50 group-hover:scale-105 transition-transform"
                                 />
@@ -350,10 +351,10 @@ export const ProjectDetail = () => {
                       <div>
                         <div 
                           className="cursor-pointer rounded-xl overflow-hidden hover:opacity-90 transition-opacity"
-                          onClick={() => setSelectedImage(project.floor_plan)}
+                          onClick={() => setSelectedImage(resolveImageUrl(project.floor_plan))}
                         >
                           <img 
-                            src={project.floor_plan} 
+                            src={resolveImageUrl(project.floor_plan)} 
                             alt="Kat Planı"
                             className="w-full h-auto"
                           />

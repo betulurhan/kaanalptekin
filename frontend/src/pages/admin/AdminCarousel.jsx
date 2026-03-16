@@ -41,8 +41,7 @@ export const AdminCarousel = () => {
     setUploading(true);
     try {
       const result = await uploadAPI.uploadImage(token, file);
-      const fullUrl = `${process.env.REACT_APP_BACKEND_URL}${result.url}`;
-      setFormData({ ...formData, image: fullUrl });
+      setFormData({ ...formData, image: result.url });
       toast({ title: 'Başarılı', description: 'Görsel yüklendi' });
     } catch (error) {
       toast({ title: 'Hata', description: 'Görsel yüklenemedi', variant: 'destructive' });

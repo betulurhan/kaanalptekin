@@ -7,6 +7,7 @@ import { Badge } from '../components/ui/badge';
 import { projectsAPI } from '../services/api';
 import { SEOHead } from '../components/SEOHead';
 import { useSEO } from '../context/SEOContext';
+import { resolveImageUrl } from '../utils/imageUrl';
 
 export const Projects = () => {
   const [projects, setProjects] = useState([]);
@@ -42,7 +43,7 @@ export const Projects = () => {
       <Card className="overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border-none cursor-pointer">
       <div className="relative h-72 overflow-hidden group">
         <img
-          src={project.image}
+          src={resolveImageUrl(project.image)}
           alt={project.title}
           className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500"
         />
