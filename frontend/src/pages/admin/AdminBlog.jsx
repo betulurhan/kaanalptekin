@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
-import { blogAPI, uploadAPI } from '../../services/api';
+import { blogAPI, cloudinaryAPI } from '../../services/api';
 import { Card, CardContent } from '../../components/ui/card';
 import { Button } from '../../components/ui/button';
 import { Input } from '../../components/ui/input';
 import { Label } from '../../components/ui/label';
 import { Textarea } from '../../components/ui/textarea';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../../components/ui/dialog';
-import { Plus, Pencil, Trash2 } from 'lucide-react';
+import { Plus, Pencil, Trash2, Upload } from 'lucide-react';
 import { useToast } from '../../hooks/use-toast';
 
 export const AdminBlog = () => {
@@ -17,6 +17,7 @@ export const AdminBlog = () => {
   const [loading, setLoading] = useState(true);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingPost, setEditingPost] = useState(null);
+  const [uploading, setUploading] = useState(false);
   const [formData, setFormData] = useState({
     title: '', excerpt: '', content: '', category: 'Piyasa Analizi',
     image: '', author: 'Admin', read_time: '5 dk okuma'
@@ -30,6 +31,22 @@ export const AdminBlog = () => {
       setPosts(data);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleImageUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    setUploading(true);
+    try {
+      const result = await cloudinaryAPI.upload(token, file, 'blog');
+      setFormData({ ...formData, image: result.url });
+      toast({ title: 'Basarili', description: 'Gorsel Cloudinary\'e yuklendi' });
+    } catch (error) {
+      console.error('Upload error:', error);
+      toast({ title: 'Hata', description: 'Gorsel yuklenemedi', variant: 'destructive' });
+    } finally {
+      setUploading(false);
     }
   };
 
@@ -106,7 +123,20 @@ export const AdminBlog = () => {
             </div>
             <div><Label>Özet *</Label><Textarea value={formData.excerpt} onChange={(e) => setFormData({ ...formData, excerpt: e.target.value })} required rows={2} /></div>
             <div><Label>İçerik *</Label><Textarea value={formData.content} onChange={(e) => setFormData({ ...formData, content: e.target.value })} required rows={6} /></div>
-            <div><Label>Görsel URL</Label><Input value={formData.image} onChange={(e) => setFormData({ ...formData, image: e.target.value })} /></div>
+            <div>
+              <Label>Gorsel</Label>
+              <div className="space-y-2">
+                <div className="flex gap-2">
+                  <Button type="button" variant="outline" onClick={() => document.getElementById('blog-image-upload').click()} disabled={uploading} className="flex-1" data-testid="blog-image-upload-btn">
+                    <Upload className="w-4 h-4 mr-2" />
+                    {uploading ? 'Yukleniyor...' : 'Bilgisayardan Yukle'}
+                  </Button>
+                  <input id="blog-image-upload" type="file" accept="image/*" className="hidden" onChange={handleImageUpload} />
+                </div>
+                <Input value={formData.image} onChange={(e) => setFormData({ ...formData, image: e.target.value })} placeholder="veya Gorsel URL'si" />
+                {formData.image && <img src={formData.image} alt="Preview" className="w-full h-40 object-cover rounded" />}
+              </div>
+            </div>
             <div className="grid grid-cols-2 gap-4">
               <div><Label>Yazar</Label><Input value={formData.author} onChange={(e) => setFormData({ ...formData, author: e.target.value })} /></div>
               <div><Label>Okuma Süresi</Label><Input value={formData.read_time} onChange={(e) => setFormData({ ...formData, read_time: e.target.value })} /></div>

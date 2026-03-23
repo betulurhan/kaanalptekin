@@ -52,6 +52,7 @@ Full-stack real estate portfolio website and CMS for "Kaan Alp Tekin" in Antalya
 
 ### Bug Fixes (Feb 2026)
 - P0: Fixed responsive layout and image rendering (dead carousel/about images, mobile hero overlapping trust indicators, CTA buttons, carousel arrows)
+- P0: Fixed AdminBlog.jsx - was using old local uploadAPI instead of Cloudinary (blog images would be lost on deployment)
 - Fixed Production Admin Login (startup script + passlib bcrypt)
 - Fixed N+1 queries in project/ilce routes
 - Fixed broken preview URLs (migrated to Cloudinary)
