@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
-import { projectsAPI, uploadAPI } from '../../services/api';
+import { projectsAPI, cloudinaryAPI } from '../../services/api';
 import { Card, CardContent } from '../../components/ui/card';
 import { Button } from '../../components/ui/button';
 import { Input } from '../../components/ui/input';
@@ -136,10 +136,11 @@ export const AdminProjects = () => {
 
     setUploading(true);
     try {
-      const result = await uploadAPI.uploadImage(token, file);
+      const result = await cloudinaryAPI.upload(token, file, 'projects');
       setFormData({ ...formData, image: result.url });
-      toast({ title: 'Başarılı', description: 'Görsel yüklendi' });
+      toast({ title: 'Başarılı', description: 'Görsel yüklendi (Cloudinary)' });
     } catch (error) {
+      console.error('Upload error:', error);
       toast({ title: 'Hata', description: 'Görsel yüklenemedi', variant: 'destructive' });
     } finally {
       setUploading(false);
@@ -212,7 +213,7 @@ export const AdminProjects = () => {
 
     setUploading(true);
     try {
-      const uploadPromises = files.map(file => uploadAPI.uploadImage(token, file));
+      const uploadPromises = files.map(file => cloudinaryAPI.upload(token, file, 'projects'));
       const results = await Promise.all(uploadPromises);
       const newUrls = results.map(result => result.url);
       
@@ -220,8 +221,9 @@ export const AdminProjects = () => {
         ...prev,
         [field]: [...(prev[field] || []), ...newUrls]
       }));
-      toast({ title: 'Başarılı', description: `${files.length} görsel yüklendi` });
+      toast({ title: 'Başarılı', description: `${files.length} görsel yüklendi (Cloudinary)` });
     } catch (error) {
+      console.error('Upload error:', error);
       toast({ title: 'Hata', description: 'Görseller yüklenemedi', variant: 'destructive' });
     } finally {
       setUploading(false);

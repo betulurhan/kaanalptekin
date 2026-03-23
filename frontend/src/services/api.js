@@ -253,6 +253,35 @@ export const uploadAPI = {
   }
 };
 
+// Cloudinary API - Kalıcı görsel depolama
+export const cloudinaryAPI = {
+  upload: async (token, file, folder = 'uploads') => {
+    const formData = new FormData();
+    formData.append('file', file);
+    const response = await axios.post(`${API}/cloudinary/upload?folder=${folder}`, formData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'multipart/form-data'
+      }
+    });
+    return response.data;
+  },
+  
+  delete: async (token, publicId) => {
+    const response = await axios.delete(`${API}/cloudinary/delete?public_id=${publicId}`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    return response.data;
+  },
+  
+  getSignature: async (token, folder = 'uploads') => {
+    const response = await axios.get(`${API}/cloudinary/signature?folder=${folder}`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    return response.data;
+  }
+};
+
 // Messages API
 export const messagesAPI = {
   create: async (data) => {

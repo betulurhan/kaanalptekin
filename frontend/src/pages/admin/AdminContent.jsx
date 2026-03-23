@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
-import { contentAPI, uploadAPI } from '../../services/api';
+import { contentAPI, cloudinaryAPI } from '../../services/api';
 import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/card';
 import { Button } from '../../components/ui/button';
 import { Input } from '../../components/ui/input';
@@ -116,8 +116,9 @@ export const AdminContent = () => {
 
     setUploading({ ...uploading, [section]: true });
     try {
-      const result = await uploadAPI.uploadImage(token, file);
-      // Use relative URL - will work on any domain
+      // Use Cloudinary for permanent storage
+      const folder = section === 'navbar_logo' || section === 'footer_logo' ? 'logos' : section;
+      const result = await cloudinaryAPI.upload(token, file, folder);
       const imageUrl = result.url;
       
       if (section === 'hero') {
@@ -130,8 +131,9 @@ export const AdminContent = () => {
         setSiteSettings({ ...siteSettings, footer_logo: imageUrl });
       }
       
-      toast({ title: 'Başarılı', description: 'Görsel yüklendi' });
+      toast({ title: 'Başarılı', description: 'Görsel yüklendi (Cloudinary)' });
     } catch (error) {
+      console.error('Upload error:', error);
       toast({ title: 'Hata', description: 'Görsel yüklenemedi', variant: 'destructive' });
     } finally {
       setUploading({ ...uploading, [section]: false });

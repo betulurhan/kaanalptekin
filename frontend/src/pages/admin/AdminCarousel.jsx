@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
-import { carouselAPI, uploadAPI } from '../../services/api';
+import { carouselAPI, cloudinaryAPI } from '../../services/api';
 import { Card, CardContent } from '../../components/ui/card';
 import { Button } from '../../components/ui/button';
 import { Input } from '../../components/ui/input';
@@ -40,10 +40,11 @@ export const AdminCarousel = () => {
     if (!file) return;
     setUploading(true);
     try {
-      const result = await uploadAPI.uploadImage(token, file);
+      const result = await cloudinaryAPI.upload(token, file, 'carousel');
       setFormData({ ...formData, image: result.url });
-      toast({ title: 'Başarılı', description: 'Görsel yüklendi' });
+      toast({ title: 'Başarılı', description: 'Görsel yüklendi (Cloudinary)' });
     } catch (error) {
+      console.error('Upload error:', error);
       toast({ title: 'Hata', description: 'Görsel yüklenemedi', variant: 'destructive' });
     } finally {
       setUploading(false);
