@@ -136,46 +136,46 @@ export const Home = () => {
                       className="absolute inset-0 bg-cover bg-center"
                       style={{ backgroundImage: `url('${resolveImageUrl(slide.image)}')` }}
                     >
-                      <div className={`absolute inset-0 ${index === 0 ? 'bg-gradient-to-r from-white/60 via-white/30 to-transparent' : 'bg-gradient-to-t from-slate-900/80 via-slate-900/40 to-slate-900/20'}`}></div>
+                      <div className={`absolute inset-0 ${index === 0 ? 'bg-gradient-to-r from-white/80 via-white/50 to-white/20 sm:from-white/60 sm:via-white/30 sm:to-transparent' : 'bg-gradient-to-t from-slate-900/80 via-slate-900/40 to-slate-900/20'}`}></div>
                     </div>
                     
                     {/* Content - Different layout for first slide vs others */}
                     {index === 0 ? (
                       /* FIRST SLIDE - Premium Design with Card */
-                      <div className="relative z-10 h-full flex items-center">
+                      <div className="relative z-10 h-full flex items-center pt-20 sm:pt-0">
                         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
-                          <div className="grid lg:grid-cols-2 gap-12 items-center">
+                          <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
                             {/* Left Content */}
                             <div className="text-left">
                               {/* Badge */}
-                              <div className="inline-flex items-center gap-2 px-4 py-2 bg-amber-500/20 backdrop-blur-sm border border-amber-500/30 rounded-full mb-6">
-                                <Star className="w-4 h-4 text-amber-500 fill-amber-500" />
-                                <span className="text-amber-600 text-sm font-medium">
+                              <div className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 bg-amber-500/20 backdrop-blur-sm border border-amber-500/30 rounded-full mb-4 sm:mb-6">
+                                <Star className="w-3 h-3 sm:w-4 sm:h-4 text-amber-500 fill-amber-500" />
+                                <span className="text-amber-600 text-xs sm:text-sm font-medium">
                                   {heroFeatures?.badge_text || 'Profesyonel Gayrimenkul Danışmanlığı'}
                                 </span>
                               </div>
                               
-                              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-slate-800 mb-4 leading-tight">
+                              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-slate-800 mb-3 sm:mb-4 leading-tight">
                                 {slide.title}
                               </h1>
                               {slide.subtitle && (
-                                <p className="text-2xl md:text-3xl lg:text-4xl font-bold bg-gradient-to-r from-amber-500 via-amber-400 to-amber-600 bg-clip-text text-transparent mb-6">
+                                <p className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold bg-gradient-to-r from-amber-500 via-amber-400 to-amber-600 bg-clip-text text-transparent mb-4 sm:mb-6">
                                   {slide.subtitle}
                                 </p>
                               )}
                               {slide.description && (
-                                <p className="text-lg text-slate-600 mb-8 max-w-xl leading-relaxed">
+                                <p className="text-sm sm:text-lg text-slate-600 mb-4 sm:mb-8 max-w-xl leading-relaxed">
                                   {slide.description}
                                 </p>
                               )}
                               
                               {/* CTA Buttons */}
-                              <div className="flex flex-wrap gap-4 mb-10">
+                              <div className="flex flex-col sm:flex-row flex-wrap gap-3 sm:gap-4 mb-6 sm:mb-10">
                                 {slide.cta_text && slide.cta_link && (
                                   <Button
                                     asChild
                                     size="lg"
-                                    className="bg-amber-500 hover:bg-amber-600 text-white px-8 py-6 text-lg rounded-xl shadow-lg shadow-amber-500/25 hover:shadow-xl hover:shadow-amber-500/30 transform hover:scale-105 transition-all duration-300"
+                                    className="bg-amber-500 hover:bg-amber-600 text-white px-6 sm:px-8 py-4 sm:py-6 text-base sm:text-lg rounded-xl shadow-lg shadow-amber-500/25 hover:shadow-xl hover:shadow-amber-500/30 transform hover:scale-105 transition-all duration-300"
                                   >
                                     <Link to={slide.cta_link}>
                                       {slide.cta_text}
@@ -187,7 +187,7 @@ export const Home = () => {
                                   asChild
                                   size="lg"
                                   variant="outline"
-                                  className="border-slate-300 bg-white/50 backdrop-blur-sm text-slate-700 hover:bg-slate-100 px-8 py-6 text-lg rounded-xl transition-all duration-300"
+                                  className="border-slate-300 bg-white/50 backdrop-blur-sm text-slate-700 hover:bg-slate-100 px-6 sm:px-8 py-4 sm:py-6 text-base sm:text-lg rounded-xl transition-all duration-300"
                                 >
                                   <Link to={heroFeatures?.secondary_cta_link || '/iletisim'}>
                                     <Phone className="mr-2 w-5 h-5" />
@@ -197,7 +197,7 @@ export const Home = () => {
                               </div>
                               
                               {/* Trust Indicators - Dynamic */}
-                              <div className="flex flex-wrap gap-6">
+                              <div className="flex flex-col sm:flex-row flex-wrap gap-3 sm:gap-6">
                                 {(heroFeatures?.trust_indicators || [
                                   { icon: 'check-circle', text: 'Lisanslı Danışman', color: 'green' },
                                   { icon: 'shield', text: 'Güvenli İşlem', color: 'blue' },
@@ -220,10 +220,10 @@ export const Home = () => {
                                   const IconComp = iconMap[indicator.icon] || CheckCircle2;
                                   return (
                                     <div key={idx} className="flex items-center gap-2 text-slate-600">
-                                      <div className={`w-10 h-10 rounded-full ${colorClasses[indicator.color] || colorClasses.green} flex items-center justify-center`}>
-                                        <IconComp className="w-5 h-5" />
+                                      <div className={`w-8 h-8 sm:w-10 sm:h-10 rounded-full ${colorClasses[indicator.color] || colorClasses.green} flex items-center justify-center`}>
+                                        <IconComp className="w-4 h-4 sm:w-5 sm:h-5" />
                                       </div>
-                                      <span className="text-sm">{indicator.text}</span>
+                                      <span className="text-xs sm:text-sm">{indicator.text}</span>
                                     </div>
                                   );
                                 })}
@@ -346,15 +346,15 @@ export const Home = () => {
             {/* Navigation Arrows */}
             <button 
               onClick={() => carouselApi?.scrollPrev()} 
-              className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/10 backdrop-blur-sm border border-white/20 text-white hover:bg-white/20 rounded-full flex items-center justify-center transition-all duration-300 z-20"
+              className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 w-9 h-9 sm:w-12 sm:h-12 bg-white/10 backdrop-blur-sm border border-white/20 text-white hover:bg-white/20 rounded-full hidden sm:flex items-center justify-center transition-all duration-300 z-20"
             >
-              <ChevronLeft className="w-6 h-6" />
+              <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6" />
             </button>
             <button 
               onClick={() => carouselApi?.scrollNext()} 
-              className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/10 backdrop-blur-sm border border-white/20 text-white hover:bg-white/20 rounded-full flex items-center justify-center transition-all duration-300 z-20"
+              className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 w-9 h-9 sm:w-12 sm:h-12 bg-white/10 backdrop-blur-sm border border-white/20 text-white hover:bg-white/20 rounded-full hidden sm:flex items-center justify-center transition-all duration-300 z-20"
             >
-              <ChevronRight className="w-6 h-6" />
+              <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6" />
             </button>
             
             {/* Slide Indicators */}

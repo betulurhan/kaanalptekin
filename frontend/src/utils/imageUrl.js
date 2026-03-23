@@ -5,6 +5,11 @@ export const resolveImageUrl = (url, options = {}) => {
   
   const { width, height, quality = 'auto', format = 'auto' } = options;
   
+  // Skip dead preview URLs from old containers
+  if (url.includes('.preview.emergentagent.com/api/upload')) {
+    return null;
+  }
+  
   // If it's a Cloudinary URL, add optimizations
   if (url.includes('cloudinary.com') || url.includes('res.cloudinary.com')) {
     // Check if already has transformations
