@@ -78,7 +78,7 @@ export const About = () => {
             <div className="flex justify-center md:justify-start">
               <div className="relative inline-block">
                 <img
-                  src={resolveImageUrl(aboutData.image)}
+                  src={resolveImageUrl(aboutData.image) || 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400&q=80'}
                   alt={aboutData.name}
                   className="rounded-2xl shadow-2xl max-w-xs md:max-w-sm h-auto object-contain"
                   style={{ maxHeight: '400px' }}
