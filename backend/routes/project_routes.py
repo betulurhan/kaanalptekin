@@ -8,6 +8,15 @@ from datetime import datetime
 router = APIRouter(prefix="/projects", tags=["Projects"])
 
 
+def _invalidate():
+    try:
+        from server import _init_cache
+        _init_cache["data"] = None
+        _init_cache["ts"] = 0
+    except Exception:
+        pass
+
+
 def get_db():
     from server import db
     return db
@@ -52,6 +61,7 @@ async def create_project(
     """Create a new project (admin only)"""
     project = Project(**project_data.dict())
     await db.projects.insert_one(project.dict())
+    _invalidate()
     return project
 
 
@@ -79,6 +89,7 @@ async def update_project(
     )
     
     updated_project = await db.projects.find_one({"id": project_id})
+    _invalidate()
     return Project(**updated_project)
 
 
@@ -96,6 +107,7 @@ async def delete_project(
             detail="Project not found"
         )
     
+    _invalidate()
     return {"message": "Project deleted successfully"}
 
 

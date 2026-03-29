@@ -1,5 +1,6 @@
 from fastapi import FastAPI, APIRouter
 from fastapi.responses import PlainTextResponse
+from fastapi.middleware.gzip import GZipMiddleware
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
@@ -17,13 +18,33 @@ from routes import auth_routes, project_routes, blog_routes, content_routes, mes
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
 
-# MongoDB connection
+# MongoDB connection with optimized pool
 mongo_url = os.environ['MONGO_URL']
-client = AsyncIOMotorClient(mongo_url)
+client = AsyncIOMotorClient(
+    mongo_url,
+    maxPoolSize=20,
+    minPoolSize=5,
+    serverSelectionTimeoutMS=5000,
+    connectTimeoutMS=5000,
+)
 db = client[os.environ['DB_NAME']]
 
-# Create the main app without a prefix
+# In-memory cache for init data
+_init_cache = {"data": None, "ts": 0}
+CACHE_TTL = 30  # seconds
+
 app = FastAPI(title="Gayrimenkul Rehberi API")
+
+# GZip compression - MUST be before CORS
+app.add_middleware(GZipMiddleware, minimum_size=500)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_credentials=True,
+    allow_origins=os.environ.get('CORS_ORIGINS', '*').split(','),
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # Create a router with the /api prefix
 api_router = APIRouter(prefix="/api")
@@ -38,13 +59,8 @@ async def root():
 async def sitemap():
     """Generate dynamic sitemap.xml"""
     base_url = os.environ.get('SITE_URL', 'https://kaanalptekin.com')
-    
-    # Get all projects
     projects = await db.projects.find({}, {"id": 1, "updated_at": 1}).to_list(1000)
-    
-    # Get all blog posts
     blogs = await db.blog_posts.find({}, {"id": 1, "updated_at": 1}).to_list(1000)
-    
     today = datetime.utcnow().strftime('%Y-%m-%d')
     
     sitemap_xml = f'''<?xml version="1.0" encoding="UTF-8"?>
@@ -80,7 +96,6 @@ async def sitemap():
     <priority>0.7</priority>
   </url>'''
     
-    # Add project URLs
     for project in projects:
         lastmod = project.get('updated_at', datetime.utcnow()).strftime('%Y-%m-%d') if isinstance(project.get('updated_at'), datetime) else today
         sitemap_xml += f'''
@@ -91,7 +106,6 @@ async def sitemap():
     <priority>0.8</priority>
   </url>'''
     
-    # Add blog URLs
     for blog in blogs:
         lastmod = blog.get('updated_at', datetime.utcnow()).strftime('%Y-%m-%d') if isinstance(blog.get('updated_at'), datetime) else today
         sitemap_xml += f'''
@@ -103,7 +117,6 @@ async def sitemap():
   </url>'''
     
     sitemap_xml += '\n</urlset>'
-    
     return sitemap_xml
 
 # robots.txt endpoint
@@ -111,15 +124,13 @@ async def sitemap():
 async def robots():
     """Generate robots.txt"""
     base_url = os.environ.get('SITE_URL', 'https://kaanalptekin.com')
-    
-    robots_txt = f'''User-agent: *
+    return f'''User-agent: *
 Allow: /
 Disallow: /admin/
 Disallow: /api/
 
 Sitemap: {base_url}/api/sitemap.xml
 '''
-    return robots_txt
 
 # Include all routers
 api_router.include_router(auth_routes.router)
@@ -135,14 +146,6 @@ api_router.include_router(cloudinary_routes.router)
 # Include the router in the main app
 app.include_router(api_router)
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_credentials=True,
-    allow_origins=os.environ.get('CORS_ORIGINS', '*').split(','),
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
 # Configure logging
 logging.basicConfig(
     level=logging.INFO,
@@ -155,12 +158,30 @@ async def shutdown_db_client():
     client.close()
 
 @app.on_event("startup")
-async def create_default_admin():
-    """Create default admin user if no users exist"""
+async def startup_tasks():
+    """Create indexes and default admin on startup"""
+    try:
+        # Create MongoDB indexes for fast queries
+        await db.projects.create_index("id", unique=True)
+        await db.projects.create_index("order")
+        await db.projects.create_index("type")
+        await db.projects.create_index("status")
+        await db.blog_posts.create_index("id", unique=True)
+        await db.blog_posts.create_index("category")
+        await db.blog_posts.create_index([("created_at", -1)])
+        await db.carousel_slides.create_index("is_active")
+        await db.carousel_slides.create_index("order")
+        await db.users.create_index("username", unique=True)
+        await db.messages.create_index([("created_at", -1)])
+        await db.ilce_data.create_index("ilce_adi")
+        logger.info("MongoDB indexes created/verified")
+    except Exception as e:
+        logger.error(f"Error creating indexes: {e}")
+
+    # Create default admin if needed
     try:
         user_count = await db.users.count_documents({})
         if user_count == 0:
-            # Create default admin using passlib hash (same as auth.py)
             hashed_password = get_password_hash("admin123")
             admin_user = {
                 "id": str(uuid.uuid4()),
@@ -177,3 +198,65 @@ async def create_default_admin():
             logger.info(f"Found {user_count} existing users, skipping admin creation")
     except Exception as e:
         logger.error(f"Error creating default admin: {e}")
+
+    # Pre-warm init cache
+    try:
+        await _warm_init_cache()
+        logger.info("Init cache pre-warmed")
+    except Exception as e:
+        logger.error(f"Error warming cache: {e}")
+
+
+async def _warm_init_cache():
+    """Pre-fetch and cache init data"""
+    import asyncio, json, time
+    from bson import ObjectId
+
+    carousel_cursor = db.carousel_slides.find({"is_active": True}, {"_id": 0}).sort("order", 1)
+    projects_cursor = db.projects.find({}, {"_id": 0}).sort("order", 1)
+
+    results = await asyncio.gather(
+        db.site_settings.find_one(),
+        db.contact_info.find_one(),
+        db.seo_settings.find_one(),
+        carousel_cursor.to_list(50),
+        projects_cursor.to_list(100),
+        db.hero_features.find_one(),
+        db.home_stats.find_one(),
+        db.home_cta.find_one(),
+    )
+
+    site_settings, contact, seo_settings, carousel, projects, hero_features, home_stats, home_cta = results
+
+    def clean(doc):
+        if not doc:
+            return None
+        return {k: v for k, v in doc.items() if k != "_id"}
+
+    def serialize(obj):
+        if isinstance(obj, ObjectId):
+            return str(obj)
+        if isinstance(obj, datetime):
+            return obj.isoformat()
+        raise TypeError(f"Not serializable: {type(obj)}")
+
+    data = {
+        "siteSettings": clean(site_settings),
+        "contact": clean(contact),
+        "seoSettings": clean(seo_settings),
+        "carousel": carousel,
+        "projects": projects,
+        "heroFeatures": clean(hero_features),
+        "homeStats": clean(home_stats),
+        "homeCTA": clean(home_cta),
+    }
+    _init_cache["data"] = json.loads(json.dumps(data, default=serialize))
+    _init_cache["ts"] = time.time()
+
+
+def get_init_cache():
+    """Get cached init data or None if expired"""
+    import time
+    if _init_cache["data"] and (time.time() - _init_cache["ts"]) < CACHE_TTL:
+        return _init_cache["data"]
+    return None

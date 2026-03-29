@@ -48,6 +48,38 @@ const webpackConfig = {
     },
     configure: (webpackConfig) => {
 
+      // Optimize chunk splitting for production
+      if (process.env.NODE_ENV === 'production') {
+        webpackConfig.optimization = {
+          ...webpackConfig.optimization,
+          splitChunks: {
+            chunks: 'all',
+            maxInitialRequests: 10,
+            minSize: 20000,
+            cacheGroups: {
+              react: {
+                test: /[\\/]node_modules[\\/](react|react-dom|react-router|react-router-dom)[\\/]/,
+                name: 'react-vendor',
+                chunks: 'all',
+                priority: 20,
+              },
+              ui: {
+                test: /[\\/]node_modules[\\/](@radix-ui|lucide-react|class-variance-authority|clsx)[\\/]/,
+                name: 'ui-vendor',
+                chunks: 'all',
+                priority: 15,
+              },
+              vendor: {
+                test: /[\\/]node_modules[\\/]/,
+                name: 'vendor',
+                chunks: 'all',
+                priority: 10,
+              },
+            },
+          },
+        };
+      }
+
       // Add ignored patterns to reduce watched directories
         webpackConfig.watchOptions = {
           ...webpackConfig.watchOptions,

@@ -8,6 +8,15 @@ from datetime import datetime
 router = APIRouter(prefix="/carousel", tags=["Carousel"])
 
 
+def _invalidate():
+    try:
+        from server import _init_cache
+        _init_cache["data"] = None
+        _init_cache["ts"] = 0
+    except Exception:
+        pass
+
+
 def get_db():
     from server import db
     return db
@@ -48,6 +57,7 @@ async def create_carousel_slide(
     """Create a new carousel slide (admin only)"""
     slide = CarouselSlide(**slide_data.dict())
     await db.carousel_slides.insert_one(slide.dict())
+    _invalidate()
     return slide
 
 
@@ -75,6 +85,7 @@ async def update_carousel_slide(
     )
     
     updated_slide = await db.carousel_slides.find_one({"id": slide_id})
+    _invalidate()
     return CarouselSlide(**updated_slide)
 
 
@@ -92,4 +103,5 @@ async def delete_carousel_slide(
             detail="Slide not found"
         )
     
+    _invalidate()
     return {"message": "Slide deleted successfully"}

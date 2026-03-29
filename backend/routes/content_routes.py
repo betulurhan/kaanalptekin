@@ -9,6 +9,16 @@ import asyncio
 router = APIRouter(prefix="/content", tags=["Content Management"])
 
 
+def invalidate_init_cache():
+    """Clear init cache when content is updated from admin"""
+    try:
+        from server import _init_cache
+        _init_cache["data"] = None
+        _init_cache["ts"] = 0
+    except Exception:
+        pass
+
+
 def get_db():
     from server import db
     return db
@@ -217,6 +227,7 @@ async def update_hero_features(
     )
     
     updated = await db.hero_features.find_one({"id": existing["id"]})
+    invalidate_init_cache()
     return {k: v for k, v in updated.items() if k != "_id"}
 
 
@@ -271,6 +282,7 @@ async def update_site_settings(
     )
     
     updated = await db.site_settings.find_one({"id": existing["id"]})
+    invalidate_init_cache()
     return {k: v for k, v in updated.items() if k != "_id"}
 
 
@@ -343,6 +355,7 @@ async def update_seo_settings(
     )
     
     updated = await db.seo_settings.find_one({"id": existing["id"]})
+    invalidate_init_cache()
     return {k: v for k, v in updated.items() if k != "_id"}
 
 
@@ -398,6 +411,7 @@ async def update_home_stats(
     )
     
     updated = await db.home_stats.find_one({"id": existing["id"]})
+    invalidate_init_cache()
     return {k: v for k, v in updated.items() if k != "_id"}
 
 
@@ -451,56 +465,31 @@ async def update_home_cta(
     )
     
     updated = await db.home_cta.find_one({"id": existing["id"]})
+    invalidate_init_cache()
     return {k: v for k, v in updated.items() if k != "_id"}
 
 
 
 
-# MASTER endpoint - ALL data in ONE call. Replaces site-data + homepage-data
+# MASTER endpoint - ALL data in ONE call with server-side caching
 @router.get("/init")
 async def get_init_data(db: AsyncIOMotorDatabase = Depends(get_db)):
     """Single endpoint that returns ALL data needed to render any page instantly"""
     from fastapi.responses import JSONResponse
-    import json
-    from bson import ObjectId
+    from server import get_init_cache, _warm_init_cache
 
-    carousel_cursor = db.carousel_slides.find({"is_active": True}, {"_id": 0}).sort("order", 1)
-    projects_cursor = db.projects.find({}, {"_id": 0}).sort("order", 1)
+    # Try cache first (0ms response)
+    cached = get_init_cache()
+    if cached:
+        return JSONResponse(
+            content=cached,
+            headers={"Cache-Control": "public, max-age=30", "X-Cache": "HIT"}
+        )
 
-    results = await asyncio.gather(
-        db.site_settings.find_one(),
-        db.contact_info.find_one(),
-        db.seo_settings.find_one(),
-        carousel_cursor.to_list(50),
-        projects_cursor.to_list(100),
-        db.hero_features.find_one(),
-        db.home_stats.find_one(),
-        db.home_cta.find_one(),
+    # Cache miss - fetch from DB and cache
+    await _warm_init_cache()
+    cached = get_init_cache()
+    return JSONResponse(
+        content=cached,
+        headers={"Cache-Control": "public, max-age=30", "X-Cache": "MISS"}
     )
-
-    site_settings, contact, seo_settings, carousel, projects, hero_features, home_stats, home_cta = results
-
-    def clean(doc):
-        if not doc:
-            return None
-        return {k: v for k, v in doc.items() if k != "_id"}
-
-    def serialize(obj):
-        if isinstance(obj, ObjectId):
-            return str(obj)
-        if isinstance(obj, datetime):
-            return obj.isoformat()
-        raise TypeError(f"Not serializable: {type(obj)}")
-
-    data = {
-        "siteSettings": clean(site_settings),
-        "contact": clean(contact),
-        "seoSettings": clean(seo_settings),
-        "carousel": carousel,
-        "projects": projects,
-        "heroFeatures": clean(hero_features),
-        "homeStats": clean(home_stats),
-        "homeCTA": clean(home_cta),
-    }
-    content = json.loads(json.dumps(data, default=serialize))
-    return JSONResponse(content=content, headers={"Cache-Control": "public, max-age=30"})
