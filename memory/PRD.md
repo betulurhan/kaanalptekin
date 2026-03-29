@@ -50,6 +50,14 @@ Full-stack real estate portfolio website and CMS for "Kaan Alp Tekin" in Antalya
 - Dynamic sitemap/robots.txt
 - SEO metadata management
 
+### Performance Optimization (Mar 2026)
+- Reduced API calls from 9 to 2 unified endpoints (/api/content/site-data, /api/content/homepage-data)
+- Created SiteDataContext - single fetch for Navbar, Footer, SEO data shared across all pages
+- React.lazy code splitting for all page components
+- Unsplash image URL optimization (auto width/quality params)
+- lazy loading for below-fold images
+- Cache-Control headers on unified endpoints
+
 ### Bug Fixes (Feb 2026)
 - P0: Fixed responsive layout and image rendering (dead carousel/about images, mobile hero overlapping trust indicators, CTA buttons, carousel arrows)
 - P0: Fixed AdminBlog.jsx - was using old local uploadAPI instead of Cloudinary (blog images would be lost on deployment)
