@@ -1,65 +1,36 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, CheckCircle2, Award, Users, Building2, TrendingUp, ChevronLeft, ChevronRight, Phone, MapPin, Star, Home as HomeIcon, Key, Shield } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { Card, CardContent } from '../components/ui/card';
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '../components/ui/carousel';
+import { Carousel, CarouselContent, CarouselItem } from '../components/ui/carousel';
 import { Badge } from '../components/ui/badge';
-import { contentAPI } from '../services/api';
 import { SEOHead } from '../components/SEOHead';
 import { useSiteData } from '../context/SiteDataContext';
 import { resolveImageUrl } from '../utils/imageUrl';
 
 export const Home = () => {
-  const [carouselSlides, setCarouselSlides] = useState([]);
-  const [projects, setProjects] = useState([]);
-  const [heroFeatures, setHeroFeatures] = useState(null);
-  const [homeStats, setHomeStats] = useState(null);
-  const [homeCTA, setHomeCTA] = useState(null);
+  const { seoSettings, carousel, projects, heroFeatures, homeStats, homeCTA, loaded } = useSiteData();
   const [selectedType, setSelectedType] = useState('all');
-  const [loading, setLoading] = useState(true);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [carouselApi, setCarouselApi] = useState(null);
-  const { seoSettings } = useSiteData();
   const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
 
-  useEffect(() => {
-    loadData();
-  }, []);
-
-  // Track current slide (autoplay disabled)
+  // Track current slide
   useEffect(() => {
     if (!carouselApi) return;
-    
-    const onSelect = () => {
-      setCurrentSlide(carouselApi.selectedScrollSnap());
-    };
-    
+    const onSelect = () => setCurrentSlide(carouselApi.selectedScrollSnap());
     carouselApi.on('select', onSelect);
     return () => carouselApi.off('select', onSelect);
   }, [carouselApi]);
 
-  const loadData = async () => {
-    try {
-      const data = await contentAPI.getHomepageData();
-      setCarouselSlides(data.carousel || []);
-      setProjects(data.projects || []);
-      setHeroFeatures(data.heroFeatures);
-      setHomeStats(data.homeStats);
-      setHomeCTA(data.homeCTA);
-
-      // Preload first carousel image for faster render - use mobile size on small screens
-      if (data.carousel?.[0]?.image) {
-        const img = new Image();
-        const isMobile = window.innerWidth < 768;
-        img.src = resolveImageUrl(data.carousel[0].image, { width: isMobile ? 640 : 1280, quality: isMobile ? 40 : 50 });
-      }
-    } catch (error) {
-      console.error('Failed to load data:', error);
-    } finally {
-      setLoading(false);
+  // Preload first carousel image
+  useEffect(() => {
+    if (carousel?.[0]?.image) {
+      const img = new Image();
+      img.src = resolveImageUrl(carousel[0].image, { width: isMobile ? 640 : 1280, quality: isMobile ? 40 : 50 });
     }
-  };
+  }, [carousel, isMobile]);
 
   // Icon mapping for dynamic icons
   const getIcon = (iconName) => {
@@ -118,7 +89,7 @@ export const Home = () => {
       />
       {/* Hero Carousel Section */}
       <section className="relative h-screen overflow-hidden">
-        {loading || carouselSlides.length === 0 ? (
+        {!loaded || carousel.length === 0 ? (
           <div className="h-full flex items-center justify-center bg-slate-900">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-amber-500"></div>
           </div>
@@ -129,7 +100,7 @@ export const Home = () => {
             setApi={setCarouselApi}
           >
             <CarouselContent className="-ml-0 h-screen">
-              {carouselSlides.map((slide, index) => (
+              {carousel.map((slide, index) => (
                 <CarouselItem key={slide.id} className="pl-0 h-full">
                   <div className="relative h-full w-full">
                     {/* Background Image - only load current slide (mobile) or current+adjacent (desktop) */}
@@ -363,7 +334,7 @@ export const Home = () => {
             
             {/* Slide Indicators */}
             <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex gap-2 z-20">
-              {carouselSlides.map((_, idx) => (
+              {carousel.map((_, idx) => (
                 <button 
                   key={idx} 
                   onClick={() => carouselApi?.scrollTo(idx)}

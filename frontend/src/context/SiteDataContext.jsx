@@ -1,58 +1,62 @@
-import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import React, { createContext, useContext, useState, useEffect, useRef } from 'react';
 import { contentAPI } from '../services/api';
 
 const SiteDataContext = createContext(null);
 
 export const SiteDataProvider = ({ children }) => {
-  const [siteSettings, setSiteSettings] = useState(null);
-  const [contactInfo, setContactInfo] = useState(null);
-  const [seoSettings, setSeoSettings] = useState(null);
-  const [loaded, setLoaded] = useState(false);
+  const [data, setData] = useState({
+    siteSettings: null,
+    contactInfo: null,
+    seoSettings: null,
+    carousel: [],
+    projects: [],
+    heroFeatures: null,
+    homeStats: null,
+    homeCTA: null,
+    loaded: false,
+  });
+  const fetchedRef = useRef(false);
 
   useEffect(() => {
-    loadSiteData();
+    // Prevent StrictMode double-fetch
+    if (fetchedRef.current) return;
+    fetchedRef.current = true;
+
+    contentAPI.getInit().then(res => {
+      setData({
+        siteSettings: res.siteSettings,
+        contactInfo: res.contact,
+        seoSettings: res.seoSettings,
+        carousel: res.carousel || [],
+        projects: res.projects || [],
+        heroFeatures: res.heroFeatures,
+        homeStats: res.homeStats,
+        homeCTA: res.homeCTA,
+        loaded: true,
+      });
+
+      // Inject Google Analytics
+      if (res.seoSettings?.google_analytics_id) {
+        const gaId = res.seoSettings.google_analytics_id;
+        if (!document.getElementById('ga-script')) {
+          const s1 = document.createElement('script');
+          s1.id = 'ga-script';
+          s1.async = true;
+          s1.src = `https://www.googletagmanager.com/gtag/js?id=${gaId}`;
+          document.head.appendChild(s1);
+          const s2 = document.createElement('script');
+          s2.innerHTML = `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${gaId}');`;
+          document.head.appendChild(s2);
+        }
+      }
+    }).catch(err => {
+      console.error('Init fetch failed:', err);
+      setData(prev => ({ ...prev, loaded: true }));
+    });
   }, []);
 
-  const loadSiteData = async () => {
-    try {
-      const data = await contentAPI.getSiteData();
-      setSiteSettings(data.siteSettings);
-      setContactInfo(data.contact);
-      setSeoSettings(data.seoSettings);
-
-      // Inject Google Analytics if ID exists
-      if (data.seoSettings?.google_analytics_id) {
-        injectGoogleAnalytics(data.seoSettings.google_analytics_id);
-      }
-    } catch (error) {
-      console.error('Failed to load site data:', error);
-    } finally {
-      setLoaded(true);
-    }
-  };
-
-  const injectGoogleAnalytics = (gaId) => {
-    if (document.getElementById('ga-script')) return;
-    const script1 = document.createElement('script');
-    script1.id = 'ga-script';
-    script1.async = true;
-    script1.src = `https://www.googletagmanager.com/gtag/js?id=${gaId}`;
-    document.head.appendChild(script1);
-    const script2 = document.createElement('script');
-    script2.innerHTML = `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${gaId}');`;
-    document.head.appendChild(script2);
-  };
-
-  const refresh = useCallback(() => loadSiteData(), []);
-
   return (
-    <SiteDataContext.Provider value={{
-      siteSettings,
-      contactInfo,
-      seoSettings,
-      loaded,
-      refresh
-    }}>
+    <SiteDataContext.Provider value={data}>
       {children}
     </SiteDataContext.Provider>
   );
@@ -60,8 +64,6 @@ export const SiteDataProvider = ({ children }) => {
 
 export const useSiteData = () => {
   const context = useContext(SiteDataContext);
-  if (!context) {
-    throw new Error('useSiteData must be used within a SiteDataProvider');
-  }
+  if (!context) throw new Error('useSiteData must be used within SiteDataProvider');
   return context;
 };
