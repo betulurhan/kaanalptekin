@@ -8,6 +8,7 @@ import { Badge } from '../components/ui/badge';
 import { SEOHead } from '../components/SEOHead';
 import { useSiteData } from '../context/SiteDataContext';
 import { resolveImageUrl } from '../utils/imageUrl';
+import { LazySection } from '../components/LazySection';
 
 export const Home = () => {
   const { seoSettings, carousel, projects, heroFeatures, homeStats, homeCTA, loaded } = useSiteData();
@@ -346,7 +347,8 @@ export const Home = () => {
         )}
       </section>
 
-      {/* Stats Section */}
+      {/* Stats Section - Lazy loaded */}
+      <LazySection>
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
@@ -367,8 +369,10 @@ export const Home = () => {
           </div>
         </div>
       </section>
+      </LazySection>
 
-      {/* Projects Section */}
+      {/* Projects Section - Lazy loaded */}
+      <LazySection>
       <section className="py-20 bg-slate-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
@@ -445,8 +449,10 @@ export const Home = () => {
           </div>
         </div>
       </section>
+      </LazySection>
 
-      {/* CTA Section */}
+      {/* CTA Section - Lazy loaded */}
+      <LazySection>
       <section className="py-20 bg-slate-800 text-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-3xl md:text-4xl font-bold mb-6">
@@ -463,6 +469,7 @@ export const Home = () => {
           </a>
         </div>
       </section>
+      </LazySection>
     </div>
   );
 };
