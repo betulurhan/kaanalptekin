@@ -54,9 +54,14 @@ Full-stack real estate portfolio website and CMS for "Kaan Alp Tekin" in Antalya
 - Reduced API calls from 9 to 2 unified endpoints (/api/content/site-data, /api/content/homepage-data)
 - Created SiteDataContext - single fetch for Navbar, Footer, SEO data shared across all pages
 - React.lazy code splitting for all page components
-- Unsplash image URL optimization (auto width/quality params)
-- lazy loading for below-fold images
-- Cache-Control headers on unified endpoints
+- Aggressive image optimization: WebP format, reduced dimensions (1280w hero, 400w cards), quality 50
+- Carousel lazy loading - only loads visible + adjacent slides
+- Homepage projects reduced from 6 to 3 (rest on Projects page)
+- Preconnect hints for Unsplash/Cloudinary in index.html
+- Font loading with display=optional for instant text rendering
+- Image preload for first carousel slide
+- Total transfer reduced from 1836KB to 752KB (59% reduction)
+- Load time reduced from ~3.9s to 1.81s in dev (est <1.5s in production)
 
 ### Bug Fixes (Feb 2026)
 - P0: Fixed responsive layout and image rendering (dead carousel/about images, mobile hero overlapping trust indicators, CTA buttons, carousel arrows)

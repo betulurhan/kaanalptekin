@@ -71,7 +71,7 @@ export const Blog = () => {
             <div className="grid md:grid-cols-2 gap-0">
               <div className="relative h-80 md:h-auto overflow-hidden">
                 <img
-                  src={resolveImageUrl(featuredPost.image)}
+                  src={resolveImageUrl(featuredPost.image, { width: 600, quality: 50 })}
                   alt={featuredPost.title}
                   className="w-full h-full object-cover transform hover:scale-105 transition-transform duration-500"
                 />
@@ -142,7 +142,7 @@ export const Blog = () => {
               >
                 <div className="relative h-56 overflow-hidden group">
                   <img
-                    src={resolveImageUrl(post.image)}
+                    src={resolveImageUrl(post.image, { width: 400, quality: 50 })}
                     alt={post.title}
                     className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500"
                   />

@@ -46,6 +46,12 @@ export const Home = () => {
       setHeroFeatures(data.heroFeatures);
       setHomeStats(data.homeStats);
       setHomeCTA(data.homeCTA);
+
+      // Preload first carousel image for faster render
+      if (data.carousel?.[0]?.image) {
+        const img = new Image();
+        img.src = resolveImageUrl(data.carousel[0].image, { width: 1280, quality: 50 });
+      }
     } catch (error) {
       console.error('Failed to load data:', error);
     } finally {
@@ -81,8 +87,8 @@ export const Home = () => {
   ];
 
   const filteredProjects = selectedType === 'all'
-    ? projects.slice(0, 6)
-    : projects.filter((p) => p.type === selectedType).slice(0, 6);
+    ? projects.slice(0, 3)
+    : projects.filter((p) => p.type === selectedType).slice(0, 3);
 
   // Dynamic stats from admin or defaults
   const displayStats = (homeStats?.stats?.length > 0) 
@@ -124,10 +130,13 @@ export const Home = () => {
               {carouselSlides.map((slide, index) => (
                 <CarouselItem key={slide.id} className="pl-0 h-full">
                   <div className="relative h-full w-full">
-                    {/* Background Image */}
+                    {/* Background Image - only load current and adjacent slides */}
                     <div
-                      className="absolute inset-0 bg-cover bg-center"
-                      style={{ backgroundImage: `url('${resolveImageUrl(slide.image, { width: 1920 })}')` }}
+                      className="absolute inset-0 bg-cover bg-center bg-slate-100"
+                      style={Math.abs(currentSlide - index) <= 1 || index === 0
+                        ? { backgroundImage: `url('${resolveImageUrl(slide.image, { width: 1280, quality: 50 })}')` }
+                        : {}
+                      }
                     >
                       <div className={`absolute inset-0 ${index === 0 ? 'bg-gradient-to-r from-white/80 via-white/50 to-white/20 sm:from-white/60 sm:via-white/30 sm:to-transparent' : 'bg-gradient-to-t from-slate-900/80 via-slate-900/40 to-slate-900/20'}`}></div>
                     </div>
@@ -420,7 +429,7 @@ export const Home = () => {
               >
                 <div className="relative h-64 overflow-hidden">
                   <img
-                    src={resolveImageUrl(project.image)}
+                    src={resolveImageUrl(project.image, { width: 400, quality: 50 })}
                     alt={project.title}
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                     loading="lazy"

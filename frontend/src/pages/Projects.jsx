@@ -43,7 +43,7 @@ export const Projects = () => {
       <Card className="overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border-none cursor-pointer">
       <div className="relative h-72 overflow-hidden group">
         <img
-          src={resolveImageUrl(project.image)}
+          src={resolveImageUrl(project.image, { width: 400, quality: 50 })}
           alt={project.title}
           className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500"
         />
