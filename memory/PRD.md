@@ -51,19 +51,18 @@ Full-stack real estate portfolio website and CMS for "Kaan Alp Tekin" in Antalya
 - SEO metadata management
 
 ### Performance Optimization (Mar 2026)
-- Reduced API calls from 9 to 2 unified endpoints (/api/content/site-data, /api/content/homepage-data)
-- Created SiteDataContext - single fetch for Navbar, Footer, SEO data shared across all pages
+- **Single /api/content/init endpoint**: ALL data in 1 API call (siteSettings + contact + seoSettings + carousel + projects + heroFeatures + homeStats + homeCTA)
+- **SiteDataContext**: Fetches everything ONCE on app boot, distributes to all components. No more waterfall
+- **StrictMode guard (useRef)**: Prevents double-fetch in development mode
+- **Home.jsx zero API calls**: Reads all data from SiteDataContext context
 - React.lazy code splitting for all page components
 - Aggressive image optimization: WebP format, responsive sizes (640w mobile, 1280w desktop), quality 40-50
-- Carousel lazy loading - only loads active slide on mobile, current+adjacent on desktop
-- Homepage projects reduced from 6 to 3 (rest on Projects page)
-- Preconnect hints for Unsplash/Cloudinary/Fonts in index.html
-- Font loading with display=optional for instant text rendering
-- Image preload for first carousel slide (mobile-aware sizing)
-- HTML loading skeleton for instant first paint before React boots
-- Production build: main.js 114KB gzipped (vs 406KB dev), total homepage ~165KB gzip
-- Estimated production mobile load time: ~1.2s on 1.5Mbps
-- Preview (dev mode) is inherently slower due to unminified React bundle
+- Carousel lazy loading - only loads active slide on mobile
+- Homepage projects reduced from 6 to 3
+- Preconnect/dns-prefetch hints for Unsplash/Cloudinary/Fonts
+- HTML loading skeleton for instant first paint
+- Production build: 236KB total gzip (JS 185KB + CSS 13KB + API 5KB + image 30KB)
+- Estimated production load: ~1.5s on 1.5Mbps mobile, <0.5s on 4G
 
 ### Bug Fixes (Feb 2026)
 - P0: Fixed responsive layout and image rendering (dead carousel/about images, mobile hero overlapping trust indicators, CTA buttons, carousel arrows)
