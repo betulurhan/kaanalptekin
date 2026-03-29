@@ -21,6 +21,7 @@ export const Home = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [carouselApi, setCarouselApi] = useState(null);
   const { seoSettings } = useSiteData();
+  const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
 
   useEffect(() => {
     loadData();
@@ -47,10 +48,11 @@ export const Home = () => {
       setHomeStats(data.homeStats);
       setHomeCTA(data.homeCTA);
 
-      // Preload first carousel image for faster render
+      // Preload first carousel image for faster render - use mobile size on small screens
       if (data.carousel?.[0]?.image) {
         const img = new Image();
-        img.src = resolveImageUrl(data.carousel[0].image, { width: 1280, quality: 50 });
+        const isMobile = window.innerWidth < 768;
+        img.src = resolveImageUrl(data.carousel[0].image, { width: isMobile ? 640 : 1280, quality: isMobile ? 40 : 50 });
       }
     } catch (error) {
       console.error('Failed to load data:', error);
@@ -130,11 +132,11 @@ export const Home = () => {
               {carouselSlides.map((slide, index) => (
                 <CarouselItem key={slide.id} className="pl-0 h-full">
                   <div className="relative h-full w-full">
-                    {/* Background Image - only load current and adjacent slides */}
+                    {/* Background Image - only load current slide (mobile) or current+adjacent (desktop) */}
                     <div
                       className="absolute inset-0 bg-cover bg-center bg-slate-100"
-                      style={Math.abs(currentSlide - index) <= 1 || index === 0
-                        ? { backgroundImage: `url('${resolveImageUrl(slide.image, { width: 1280, quality: 50 })}')` }
+                      style={(index === currentSlide || (!isMobile && Math.abs(currentSlide - index) <= 1))
+                        ? { backgroundImage: `url('${resolveImageUrl(slide.image, { width: isMobile ? 640 : 1280, quality: isMobile ? 40 : 50 })}')` }
                         : {}
                       }
                     >
@@ -429,7 +431,7 @@ export const Home = () => {
               >
                 <div className="relative h-64 overflow-hidden">
                   <img
-                    src={resolveImageUrl(project.image, { width: 400, quality: 50 })}
+                    src={resolveImageUrl(project.image, { width: isMobile ? 300 : 400, quality: isMobile ? 40 : 50 })}
                     alt={project.title}
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                     loading="lazy"
