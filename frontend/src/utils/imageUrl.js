@@ -10,6 +10,16 @@ export const resolveImageUrl = (url, options = {}) => {
     return null;
   }
   
+  // Optimize Unsplash URLs - add width/quality params
+  if (url.includes('unsplash.com')) {
+    const separator = url.includes('?') ? '&' : '?';
+    const w = width || 800;
+    // Remove existing w= params and add optimized ones
+    const cleanUrl = url.replace(/[?&]w=\d+/g, '').replace(/[?&]q=\d+/g, '');
+    const sep = cleanUrl.includes('?') ? '&' : '?';
+    return `${cleanUrl}${sep}w=${w}&q=75&auto=format`;
+  }
+  
   // If it's a Cloudinary URL, add optimizations
   if (url.includes('cloudinary.com') || url.includes('res.cloudinary.com')) {
     // Check if already has transformations

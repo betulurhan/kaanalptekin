@@ -6,11 +6,11 @@ import { Label } from '../components/ui/label';
 import { Button } from '../components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
 import { SEOHead } from '../components/SEOHead';
-import { useSEO } from '../context/SEOContext';
+import { useSiteData } from '../context/SiteDataContext';
 import { ilceAPI } from '../services/api';
 
 export const Hesaplama = () => {
-  const { seoSettings } = useSEO();
+  const { seoSettings } = useSiteData();
   const [ilceVerileri, setIlceVerileri] = useState([]);
   
   useEffect(() => {

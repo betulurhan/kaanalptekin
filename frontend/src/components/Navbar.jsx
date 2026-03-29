@@ -2,13 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, X, Home, User, FolderOpen, BookOpen, Mail, Calculator } from 'lucide-react';
 import { Button } from './ui/button';
-import { contentAPI } from '../services/api';
+import { useSiteData } from '../context/SiteDataContext';
 import { resolveImageUrl } from '../utils/imageUrl';
 
 export const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [siteSettings, setSiteSettings] = useState(null);
+  const { siteSettings } = useSiteData();
   const [logoError, setLogoError] = useState(false);
   const location = useLocation();
 
@@ -19,19 +19,6 @@ export const Navbar = () => {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
-
-  useEffect(() => {
-    loadSiteSettings();
-  }, []);
-
-  const loadSiteSettings = async () => {
-    try {
-      const settings = await contentAPI.getSiteSettings();
-      setSiteSettings(settings);
-    } catch (error) {
-      console.error('Failed to load site settings:', error);
-    }
-  };
 
   const navLinks = [
     { path: '/', label: 'Ana Sayfa', icon: Home },

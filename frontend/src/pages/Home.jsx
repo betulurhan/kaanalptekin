@@ -5,10 +5,9 @@ import { Button } from '../components/ui/button';
 import { Card, CardContent } from '../components/ui/card';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '../components/ui/carousel';
 import { Badge } from '../components/ui/badge';
-import { aboutData } from '../mock/mockData';
-import { carouselAPI, projectsAPI, contentAPI } from '../services/api';
+import { contentAPI } from '../services/api';
 import { SEOHead } from '../components/SEOHead';
-import { useSEO } from '../context/SEOContext';
+import { useSiteData } from '../context/SiteDataContext';
 import { resolveImageUrl } from '../utils/imageUrl';
 
 export const Home = () => {
@@ -21,7 +20,7 @@ export const Home = () => {
   const [loading, setLoading] = useState(true);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [carouselApi, setCarouselApi] = useState(null);
-  const { seoSettings } = useSEO();
+  const { seoSettings } = useSiteData();
 
   useEffect(() => {
     loadData();
@@ -41,18 +40,12 @@ export const Home = () => {
 
   const loadData = async () => {
     try {
-      const [slides, projectsData, features, stats, cta] = await Promise.all([
-        carouselAPI.getAll(true),
-        projectsAPI.getAll(),
-        contentAPI.getHeroFeatures().catch(() => null),
-        contentAPI.getHomeStats().catch(() => null),
-        contentAPI.getHomeCTA().catch(() => null)
-      ]);
-      setCarouselSlides(slides);
-      setProjects(projectsData);
-      setHeroFeatures(features);
-      setHomeStats(stats);
-      setHomeCTA(cta);
+      const data = await contentAPI.getHomepageData();
+      setCarouselSlides(data.carousel || []);
+      setProjects(data.projects || []);
+      setHeroFeatures(data.heroFeatures);
+      setHomeStats(data.homeStats);
+      setHomeCTA(data.homeCTA);
     } catch (error) {
       console.error('Failed to load data:', error);
     } finally {
@@ -134,7 +127,7 @@ export const Home = () => {
                     {/* Background Image */}
                     <div
                       className="absolute inset-0 bg-cover bg-center"
-                      style={{ backgroundImage: `url('${resolveImageUrl(slide.image)}')` }}
+                      style={{ backgroundImage: `url('${resolveImageUrl(slide.image, { width: 1920 })}')` }}
                     >
                       <div className={`absolute inset-0 ${index === 0 ? 'bg-gradient-to-r from-white/80 via-white/50 to-white/20 sm:from-white/60 sm:via-white/30 sm:to-transparent' : 'bg-gradient-to-t from-slate-900/80 via-slate-900/40 to-slate-900/20'}`}></div>
                     </div>
@@ -430,6 +423,7 @@ export const Home = () => {
                     src={resolveImageUrl(project.image)}
                     alt={project.title}
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                    loading="lazy"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-transparent" />
                   <Badge className="absolute top-4 left-4 bg-amber-500">{project.type}</Badge>

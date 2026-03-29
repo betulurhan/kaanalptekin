@@ -133,6 +133,17 @@ export const blogAPI = {
 
 // Content API
 export const contentAPI = {
+  // Unified endpoints for performance
+  getSiteData: async () => {
+    const response = await axios.get(`${API}/content/site-data`);
+    return response.data;
+  },
+
+  getHomepageData: async () => {
+    const response = await axios.get(`${API}/content/homepage-data`);
+    return response.data;
+  },
+
   getAbout: async () => {
     const response = await axios.get(`${API}/content/about`);
     return response.data;

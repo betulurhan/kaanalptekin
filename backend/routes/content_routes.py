@@ -4,6 +4,7 @@ from models import AboutContent, AboutContentUpdate, ContactInfo, ContactInfoUpd
 from auth import verify_token
 from datetime import datetime
 import uuid
+import asyncio
 
 router = APIRouter(prefix="/content", tags=["Content Management"])
 
@@ -452,3 +453,74 @@ async def update_home_cta(
     updated = await db.home_cta.find_one({"id": existing["id"]})
     return {k: v for k, v in updated.items() if k != "_id"}
 
+
+
+
+# Unified site data endpoint - replaces 3 separate calls (siteSettings + contact + seoSettings)
+@router.get("/site-data")
+async def get_site_data(db: AsyncIOMotorDatabase = Depends(get_db)):
+    """Get all site-wide data in one call for performance"""
+    site_settings, contact, seo_settings = await asyncio.gather(
+        db.site_settings.find_one(),
+        db.contact_info.find_one(),
+        db.seo_settings.find_one()
+    )
+    from fastapi.responses import JSONResponse
+    import json
+    from bson import ObjectId
+
+    def serialize(obj):
+        if isinstance(obj, ObjectId):
+            return str(obj)
+        if isinstance(obj, datetime):
+            return obj.isoformat()
+        raise TypeError(f"Object of type {type(obj)} is not JSON serializable")
+
+    data = {
+        "siteSettings": {k: v for k, v in site_settings.items() if k != "_id"} if site_settings else None,
+        "contact": {k: v for k, v in contact.items() if k != "_id"} if contact else None,
+        "seoSettings": {k: v for k, v in seo_settings.items() if k != "_id"} if seo_settings else None
+    }
+    content = json.loads(json.dumps(data, default=serialize))
+    return JSONResponse(content=content, headers={"Cache-Control": "public, max-age=60"})
+
+
+# Unified homepage data endpoint - replaces 5 separate calls
+@router.get("/homepage-data")
+async def get_homepage_data(db: AsyncIOMotorDatabase = Depends(get_db)):
+    """Get all homepage data in one call for performance"""
+    carousel_cursor = db.carousel_slides.find(
+        {"is_active": True}, {"_id": 0}
+    ).sort("order", 1)
+    projects_cursor = db.projects.find({}, {"_id": 0}).sort("order", 1)
+
+    carousel_task = carousel_cursor.to_list(50)
+    projects_task = projects_cursor.to_list(100)
+    hero_features_task = db.hero_features.find_one()
+    home_stats_task = db.home_stats.find_one()
+    home_cta_task = db.home_cta.find_one()
+
+    carousel, projects, hero_features, home_stats, home_cta = await asyncio.gather(
+        carousel_task, projects_task, hero_features_task, home_stats_task, home_cta_task
+    )
+
+    from fastapi.responses import JSONResponse
+    import json
+    from bson import ObjectId
+
+    def serialize(obj):
+        if isinstance(obj, ObjectId):
+            return str(obj)
+        if isinstance(obj, datetime):
+            return obj.isoformat()
+        raise TypeError(f"Object of type {type(obj)} is not JSON serializable")
+
+    data = {
+        "carousel": carousel,
+        "projects": projects,
+        "heroFeatures": {k: v for k, v in hero_features.items() if k != "_id"} if hero_features else None,
+        "homeStats": {k: v for k, v in home_stats.items() if k != "_id"} if home_stats else None,
+        "homeCTA": {k: v for k, v in home_cta.items() if k != "_id"} if home_cta else None
+    }
+    content = json.loads(json.dumps(data, default=serialize))
+    return JSONResponse(content=content, headers={"Cache-Control": "public, max-age=30"})

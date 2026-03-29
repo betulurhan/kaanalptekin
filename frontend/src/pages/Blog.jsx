@@ -5,7 +5,7 @@ import { Card, CardContent } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
 import { blogAPI } from '../services/api';
 import { SEOHead } from '../components/SEOHead';
-import { useSEO } from '../context/SEOContext';
+import { useSiteData } from '../context/SiteDataContext';
 import { resolveImageUrl } from '../utils/imageUrl';
 
 export const Blog = () => {
@@ -13,7 +13,7 @@ export const Blog = () => {
   const [loading, setLoading] = useState(true);
   const categories = ['Tümü', 'Piyasa Analizi', 'Satın Alma Rehberi', 'Yatırım', 'Finansman', 'Yaşam', 'Değerleme'];
   const [selectedCategory, setSelectedCategory] = useState('Tümü');
-  const { seoSettings } = useSEO();
+  const { seoSettings } = useSiteData();
 
   useEffect(() => {
     loadPosts();

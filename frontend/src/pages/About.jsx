@@ -3,13 +3,13 @@ import { Award, Target, Heart, TrendingUp } from 'lucide-react';
 import { Card, CardContent } from '../components/ui/card';
 import { contentAPI } from '../services/api';
 import { SEOHead } from '../components/SEOHead';
-import { useSEO } from '../context/SEOContext';
+import { useSiteData } from '../context/SiteDataContext';
 import { resolveImageUrl } from '../utils/imageUrl';
 
 export const About = () => {
   const [aboutData, setAboutData] = useState(null);
   const [loading, setLoading] = useState(true);
-  const { seoSettings } = useSEO();
+  const { seoSettings } = useSiteData();
 
   useEffect(() => {
     loadAbout();

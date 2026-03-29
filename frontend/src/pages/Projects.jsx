@@ -6,14 +6,14 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs'
 import { Badge } from '../components/ui/badge';
 import { projectsAPI } from '../services/api';
 import { SEOHead } from '../components/SEOHead';
-import { useSEO } from '../context/SEOContext';
+import { useSiteData } from '../context/SiteDataContext';
 import { resolveImageUrl } from '../utils/imageUrl';
 
 export const Projects = () => {
   const [projects, setProjects] = useState([]);
   const [selectedType, setSelectedType] = useState('all');
   const [loading, setLoading] = useState(true);
-  const { seoSettings } = useSEO();
+  const { seoSettings } = useSiteData();
 
   useEffect(() => {
     loadProjects();

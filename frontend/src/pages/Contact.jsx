@@ -8,11 +8,11 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { useToast } from '../hooks/use-toast';
 import { messagesAPI, contentAPI, projectsAPI } from '../services/api';
 import { SEOHead } from '../components/SEOHead';
-import { useSEO } from '../context/SEOContext';
+import { useSiteData } from '../context/SiteDataContext';
 
 export const Contact = () => {
   const { toast } = useToast();
-  const { seoSettings } = useSEO();
+  const { seoSettings } = useSiteData();
   const [contactInfo, setContactInfo] = useState(null);
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);

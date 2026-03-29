@@ -1,31 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import { Facebook, Instagram, Linkedin, Twitter, Phone, Mail, MapPin, Clock } from 'lucide-react';
-import { contentAPI } from '../services/api';
+import { useSiteData } from '../context/SiteDataContext';
 import { resolveImageUrl } from '../utils/imageUrl';
 
 export const Footer = () => {
   const currentYear = new Date().getFullYear();
-  const [siteSettings, setSiteSettings] = useState(null);
-  const [contactInfo, setContactInfo] = useState(null);
-  const [logoError, setLogoError] = useState(false);
-
-  useEffect(() => {
-    loadData();
-  }, []);
-
-  const loadData = async () => {
-    try {
-      const [settings, contact] = await Promise.all([
-        contentAPI.getSiteSettings(),
-        contentAPI.getContact()
-      ]);
-      setSiteSettings(settings);
-      setContactInfo(contact);
-    } catch (error) {
-      console.error('Failed to load footer data:', error);
-    }
-  };
+  const { siteSettings, contactInfo } = useSiteData();
+  const [logoError, setLogoError] = React.useState(false);
 
   return (
     <footer className="bg-slate-900 text-slate-300">
