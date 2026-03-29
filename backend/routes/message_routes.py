@@ -37,7 +37,7 @@ async def get_messages(
     if unread_only:
         query["is_read"] = False
     
-    messages = await db.contact_messages.find(query).sort("created_at", -1).to_list(1000)
+    messages = await db.contact_messages.find(query, {"_id": 0}).sort("created_at", -1).limit(100).to_list(100)
     return [ContactMessage(**msg) for msg in messages]
 
 
