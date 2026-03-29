@@ -199,12 +199,129 @@ async def startup_tasks():
     except Exception as e:
         logger.error(f"Error creating default admin: {e}")
 
+    # Migrate old local upload URLs to clean state
+    try:
+        await _migrate_old_local_urls()
+    except Exception as e:
+        logger.error(f"Error migrating old URLs: {e}")
+
     # Pre-warm init cache
     try:
         await _warm_init_cache()
         logger.info("Init cache pre-warmed")
     except Exception as e:
         logger.error(f"Error warming cache: {e}")
+
+
+async def _migrate_old_local_urls():
+    """Migrate old /api/upload/files/ URLs in the database.
+    On production, local files don't exist (ephemeral containers).
+    This replaces broken local URLs with empty string to prevent 404s."""
+    import re
+    local_pattern = re.compile(r'/api/upload/files/')
+
+    async def fix_string_field(collection_name, field_name):
+        """Fix a single string field in a collection"""
+        cursor = db[collection_name].find(
+            {field_name: {"$regex": "/api/upload/files/"}},
+            {"_id": 1, field_name: 1}
+        )
+        count = 0
+        async for doc in cursor:
+            file_path = None
+            old_url = doc.get(field_name, "")
+            if old_url and local_pattern.search(old_url):
+                # Try to upload to Cloudinary if file exists locally
+                filename = old_url.split("/")[-1]
+                local_path = Path(f"/app/backend/uploads/{filename}")
+                new_url = ""
+                if local_path.exists():
+                    try:
+                        import cloudinary.uploader
+                        result = cloudinary.uploader.upload(
+                            str(local_path),
+                            folder=f"kaanalptekin/migrated",
+                            resource_type="image",
+                            transformation=[{"width": 1920, "crop": "limit", "quality": "auto", "fetch_format": "auto"}]
+                        )
+                        new_url = result["secure_url"]
+                        logger.info(f"Migrated {filename} to Cloudinary: {new_url}")
+                    except Exception as e:
+                        logger.warning(f"Failed to upload {filename} to Cloudinary: {e}")
+                await db[collection_name].update_one(
+                    {"_id": doc["_id"]},
+                    {"$set": {field_name: new_url}}
+                )
+                count += 1
+        if count > 0:
+            logger.info(f"Migrated {count} docs in {collection_name}.{field_name}")
+
+    async def fix_array_field(collection_name, field_name):
+        """Fix an array of strings field"""
+        cursor = db[collection_name].find(
+            {field_name: {"$elemMatch": {"$regex": "/api/upload/files/"}}},
+            {"_id": 1, field_name: 1}
+        )
+        count = 0
+        async for doc in cursor:
+            old_urls = doc.get(field_name, [])
+            new_urls = []
+            for url in old_urls:
+                if isinstance(url, str) and local_pattern.search(url):
+                    filename = url.split("/")[-1]
+                    local_path = Path(f"/app/backend/uploads/{filename}")
+                    if local_path.exists():
+                        try:
+                            import cloudinary.uploader
+                            result = cloudinary.uploader.upload(
+                                str(local_path),
+                                folder=f"kaanalptekin/migrated",
+                                resource_type="image",
+                                transformation=[{"width": 1920, "crop": "limit", "quality": "auto", "fetch_format": "auto"}]
+                            )
+                            new_urls.append(result["secure_url"])
+                            logger.info(f"Migrated array item {filename} to Cloudinary")
+                            continue
+                        except Exception:
+                            pass
+                    # Skip broken local URLs (don't add empty string to array)
+                else:
+                    new_urls.append(url)
+            await db[collection_name].update_one(
+                {"_id": doc["_id"]},
+                {"$set": {field_name: new_urls}}
+            )
+            count += 1
+        if count > 0:
+            logger.info(f"Migrated {count} docs in {collection_name}.{field_name} (array)")
+
+    # String fields to migrate
+    string_fields = [
+        ("projects", "main_image"),
+        ("blog_posts", "image"),
+        ("carousel_slides", "image_url"),
+        ("site_settings", "navbar_logo"),
+        ("site_settings", "footer_logo"),
+        ("about_content", "profile_image"),
+    ]
+    # Array fields to migrate
+    array_fields = [
+        ("projects", "images"),
+    ]
+
+    for collection_name, field_name in string_fields:
+        try:
+            await fix_string_field(collection_name, field_name)
+        except Exception as e:
+            logger.warning(f"Migration skip {collection_name}.{field_name}: {e}")
+
+    for collection_name, field_name in array_fields:
+        try:
+            await fix_array_field(collection_name, field_name)
+        except Exception as e:
+            logger.warning(f"Migration skip {collection_name}.{field_name}: {e}")
+
+    logger.info("Local URL migration complete")
 
 
 async def _warm_init_cache():

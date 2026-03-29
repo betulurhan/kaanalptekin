@@ -21,8 +21,9 @@ Full-stack real estate portfolio website and CMS for "Kaan Alp Tekin" in Antalya
 - Kira Getirisi ve Amortisman calculator with backend integration
 - BlogDetail page with custom creation dates
 - LazySection for above-the-fold optimization
-- SiteDataContext for single-request data loading
+- SiteDataContext for single-request data loading (`/api/content/init`)
 - Server-side caching with auto-invalidation
+- **Startup DB migration**: Auto-migrates old `/api/upload/files/` URLs to Cloudinary or cleans up broken references
 
 ## Performance Optimization (Mar 2026) - COMPLETED
 - **serve -s build**: Minified, tree-shaken, code-split production build
@@ -39,6 +40,11 @@ Full-stack real estate portfolio website and CMS for "Kaan Alp Tekin" in Antalya
 - Total transfer: 1836KB -> 503KB desktop, 234KB mobile
 - Desktop load: 3.9s -> 1.72s
 - Mobile 1.5Mbps: 5s+ -> 2.89s (under 3 seconds!)
+
+## Deployment Fixes (Mar 2026) - COMPLETED
+- Fixed stale frontend build not using `/api/content/init` (9 API calls -> 1)
+- Added startup migration to clean old `/api/upload/files/` 404 errors
+- Migration uploads local files to Cloudinary when available, removes broken URLs otherwise
 
 ## Upcoming Tasks (P1 - Backlog)
 - Mevduat Faizi API entegrasyonu (canlı banka faiz oranları)
