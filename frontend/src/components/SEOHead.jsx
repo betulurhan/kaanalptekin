@@ -45,7 +45,7 @@ export const SEOHead = ({ title, description, type = 'website' }) => {
       structuredDataScript.type = 'application/ld+json';
       document.head.appendChild(structuredDataScript);
     }
-    structuredDataScript.innerHTML = JSON.stringify({
+    structuredDataScript.textContent = JSON.stringify({
       "@context": "https://schema.org",
       "@graph": [
         {

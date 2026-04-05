@@ -1,34 +1,17 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Calendar, User, Clock, Tag, ArrowRight } from 'lucide-react';
 import { Card, CardContent } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
-import { blogAPI } from '../services/api';
 import { SEOHead } from '../components/SEOHead';
 import { useSiteData } from '../context/SiteDataContext';
 import { resolveImageUrl } from '../utils/imageUrl';
 
 export const Blog = () => {
-  const [posts, setPosts] = useState([]);
-  const [loading, setLoading] = useState(true);
   const categories = ['Tümü', 'Piyasa Analizi', 'Satın Alma Rehberi', 'Yatırım', 'Finansman', 'Yaşam', 'Değerleme'];
   const [selectedCategory, setSelectedCategory] = useState('Tümü');
-  const { seoSettings } = useSiteData();
-
-  useEffect(() => {
-    loadPosts();
-  }, []);
-
-  const loadPosts = async () => {
-    try {
-      const data = await blogAPI.getAll();
-      setPosts(data);
-    } catch (error) {
-      console.error('Failed to load blog posts:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const { seoSettings, blogPosts, loaded } = useSiteData();
+  const posts = blogPosts || [];
 
   const filteredPosts =
     selectedCategory === 'Tümü'
@@ -53,7 +36,7 @@ export const Blog = () => {
         </div>
       </section>
 
-      {loading ? (
+      {!loaded ? (
         <div className="flex justify-center py-20">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-slate-800"></div>
         </div>

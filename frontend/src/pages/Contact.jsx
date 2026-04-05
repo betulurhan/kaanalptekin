@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Phone, Mail, MapPin, Clock, Send } from 'lucide-react';
 import { Card, CardContent } from '../components/ui/card';
 import { Input } from '../components/ui/input';
@@ -6,41 +6,19 @@ import { Button } from '../components/ui/button';
 import { Label } from '../components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
 import { useToast } from '../hooks/use-toast';
-import { messagesAPI, contentAPI, projectsAPI } from '../services/api';
+import { messagesAPI } from '../services/api';
 import { SEOHead } from '../components/SEOHead';
 import { useSiteData } from '../context/SiteDataContext';
 
 export const Contact = () => {
   const { toast } = useToast();
-  const { seoSettings } = useSiteData();
-  const [contactInfo, setContactInfo] = useState(null);
-  const [projects, setProjects] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const { seoSettings, contactInfo, projects, loaded } = useSiteData();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     phone: '',
     project: 'Tüm Projeler',
   });
-
-  useEffect(() => {
-    loadData();
-  }, []);
-
-  const loadData = async () => {
-    try {
-      const [contactData, projectsData] = await Promise.all([
-        contentAPI.getContact(),
-        projectsAPI.getAll()
-      ]);
-      setContactInfo(contactData);
-      setProjects(projectsData);
-    } catch (error) {
-      console.error('Failed to load data:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const handleChange = (e) => {
     setFormData({
@@ -81,7 +59,7 @@ export const Contact = () => {
       });
   };
 
-  if (loading) {
+  if (!loaded) {
     return (
       <div className="min-h-screen pt-20 flex items-center justify-center">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-slate-800"></div>
@@ -223,7 +201,7 @@ export const Contact = () => {
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="Tüm Projeler">Tüm Projeler</SelectItem>
-                        {projects.map((project) => (
+                        {(projects || []).map((project) => (
                           <SelectItem key={project.id} value={project.title}>
                             {project.title}
                           </SelectItem>

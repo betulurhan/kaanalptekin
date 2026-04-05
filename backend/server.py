@@ -331,6 +331,7 @@ async def _warm_init_cache():
 
     carousel_cursor = db.carousel_slides.find({"is_active": True}, {"_id": 0}).sort("order", 1)
     projects_cursor = db.projects.find({}, {"_id": 0}).sort("order", 1)
+    blog_cursor = db.blog_posts.find({}, {"_id": 0}).sort("created_at", -1)
 
     results = await asyncio.gather(
         db.site_settings.find_one(),
@@ -341,9 +342,11 @@ async def _warm_init_cache():
         db.hero_features.find_one(),
         db.home_stats.find_one(),
         db.home_cta.find_one(),
+        blog_cursor.to_list(200),
+        db.about_content.find_one(),
     )
 
-    site_settings, contact, seo_settings, carousel, projects, hero_features, home_stats, home_cta = results
+    site_settings, contact, seo_settings, carousel, projects, hero_features, home_stats, home_cta, blog_posts, about_content = results
 
     def clean(doc):
         if not doc:
@@ -366,6 +369,8 @@ async def _warm_init_cache():
         "heroFeatures": clean(hero_features),
         "homeStats": clean(home_stats),
         "homeCTA": clean(home_cta),
+        "blogPosts": blog_posts,
+        "aboutContent": clean(about_content),
     }
     _init_cache["data"] = json.loads(json.dumps(data, default=serialize))
     _init_cache["ts"] = time.time()

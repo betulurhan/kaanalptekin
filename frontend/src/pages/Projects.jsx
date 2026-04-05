@@ -1,37 +1,19 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { MapPin, Calendar, Tag, TrendingUp, CheckCircle2 } from 'lucide-react';
 import { Card, CardContent } from '../components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
 import { Badge } from '../components/ui/badge';
-import { projectsAPI } from '../services/api';
 import { SEOHead } from '../components/SEOHead';
 import { useSiteData } from '../context/SiteDataContext';
 import { resolveImageUrl } from '../utils/imageUrl';
 
 export const Projects = () => {
-  const [projects, setProjects] = useState([]);
   const [selectedType, setSelectedType] = useState('all');
-  const [loading, setLoading] = useState(true);
-  const { seoSettings } = useSiteData();
+  const { seoSettings, projects, loaded } = useSiteData();
 
-  useEffect(() => {
-    loadProjects();
-  }, []);
-
-  const loadProjects = async () => {
-    try {
-      const data = await projectsAPI.getAll();
-      setProjects(data);
-    } catch (error) {
-      console.error('Failed to load projects:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const completedProjects = projects.filter((p) => p.status === 'completed');
-  const ongoingProjects = projects.filter((p) => p.status === 'ongoing');
+  const completedProjects = (projects || []).filter((p) => p.status === 'completed');
+  const ongoingProjects = (projects || []).filter((p) => p.status === 'ongoing');
 
   const filterProjects = (projectList) => {
     if (selectedType === 'all') return projectList;
@@ -43,7 +25,7 @@ export const Projects = () => {
       <Card className="overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border-none cursor-pointer">
       <div className="relative h-72 overflow-hidden group">
         <img
-          src={resolveImageUrl(project.image, { width: window.innerWidth < 768 ? 300 : 400, quality: 40 })}
+          src={resolveImageUrl(project.image, { width: typeof window !== 'undefined' && window.innerWidth < 768 ? 300 : 400, quality: 40 })}
           alt={project.title}
           className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500"
           loading="lazy"
@@ -51,7 +33,7 @@ export const Projects = () => {
         <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
           <div className="absolute bottom-0 left-0 right-0 p-6 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
             <div className="flex flex-wrap gap-2 mb-3">
-              {project.features.map((feature, idx) => (
+              {(project.features || []).map((feature, idx) => (
                 <Badge key={idx} variant="secondary" className="bg-white/20 text-white backdrop-blur-sm">
                   {feature}
                 </Badge>
@@ -99,7 +81,7 @@ export const Projects = () => {
         description={seoSettings?.projects_description || seoSettings?.site_description} 
       />
       {/* Hero Section */}
-      {loading ? (
+      {!loaded ? (
         <div className="flex items-center justify-center py-20">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-slate-800"></div>
         </div>

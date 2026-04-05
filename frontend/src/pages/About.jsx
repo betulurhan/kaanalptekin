@@ -1,30 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Award, Target, Heart, TrendingUp } from 'lucide-react';
 import { Card, CardContent } from '../components/ui/card';
-import { contentAPI } from '../services/api';
 import { SEOHead } from '../components/SEOHead';
 import { useSiteData } from '../context/SiteDataContext';
 import { resolveImageUrl } from '../utils/imageUrl';
 
 export const About = () => {
-  const [aboutData, setAboutData] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const { seoSettings } = useSiteData();
+  const { seoSettings, aboutContent: aboutData, loaded } = useSiteData();
 
-  useEffect(() => {
-    loadAbout();
-  }, []);
-
-  const loadAbout = async () => {
-    try {
-      const data = await contentAPI.getAbout();
-      setAboutData(data);
-    } catch (error) {
-      console.error('Failed to load about content:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
   const values = [
     {
       icon: Heart,
@@ -48,7 +31,7 @@ export const About = () => {
     },
   ];
 
-  if (loading) {
+  if (!loaded) {
     return (
       <div className="min-h-screen pt-20 flex items-center justify-center">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-slate-800"></div>
@@ -78,8 +61,8 @@ export const About = () => {
             <div className="flex justify-center md:justify-start">
               <div className="relative inline-block">
                 <img
-                  src={resolveImageUrl(aboutData.image) || 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400&q=80'}
-                  alt={aboutData.name}
+                  src={resolveImageUrl(aboutData?.image) || 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400&q=80'}
+                  alt={aboutData?.name || 'Profil'}
                   className="rounded-2xl shadow-2xl max-w-xs md:max-w-sm h-auto object-contain"
                   style={{ maxHeight: '400px' }}
                 />
@@ -89,15 +72,15 @@ export const About = () => {
             {/* Right - Info */}
             <div>
               <h1 className="text-4xl md:text-5xl font-bold text-slate-800 mb-3">
-                {aboutData.name}
+                {aboutData?.name}
               </h1>
-              <p className="text-xl text-amber-600 font-semibold mb-6">{aboutData.title}</p>
+              <p className="text-xl text-amber-600 font-semibold mb-6">{aboutData?.title}</p>
               
               {/* Biography */}
               <div className="bg-white rounded-xl p-6 shadow-lg border-l-4 border-amber-500">
                 <h3 className="text-lg font-bold text-slate-800 mb-3">Biyografi</h3>
                 <p className="text-slate-600 leading-relaxed whitespace-pre-line">
-                  {aboutData.full_bio || aboutData.fullBio}
+                  {aboutData?.full_bio || aboutData?.fullBio}
                 </p>
               </div>
             </div>
@@ -114,7 +97,7 @@ export const About = () => {
                 <div className="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-4">
                   <Award className="w-8 h-8 text-amber-600" />
                 </div>
-                <p className="text-4xl font-bold text-slate-800 mb-2">{aboutData.experience}</p>
+                <p className="text-4xl font-bold text-slate-800 mb-2">{aboutData?.experience}</p>
                 <p className="text-slate-600">Sektör Deneyimi</p>
               </CardContent>
             </Card>
@@ -123,7 +106,7 @@ export const About = () => {
                 <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
                   <TrendingUp className="w-8 h-8 text-green-600" />
                 </div>
-                <p className="text-4xl font-bold text-slate-800 mb-2">{aboutData.completedProjects}</p>
+                <p className="text-4xl font-bold text-slate-800 mb-2">{aboutData?.completedProjects}</p>
                 <p className="text-slate-600">Tamamlanan Proje</p>
               </CardContent>
             </Card>
@@ -132,7 +115,7 @@ export const About = () => {
                 <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
                   <Heart className="w-8 h-8 text-blue-600" />
                 </div>
-                <p className="text-4xl font-bold text-slate-800 mb-2">{aboutData.happyClients}</p>
+                <p className="text-4xl font-bold text-slate-800 mb-2">{aboutData?.happyClients}</p>
                 <p className="text-slate-600">Mutlu Müşteri</p>
               </CardContent>
             </Card>
