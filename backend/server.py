@@ -54,6 +54,17 @@ api_router = APIRouter(prefix="/api")
 async def root():
     return {"message": "Gayrimenkul Rehberi API", "status": "running"}
 
+# Health check for Docker
+@api_router.get("/health")
+async def health_check():
+    """Health check endpoint for Docker and monitoring"""
+    try:
+        # Test MongoDB connection
+        await db.command("ping")
+        return {"status": "healthy", "database": "connected"}
+    except Exception as e:
+        return {"status": "unhealthy", "database": str(e)}
+
 # Sitemap.xml endpoint
 @api_router.get("/sitemap.xml", response_class=PlainTextResponse)
 async def sitemap():

@@ -6,26 +6,28 @@ services:
     image: mongo:7.0
     container_name: kaanalptekin_mongodb
     restart: unless-stopped
-    ports:
-      - "27017:27017"
     volumes:
       - mongodb_data:/data/db
     networks:
       - app_network
     environment:
       - MONGO_INITDB_DATABASE=kaanalptekin_db
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   # FastAPI Backend
   backend:
     build:
-      context: ./backend
-      dockerfile: Dockerfile
+      context: ../backend
+      dockerfile: ../deployment/backend/Dockerfile
     container_name: kaanalptekin_backend
     restart: unless-stopped
-    ports:
-      - "8001:8001"
     depends_on:
-      - mongodb
+      mongodb:
+        condition: service_healthy
     environment:
       - MONGO_URL=mongodb://mongodb:27017
       - DB_NAME=kaanalptekin_db
@@ -39,18 +41,21 @@ services:
       - app_network
     volumes:
       - backend_uploads:/app/uploads
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8001/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
   # React Frontend
   frontend:
     build:
-      context: ./frontend
-      dockerfile: Dockerfile
+      context: ../frontend
+      dockerfile: ../deployment/frontend/Dockerfile
       args:
         - REACT_APP_BACKEND_URL=${REACT_APP_BACKEND_URL}
     container_name: kaanalptekin_frontend
     restart: unless-stopped
-    ports:
-      - "3000:3000"
     depends_on:
       - backend
     networks:
@@ -66,9 +71,9 @@ services:
       - "443:443"
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
-      - ./nginx/ssl:/etc/nginx/ssl:ro
       - certbot_etc:/etc/letsencrypt
       - certbot_var:/var/lib/letsencrypt
+      - ./nginx/html:/var/www/html
     depends_on:
       - frontend
       - backend
@@ -83,8 +88,6 @@ services:
       - certbot_etc:/etc/letsencrypt
       - certbot_var:/var/lib/letsencrypt
       - ./nginx/html:/var/www/html
-    depends_on:
-      - nginx
     command: certonly --webroot --webroot-path=/var/www/html --email admin@kaanalptekin.com --agree-tos --no-eff-email -d kaanalptekin.com -d www.kaanalptekin.com
 
 networks:
