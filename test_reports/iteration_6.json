@@ -12,7 +12,7 @@
       {
         "page": "About (/hakkimda)",
         "issue": "Profile image not loading - database contains dead preview URL",
-        "current_url": "https://property-admin-52.preview.emergentagent.com/api/upload/files/6ab2daeb-25c5-40fe-a835-f2f56d333f8e.jpeg",
+        "current_url": "https://antalya-real-estate-1.preview.emergentagent.com/api/upload/files/6ab2daeb-25c5-40fe-a835-f2f56d333f8e.jpeg",
         "fix_needed": "Update About page image in admin panel with valid Cloudinary or Unsplash URL",
         "priority": "MEDIUM"
       }
@@ -42,7 +42,7 @@
   ],
   "test_report_links": [],
   "action_items": [
-    "Update About page profile image in admin panel - current image URL is dead (https://property-admin-52.preview.emergentagent.com/api/upload/files/...)"
+    "Update About page profile image in admin panel - current image URL is dead (https://antalya-real-estate-1.preview.emergentagent.com/api/upload/files/...)"
   ],
   "critical_code_review_comments": [
     "resolveImageUrl utility correctly filters dead preview URLs but returns null - About.jsx should handle null image with fallback"
