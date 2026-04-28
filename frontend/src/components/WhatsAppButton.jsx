@@ -2,9 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
 import { useSiteData } from '../context/SiteDataContext';
 
-const AGENT_NAME = 'Özlem Metinkale';
-const AGENT_AVATAR =
-  'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=facearea&facepad=2&w=256&h=256&q=80';
+const FALLBACK_NAME = 'Kaan Alp Tekin';
 const AGENT_REPLY_INFO = 'Genellikle birkaç dakika içinde yanıt veririm';
 const PROMPT_MESSAGE = 'Herhangi bir sorunuz varsa lütfen yazın?';
 const FALLBACK_PHONE = '905360719655';
@@ -22,7 +20,11 @@ const WhatsAppIcon = ({ className }) => (
 export const WhatsAppButton = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [imgError, setImgError] = useState(false);
-  const { contactInfo } = useSiteData();
+  const { contactInfo, aboutContent } = useSiteData();
+
+  // Pull agent details from About content with fallback
+  const agentName = aboutContent?.name || FALLBACK_NAME;
+  const agentAvatar = aboutContent?.image || aboutContent?.profile_image || '';
 
   // Sanitize phone number to digits only
   const phoneNumber = (contactInfo?.phone || FALLBACK_PHONE).replace(/\D/g, '') || FALLBACK_PHONE;
@@ -68,23 +70,23 @@ export const WhatsAppButton = () => {
             style={{ backgroundColor: '#075E54' }}
           >
             <div className="flex-shrink-0 w-12 h-12 rounded-full bg-white/20 ring-2 ring-white/30 overflow-hidden flex items-center justify-center">
-              {!imgError ? (
+              {agentAvatar && !imgError ? (
                 <img
-                  src={AGENT_AVATAR}
-                  alt={AGENT_NAME}
+                  src={agentAvatar}
+                  alt={agentName}
                   className="w-full h-full object-cover"
                   onError={() => setImgError(true)}
                   loading="lazy"
                 />
               ) : (
                 <span className="text-white font-bold text-lg">
-                  {AGENT_NAME.split(' ').map((n) => n[0]).join('').slice(0, 2)}
+                  {agentName.split(' ').map((n) => n[0]).join('').slice(0, 2)}
                 </span>
               )}
             </div>
             <div className="flex-1 min-w-0 pr-7">
               <p className="text-white font-semibold text-sm truncate" data-testid="agent-name">
-                {AGENT_NAME}
+                {agentName}
               </p>
               <p className="text-green-100 text-[11px] leading-snug">
                 <span className="inline-block w-1.5 h-1.5 rounded-full bg-green-300 mr-1 align-middle animate-pulse" />
@@ -148,33 +150,15 @@ export const WhatsAppButton = () => {
         </div>
       )}
 
-      {/* Trigger Icon - Profile photo button */}
+      {/* Trigger Icon - WhatsApp logo */}
       <button
         onClick={() => setIsOpen((v) => !v)}
         onMouseEnter={() => setIsOpen(true)}
-        aria-label={`${AGENT_NAME} ile WhatsApp üzerinden iletişime geç`}
+        aria-label={`${agentName} ile WhatsApp üzerinden iletişime geç`}
         data-testid="whatsapp-trigger-btn"
-        className="relative w-14 h-14 sm:w-16 sm:h-16 rounded-full shadow-2xl ring-4 ring-white overflow-hidden hover:scale-105 active:scale-95 transition-transform duration-200 group bg-[#25D366]"
+        className="relative w-14 h-14 sm:w-16 sm:h-16 rounded-full shadow-2xl flex items-center justify-center bg-[#25D366] hover:bg-[#128C7E] hover:scale-105 active:scale-95 transition-all duration-200"
       >
-        {!imgError ? (
-          <img
-            src={AGENT_AVATAR}
-            alt={AGENT_NAME}
-            className="w-full h-full object-cover"
-            onError={() => setImgError(true)}
-            loading="lazy"
-          />
-        ) : (
-          <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-green-500 to-green-700">
-            <span className="text-white font-bold text-lg">
-              {AGENT_NAME.split(' ').map((n) => n[0]).join('').slice(0, 2)}
-            </span>
-          </div>
-        )}
-        {/* WhatsApp badge on photo */}
-        <span className="absolute -bottom-0.5 -right-0.5 w-6 h-6 rounded-full bg-[#25D366] ring-2 ring-white flex items-center justify-center">
-          <WhatsAppIcon className="w-3.5 h-3.5 text-white" />
-        </span>
+        <WhatsAppIcon className="w-7 h-7 sm:w-8 sm:h-8 text-white" />
         {/* Pulse ring (only when closed) */}
         {!isOpen && (
           <span className="absolute inset-0 rounded-full ring-4 ring-green-400/60 animate-ping pointer-events-none" />
