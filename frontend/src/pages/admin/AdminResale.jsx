@@ -118,21 +118,8 @@ const AdminResale = () => {
     if (!file) return;
     
     try {
-      const signatureData = await cloudinaryAPI.getSignature(token, 'resale');
-      const formDataUpload = new FormData();
-      formDataUpload.append('file', file);
-      formDataUpload.append('api_key', signatureData.api_key);
-      formDataUpload.append('timestamp', signatureData.timestamp);
-      formDataUpload.append('signature', signatureData.signature);
-      formDataUpload.append('folder', signatureData.folder);
-      
-      const response = await fetch(`https://api.cloudinary.com/v1_1/${signatureData.cloud_name}/image/upload`, {
-        method: 'POST',
-        body: formDataUpload
-      });
-      
-      const data = await response.json();
-      setFormData({ ...formData, image: data.secure_url });
+      const data = await cloudinaryAPI.upload(token, file, 'resale');
+      setFormData({ ...formData, image: data.url || data.secure_url });
       toast.success('Görsel yüklendi');
     } catch (error) {
       toast.error('Görsel yüklenemedi');

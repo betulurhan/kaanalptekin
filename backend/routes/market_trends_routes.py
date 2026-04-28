@@ -2,8 +2,13 @@ from fastapi import APIRouter, Depends
 from typing import Dict, List, Optional
 from pydantic import BaseModel
 from datetime import datetime
-from auth import get_current_user
-from database import db
+from auth import verify_token
+
+
+def _db():
+    from server import db
+    return db
+
 
 router = APIRouter(prefix="/market-trends", tags=["Market Trends"])
 
@@ -69,16 +74,21 @@ DEFAULT_TRENDS = {
 
 @router.get("")
 async def get_market_trends():
-    trends = await db.market_trends.find_one({"id": "market-trends"}, {"_id": 0})
+    trends = await _db().market_trends.find_one({"id": "market-trends"}, {"_id": 0})
     if trends and "data" in trends:
         return trends["data"]
     return DEFAULT_TRENDS
 
 @router.put("")
-async def update_market_trends(trends: MarketTrendsUpdate, current_user: dict = Depends(get_current_user)):
-    await db.market_trends.update_one(
+async def update_market_trends(trends: MarketTrendsUpdate, current_user: dict = Depends(verify_token)):
+    # Convert pydantic models to dicts for BSON storage
+    serializable_data = {
+        region_id: [item.dict() if hasattr(item, 'dict') else item for item in items]
+        for region_id, items in trends.data.items()
+    }
+    await _db().market_trends.update_one(
         {"id": "market-trends"},
-        {"$set": {"id": "market-trends", "data": trends.data, "updated_at": datetime.utcnow()}},
+        {"$set": {"id": "market-trends", "data": serializable_data, "updated_at": datetime.utcnow()}},
         upsert=True
     )
     return {"message": "Market trends updated"}

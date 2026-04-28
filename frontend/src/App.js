@@ -34,6 +34,7 @@ const AdminSEO = lazy(() => import("./pages/admin/AdminSEO"));
 const AdminIlceVerileri = lazy(() => import("./pages/admin/AdminIlceVerileri"));
 const AdminResale = lazy(() => import("./pages/admin/AdminResale"));
 const AdminForms = lazy(() => import("./pages/admin/AdminForms"));
+const AdminMarketTrends = lazy(() => import("./pages/admin/AdminMarketTrends"));
 
 const PageLoader = () => (
   <div className="min-h-screen flex items-center justify-center">
@@ -77,6 +78,7 @@ function App() {
                   <Route path="ilce-verileri" element={<AdminIlceVerileri />} />
                   <Route path="resale" element={<AdminResale />} />
                   <Route path="forms" element={<AdminForms />} />
+                  <Route path="market-trends" element={<AdminMarketTrends />} />
                 </Route>
               </Routes>
             </Suspense>

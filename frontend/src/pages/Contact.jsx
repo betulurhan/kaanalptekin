@@ -1,14 +1,17 @@
 import React, { useState } from 'react';
-import { Phone, Mail, MapPin, Clock, Send } from 'lucide-react';
+import { Phone, Mail, MapPin, Clock, Send, FileText, ClipboardList } from 'lucide-react';
 import { Card, CardContent } from '../components/ui/card';
 import { Input } from '../components/ui/input';
 import { Button } from '../components/ui/button';
 import { Label } from '../components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
 import { useToast } from '../hooks/use-toast';
 import { messagesAPI } from '../services/api';
 import { SEOHead } from '../components/SEOHead';
 import { useSiteData } from '../context/SiteDataContext';
+import { TalepFormu } from '../components/TalepFormu';
+import { EkspertizFormu } from '../components/EkspertizFormu';
 
 export const Contact = () => {
   const { toast } = useToast();
@@ -267,6 +270,43 @@ export const Contact = () => {
               </Card>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* SLA Forms Section - Talep & Ekspertiz */}
+      <section className="py-16 bg-gradient-to-br from-slate-50 to-amber-50/30">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-10">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-amber-100 text-amber-700 rounded-full text-sm font-semibold mb-4">
+              <Clock className="w-4 h-4" />
+              3 Gün İçinde Dönüş Garantisi
+            </div>
+            <h2 className="text-3xl md:text-4xl font-bold text-slate-800 mb-3">
+              Özel Talep & Ücretsiz Ekspertiz
+            </h2>
+            <p className="text-slate-600 max-w-2xl mx-auto">
+              Aradığınız mülkü bize bildirin veya mülkünüz için ücretsiz ekspertiz talep edin.
+            </p>
+          </div>
+
+          <Tabs defaultValue="talep" className="w-full">
+            <TabsList className="grid w-full grid-cols-2 max-w-md mx-auto mb-8">
+              <TabsTrigger value="talep" data-testid="contact-tab-talep" className="gap-2">
+                <FileText className="w-4 h-4" />
+                Talep Formu
+              </TabsTrigger>
+              <TabsTrigger value="ekspertiz" data-testid="contact-tab-ekspertiz" className="gap-2">
+                <ClipboardList className="w-4 h-4" />
+                Ekspertiz Formu
+              </TabsTrigger>
+            </TabsList>
+            <TabsContent value="talep">
+              <TalepFormu onClose={() => {}} />
+            </TabsContent>
+            <TabsContent value="ekspertiz">
+              <EkspertizFormu onClose={() => {}} />
+            </TabsContent>
+          </Tabs>
         </div>
       </section>
 

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, Home, User, FolderOpen, BookOpen, Mail, Calculator } from 'lucide-react';
+import { Menu, X, Home, User, FolderOpen, BookOpen, Mail, Calculator, Tag, Instagram } from 'lucide-react';
 import { Button } from './ui/button';
 import { useSiteData } from '../context/SiteDataContext';
 import { resolveImageUrl } from '../utils/imageUrl';
@@ -8,7 +8,7 @@ import { resolveImageUrl } from '../utils/imageUrl';
 export const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const { siteSettings } = useSiteData();
+  const { siteSettings, contactInfo } = useSiteData();
   const [logoError, setLogoError] = useState(false);
   const location = useLocation();
 
@@ -24,6 +24,7 @@ export const Navbar = () => {
     { path: '/', label: 'Ana Sayfa', icon: Home },
     { path: '/hakkimda', label: 'Hakkımda', icon: User },
     { path: '/projeler', label: 'Projeler', icon: FolderOpen },
+    { path: '/guncel-ilanlar', label: 'Güncel İlanlar', icon: Tag },
     { path: '/hesaplama', label: 'Hesaplama', icon: Calculator },
     { path: '/blog', label: 'Blog', icon: BookOpen },
     { path: '/iletisim', label: 'İletişim', icon: Mail },
@@ -111,7 +112,7 @@ export const Navbar = () => {
             : 'opacity-0 invisible pointer-events-none'
         }`}
       >
-        <div className="p-6">
+        <div className="p-6 overflow-y-auto h-full pb-32">
           <div className="grid grid-cols-2 gap-4 max-w-md mx-auto">
             {navLinks.map((link) => {
               const Icon = link.icon;
@@ -120,6 +121,7 @@ export const Navbar = () => {
                   key={link.path}
                   to={link.path}
                   onClick={() => setIsMobileMenuOpen(false)}
+                  data-testid={`mobile-nav-${link.path.replace(/\//g, '-') || 'home'}`}
                   className={`flex flex-col items-center justify-center p-6 rounded-2xl transition-all duration-300 ${
                     isActive(link.path)
                       ? 'bg-slate-800 text-white shadow-lg scale-105'
@@ -132,6 +134,23 @@ export const Navbar = () => {
               );
             })}
           </div>
+
+          {/* Instagram Quick Link */}
+          {contactInfo?.instagram && (
+            <div className="max-w-md mx-auto mt-6">
+              <a
+                href={contactInfo.instagram}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => setIsMobileMenuOpen(false)}
+                data-testid="mobile-nav-instagram"
+                className="flex items-center justify-center gap-3 p-4 rounded-2xl bg-gradient-to-r from-pink-500 via-purple-500 to-amber-500 text-white shadow-lg hover:shadow-xl transition-all duration-300"
+              >
+                <Instagram className="w-6 h-6" />
+                <span className="font-semibold">Instagram'da Takip Et</span>
+              </a>
+            </div>
+          )}
         </div>
       </div>
     </nav>

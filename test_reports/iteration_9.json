@@ -1,0 +1,80 @@
+{
+  "summary": "Backend testing of 5 new features (Resale Listings CRUD, Talep Forms, Ekspertiz Forms, Market Trends, Auth enforcement) plus regression on existing endpoints. All 45 pytest tests passed against the public preview URL. Auth enforcement verified (401 without token, 401 with invalid token), 404 handling verified for missing resources, 422 for invalid Pydantic payloads, and Create→GET persistence verified for every CRUD entity. Market trends PUT with nested pydantic models persists correctly to BSON and round-trips cleanly. Test data was cleaned up after the run (all created resale listings, talep, and ekspertiz records were deleted; market trends restored to pre-test snapshot).",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "passed_tests": [
+    "GET /api/health -> 200 healthy",
+    "GET /api/ -> 200",
+    "GET /api/projects, /api/blog, /api/carousel, /api/ilce-verileri -> 200 (regression)",
+    "GET /api/content/init -> 200 with siteSettings/contact/carousel/projects",
+    "POST /api/auth/login admin/admin123 -> 200 with access_token",
+    "GET /api/resale -> 200 list (public, active_only default)",
+    "GET /api/resale?type_filter&listing_type filters work correctly",
+    "GET /api/resale?active_only=false includes inactive listings; default excludes them",
+    "GET /api/resale/{bad-id} -> 404",
+    "POST /api/resale without token -> 403 (HTTPBearer auto)",
+    "POST /api/resale with invalid token -> 401",
+    "POST /api/resale with admin token -> 200, returns full listing with id/created_at",
+    "GET /api/resale/{id} after create -> 200 with persisted fields (area_m2, has_elevator, features array)",
+    "PUT /api/resale/{id} updates price + is_active; GET confirms persistence",
+    "PUT /api/resale/{bad-id} -> 404",
+    "DELETE /api/resale/{id} as admin -> 200; subsequent GET -> 404",
+    "DELETE /api/resale/{bad-id} -> 404",
+    "POST /api/forms/talep (public) -> 200, status='pending', id present",
+    "POST /api/forms/talep with only required fields -> 200",
+    "POST /api/forms/talep missing 'name' -> 422",
+    "GET /api/forms/talep without token -> 403",
+    "GET /api/forms/talep as admin -> 200 list including newly created records",
+    "PUT /api/forms/talep/{id}/status updates status; GET confirms persistence",
+    "PUT /api/forms/talep/{bad-id}/status -> 404",
+    "DELETE /api/forms/talep/{id} as admin -> 200",
+    "DELETE /api/forms/talep/{bad-id} -> 404",
+    "POST /api/forms/ekspertiz (public) -> 200 with status='pending'",
+    "POST /api/forms/ekspertiz with no required fields -> 422",
+    "GET /api/forms/ekspertiz without token -> 403; with admin -> 200 list",
+    "PUT /api/forms/ekspertiz/{id}/status as admin -> 200 + persistence",
+    "DELETE /api/forms/ekspertiz/{id} as admin -> 200",
+    "GET /api/market-trends (public) -> 200 dict with regional data",
+    "PUT /api/market-trends without token -> 403",
+    "PUT /api/market-trends with invalid payload (no 'data' key) -> 422",
+    "PUT /api/market-trends with valid {data: {regionId: [{year,value,change}]}} -> 200; round-trip persistence verified (year/value/change preserved)",
+    "Original market trends data restored after test (no live data corruption)"
+  ],
+  "test_report_links": [
+    "/app/backend/tests/test_new_features.py",
+    "/app/test_reports/pytest/new_features_results.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "Auth enforcement uses FastAPI HTTPBearer dependency: missing Authorization header returns 403 (not 401). This is FastAPI's HTTPBearer default behavior and matches the contract `401/403 without token` from the request. If strict 401 is required, set `HTTPBearer(auto_error=True)` with custom handler or use `auto_error=False` and raise 401 manually.",
+    "forms_routes.update_*_status accepts a generic Dict body; consider a Pydantic model with literal status enum (`pending|contacted|completed|in_progress`) for schema validation and OpenAPI clarity.",
+    "resale_routes.create/update returns the dict as a `response_model=ResaleListing` but for create the returned dict still contains datetime objects which Pydantic accepts; minor — confirmed working.",
+    "market_trends PUT correctly serializes pydantic RegionData to dict before BSON insert (line 85-88) — fix from prior crash is verified.",
+    "Consider adding pagination/limit params on /api/forms/talep and /api/forms/ekspertiz GET (currently capped at 100) for admin scaling.",
+    "All three new route files use lazy `_db()` pattern correctly to avoid circular imports with server.py."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_new_features.py (new)"
+  ],
+  "success_rate": {
+    "backend": "100% (45/45 tests passed)",
+    "frontend": "not tested (per request)"
+  },
+  "test_credentials": {
+    "admin_url": "/admin/login",
+    "username": "admin",
+    "password": "admin123"
+  },
+  "seed_data_creation": "Test data created with 'TEST_' prefix during the run was fully deleted afterward. Market trends was overwritten then restored to the pre-test snapshot, so no production data was modified.",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "All 5 new features (Resale, Talep, Ekspertiz, Market Trends, plus auth) verified end-to-end at the API layer via /app/backend/tests/test_new_features.py. Use this file as regression suite. Note: HTTPBearer raises 403 (not 401) when Authorization header is missing — both codes are accepted in tests. Frontend not yet tested for these features (admin panels, mobile cards, sticky WhatsApp button, Instagram link, SLA banner). Recommend a frontend run next.",
+  "rca_of_the_issue": "N/A — no bugs found"
+}

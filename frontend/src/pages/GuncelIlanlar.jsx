@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { MapPin, Bed, Bath, Maximize, ArrowRight, Home, Filter, ChevronLeft, ChevronRight } from 'lucide-react';
+import { MapPin, Bed, Bath, Maximize, ArrowRight, Home, Filter, X } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { Card, CardContent } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
@@ -8,11 +8,13 @@ import { SEOHead } from '../components/SEOHead';
 import { useSiteData } from '../context/SiteDataContext';
 import { resaleAPI } from '../services/api';
 import { resolveImageUrl } from '../utils/imageUrl';
+import { TalepFormu } from '../components/TalepFormu';
 
 export const GuncelIlanlar = () => {
   const { seoSettings } = useSiteData();
   const [listings, setListings] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [showTalepModal, setShowTalepModal] = useState(false);
   const [filters, setFilters] = useState({
     type: 'all',
     location: 'all',
@@ -204,10 +206,10 @@ export const GuncelIlanlar = () => {
                     <div className="flex items-center justify-between">
                       <span className="text-lg font-bold text-amber-600">{listing.price}</span>
                       <Link
-                        to={`/guncel-ilanlar/${listing.id}`}
+                        to="/iletisim"
                         className="text-slate-600 hover:text-amber-600 font-medium flex items-center gap-1 transition-colors"
                       >
-                        Detaylar <ArrowRight className="w-4 h-4" />
+                        İletişim <ArrowRight className="w-4 h-4" />
                       </Link>
                     </div>
                   </CardContent>
@@ -226,15 +228,42 @@ export const GuncelIlanlar = () => {
           </h2>
           <p className="text-amber-100 mb-8">
             Kriterlerinizi bize iletin, size uygun ilanları bulduğumuzda haber verelim.
+            <span className="block mt-2 font-semibold">3 gün içinde size geri dönüş yapılacaktır.</span>
           </p>
-          <Button asChild size="lg" className="bg-white text-amber-600 hover:bg-amber-50">
-            <Link to="/iletisim">
-              Talep Oluştur
-              <ArrowRight className="ml-2 w-5 h-5" />
-            </Link>
+          <Button
+            size="lg"
+            className="bg-white text-amber-600 hover:bg-amber-50"
+            onClick={() => setShowTalepModal(true)}
+            data-testid="guncel-ilanlar-talep-btn"
+          >
+            Talep Oluştur
+            <ArrowRight className="ml-2 w-5 h-5" />
           </Button>
         </div>
       </section>
+
+      {/* Talep Modal */}
+      {showTalepModal && (
+        <div
+          className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 overflow-y-auto"
+          onClick={() => setShowTalepModal(false)}
+          data-testid="talep-modal-overlay"
+        >
+          <div
+            className="relative w-full max-w-lg my-8"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              onClick={() => setShowTalepModal(false)}
+              data-testid="talep-modal-close"
+              className="absolute -top-3 -right-3 z-10 w-9 h-9 bg-white rounded-full shadow-lg flex items-center justify-center hover:bg-slate-50"
+            >
+              <X className="w-5 h-5 text-slate-700" />
+            </button>
+            <TalepFormu onClose={() => setShowTalepModal(false)} />
+          </div>
+        </div>
+      )}
     </div>
   );
 };

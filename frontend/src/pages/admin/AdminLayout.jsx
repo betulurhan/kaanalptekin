@@ -13,7 +13,10 @@ import {
   X,
   Image as ImageIcon,
   Search,
-  MapPin
+  MapPin,
+  Tag,
+  ClipboardList,
+  TrendingUp
 } from 'lucide-react';
 import { Button } from '../../components/ui/button';
 
@@ -32,9 +35,12 @@ export const AdminLayout = () => {
     { path: '/admin/dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { path: '/admin/carousel', label: 'Slider', icon: ImageIcon },
     { path: '/admin/projects', label: 'Projeler', icon: FolderOpen },
+    { path: '/admin/resale', label: 'Güncel İlanlar', icon: Tag },
     { path: '/admin/blog', label: 'Blog', icon: BookOpen },
     { path: '/admin/content', label: 'İçerik', icon: FileText },
     { path: '/admin/ilce-verileri', label: 'İlçe Verileri', icon: MapPin },
+    { path: '/admin/market-trends', label: 'Piyasa Trendi', icon: TrendingUp },
+    { path: '/admin/forms', label: 'Form Başvuruları', icon: ClipboardList },
     { path: '/admin/messages', label: 'Mesajlar', icon: Mail },
     { path: '/admin/users', label: 'Kullanıcılar', icon: Users },
     { path: '/admin/seo', label: 'SEO', icon: Search },
@@ -57,7 +63,7 @@ export const AdminLayout = () => {
 
       {/* Sidebar */}
       <aside
-        className={`fixed inset-y-0 left-0 z-50 w-64 bg-slate-900 text-white transform transition-transform duration-300 lg:translate-x-0 ${
+        className={`fixed inset-y-0 left-0 z-50 w-64 bg-slate-900 text-white transform transition-transform duration-300 lg:translate-x-0 flex flex-col ${
           sidebarOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
@@ -66,7 +72,7 @@ export const AdminLayout = () => {
           <p className="text-slate-400 text-sm mt-1">Hoş geldiniz, {user?.username}</p>
         </div>
 
-        <nav className="px-3 space-y-1">
+        <nav className="px-3 space-y-1 flex-1 overflow-y-auto pb-4">
           {menuItems.map((item) => {
             const Icon = item.icon;
             return (
@@ -74,6 +80,7 @@ export const AdminLayout = () => {
                 key={item.path}
                 to={item.path}
                 onClick={() => setSidebarOpen(false)}
+                data-testid={`admin-nav-${item.path.split('/').pop()}`}
                 className={`flex items-center gap-3 px-3 py-3 rounded-lg transition-colors ${
                   isActive(item.path)
                     ? 'bg-amber-500 text-white'
@@ -87,10 +94,11 @@ export const AdminLayout = () => {
           })}
         </nav>
 
-        <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-slate-800">
+        <div className="p-4 border-t border-slate-800">
           <Button
             onClick={handleLogout}
             variant="outline"
+            data-testid="admin-logout-btn"
             className="w-full justify-start border-slate-700 text-slate-300 hover:bg-slate-800 hover:text-white"
           >
             <LogOut className="w-5 h-5 mr-2" />

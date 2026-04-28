@@ -3,10 +3,14 @@ from typing import List, Optional
 from pydantic import BaseModel
 from datetime import datetime
 import uuid
-from auth import get_current_user
-from database import db
+from auth import verify_token
 
 router = APIRouter(prefix="/resale", tags=["Resale Listings"])
+
+
+def _db():
+    from server import db
+    return db
 
 class ResaleListingBase(BaseModel):
     title: str
@@ -77,32 +81,32 @@ async def get_resale_listings(
     if listing_type:
         query["listing_type"] = listing_type
     
-    listings = await db.resale_listings.find(query, {"_id": 0}).sort("created_at", -1).to_list(100)
+    listings = await _db().resale_listings.find(query, {"_id": 0}).sort("created_at", -1).to_list(100)
     return listings
 
 @router.get("/{listing_id}", response_model=ResaleListing)
 async def get_resale_listing(listing_id: str):
-    listing = await db.resale_listings.find_one({"id": listing_id}, {"_id": 0})
+    listing = await _db().resale_listings.find_one({"id": listing_id}, {"_id": 0})
     if not listing:
         raise HTTPException(status_code=404, detail="Listing not found")
     return listing
 
 @router.post("", response_model=ResaleListing)
-async def create_resale_listing(listing: ResaleListingCreate, current_user: dict = Depends(get_current_user)):
+async def create_resale_listing(listing: ResaleListingCreate, current_user: dict = Depends(verify_token)):
     listing_dict = listing.dict()
     listing_dict["id"] = str(uuid.uuid4())
     listing_dict["created_at"] = datetime.utcnow()
     listing_dict["updated_at"] = datetime.utcnow()
     
-    await db.resale_listings.insert_one(listing_dict)
+    await _db().resale_listings.insert_one(listing_dict)
     return {k: v for k, v in listing_dict.items() if k != "_id"}
 
 @router.put("/{listing_id}", response_model=ResaleListing)
-async def update_resale_listing(listing_id: str, listing: ResaleListingUpdate, current_user: dict = Depends(get_current_user)):
+async def update_resale_listing(listing_id: str, listing: ResaleListingUpdate, current_user: dict = Depends(verify_token)):
     update_data = {k: v for k, v in listing.dict().items() if v is not None}
     update_data["updated_at"] = datetime.utcnow()
     
-    result = await db.resale_listings.update_one(
+    result = await _db().resale_listings.update_one(
         {"id": listing_id},
         {"$set": update_data}
     )
@@ -110,12 +114,12 @@ async def update_resale_listing(listing_id: str, listing: ResaleListingUpdate, c
     if result.matched_count == 0:
         raise HTTPException(status_code=404, detail="Listing not found")
     
-    updated = await db.resale_listings.find_one({"id": listing_id}, {"_id": 0})
+    updated = await _db().resale_listings.find_one({"id": listing_id}, {"_id": 0})
     return updated
 
 @router.delete("/{listing_id}")
-async def delete_resale_listing(listing_id: str, current_user: dict = Depends(get_current_user)):
-    result = await db.resale_listings.delete_one({"id": listing_id})
+async def delete_resale_listing(listing_id: str, current_user: dict = Depends(verify_token)):
+    result = await _db().resale_listings.delete_one({"id": listing_id})
     if result.deleted_count == 0:
         raise HTTPException(status_code=404, detail="Listing not found")
     return {"message": "Listing deleted successfully"}
