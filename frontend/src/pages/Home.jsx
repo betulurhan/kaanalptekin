@@ -9,6 +9,7 @@ import { SEOHead } from '../components/SEOHead';
 import { useSiteData } from '../context/SiteDataContext';
 import { resolveImageUrl } from '../utils/imageUrl';
 import { LazySection } from '../components/LazySection';
+import { MarketTrends } from '../components/MarketTrends';
 
 export const Home = () => {
   const { seoSettings, carousel, projects, heroFeatures, homeStats, homeCTA, loaded } = useSiteData();
@@ -347,28 +348,9 @@ export const Home = () => {
         )}
       </section>
 
-      {/* Stats Section - Lazy loaded */}
+      {/* Market Trends Section - Lazy loaded */}
       <LazySection>
-      <section className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            {displayStats.map((stat, index) => {
-              const Icon = getIcon(stat.icon);
-              return (
-                <Card key={index} className="text-center border-none shadow-lg hover:shadow-xl transition-shadow duration-300">
-                  <CardContent className="p-8">
-                    <div className="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                      <Icon className="w-8 h-8 text-amber-600" />
-                    </div>
-                    <p className="text-4xl font-bold text-slate-800 mb-2">{stat.value}</p>
-                    <p className="text-slate-600">{stat.label}</p>
-                  </CardContent>
-                </Card>
-              );
-            })}
-          </div>
-        </div>
-      </section>
+        <MarketTrends />
       </LazySection>
 
       {/* Projects Section - Lazy loaded */}

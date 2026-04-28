@@ -13,6 +13,7 @@ from auth import get_password_hash
 
 # Import routes
 from routes import auth_routes, project_routes, blog_routes, content_routes, message_routes, upload_routes, carousel_routes, ilce_routes, cloudinary_routes
+from routes import resale_routes, forms_routes, market_trends_routes
 
 
 ROOT_DIR = Path(__file__).parent
@@ -153,6 +154,9 @@ api_router.include_router(upload_routes.router)
 api_router.include_router(carousel_routes.router)
 api_router.include_router(ilce_routes.router)
 api_router.include_router(cloudinary_routes.router)
+api_router.include_router(resale_routes.router)
+api_router.include_router(forms_routes.router)
+api_router.include_router(market_trends_routes.router)
 
 # Include the router in the main app
 app.include_router(api_router)

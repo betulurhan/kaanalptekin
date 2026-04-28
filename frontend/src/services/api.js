@@ -414,3 +414,98 @@ export const ilceAPI = {
     return response.data;
   }
 };
+
+
+// Resale (2. El) API
+export const resaleAPI = {
+  getAll: async (typeFilter = null, locationFilter = null) => {
+    const params = new URLSearchParams();
+    if (typeFilter) params.append('type_filter', typeFilter);
+    if (locationFilter) params.append('location_filter', locationFilter);
+    const response = await axios.get(`${API}/resale?${params}`);
+    return response.data;
+  },
+  
+  getById: async (id) => {
+    const response = await axios.get(`${API}/resale/${id}`);
+    return response.data;
+  },
+  
+  create: async (token, data) => {
+    const response = await axios.post(`${API}/resale`, data, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    return response.data;
+  },
+  
+  update: async (token, id, data) => {
+    const response = await axios.put(`${API}/resale/${id}`, data, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    return response.data;
+  },
+  
+  delete: async (token, id) => {
+    const response = await axios.delete(`${API}/resale/${id}`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    return response.data;
+  }
+};
+
+// Market Trends API
+export const marketTrendsAPI = {
+  getAll: async () => {
+    const response = await axios.get(`${API}/market-trends`);
+    return response.data;
+  },
+  
+  update: async (token, data) => {
+    const response = await axios.put(`${API}/market-trends`, data, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    return response.data;
+  }
+};
+
+// Forms API
+export const formsAPI = {
+  submitTalep: async (data) => {
+    const response = await axios.post(`${API}/forms/talep`, data);
+    return response.data;
+  },
+  
+  submitEkspertiz: async (data) => {
+    const response = await axios.post(`${API}/forms/ekspertiz`, data);
+    return response.data;
+  },
+  
+  getTalepList: async (token) => {
+    const response = await axios.get(`${API}/forms/talep`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    return response.data;
+  },
+  
+  getEkspertizList: async (token) => {
+    const response = await axios.get(`${API}/forms/ekspertiz`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    return response.data;
+  },
+  
+  updateTalepStatus: async (token, id, status) => {
+    const response = await axios.put(`${API}/forms/talep/${id}/status`, { status }, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    return response.data;
+  },
+  
+  updateEkspertizStatus: async (token, id, status) => {
+    const response = await axios.put(`${API}/forms/ekspertiz/${id}/status`, { status }, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    return response.data;
+  }
+};
+
