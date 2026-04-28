@@ -9,7 +9,7 @@ import os
 router = APIRouter(prefix="/upload", tags=["File Upload"])
 
 # Create uploads directory if it doesn't exist
-UPLOAD_DIR = Path("/app/backend/uploads")
+UPLOAD_DIR = Path("/app/uploads")
 UPLOAD_DIR.mkdir(exist_ok=True)
 
 # Allowed file extensions
