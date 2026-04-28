@@ -112,9 +112,7 @@ export const Home = () => {
                         ? { backgroundImage: `url('${resolveImageUrl(slide.image, { width: isMobile ? 640 : 1280, quality: isMobile ? 40 : 50 })}')` }
                         : {}
                       }
-                    >
-                      <div className={`absolute inset-0 ${index === 0 ? 'bg-gradient-to-r from-white/80 via-white/50 to-white/20 sm:from-white/60 sm:via-white/30 sm:to-transparent' : 'bg-gradient-to-t from-slate-900/80 via-slate-900/40 to-slate-900/20'}`}></div>
-                    </div>
+                    />
                     
                     {/* Content - Different layout for first slide vs others */}
                     {index === 0 ? (
@@ -132,16 +130,16 @@ export const Home = () => {
                                 </span>
                               </div>
                               
-                              <h1 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-slate-800 mb-2 sm:mb-4 leading-tight line-clamp-2">
+                              <h1 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-2 sm:mb-4 leading-tight line-clamp-2 drop-shadow-[0_2px_8px_rgba(0,0,0,0.6)]">
                                 {slide.title}
                               </h1>
                               {slide.subtitle && (
-                                <p className="text-base sm:text-2xl md:text-3xl lg:text-4xl font-bold bg-gradient-to-r from-amber-500 via-amber-400 to-amber-600 bg-clip-text text-transparent mb-2 sm:mb-6 line-clamp-1">
+                                <p className="text-base sm:text-2xl md:text-3xl lg:text-4xl font-bold bg-gradient-to-r from-amber-400 via-amber-300 to-amber-500 bg-clip-text text-transparent mb-2 sm:mb-6 line-clamp-1 drop-shadow-[0_2px_6px_rgba(0,0,0,0.4)]">
                                   {slide.subtitle}
                                 </p>
                               )}
                               {slide.description && (
-                                <p className="hidden sm:block text-sm sm:text-lg text-slate-600 mb-4 sm:mb-8 max-w-xl leading-relaxed">
+                                <p className="hidden sm:block text-sm sm:text-lg text-white/95 mb-4 sm:mb-8 max-w-xl leading-relaxed drop-shadow-[0_1px_4px_rgba(0,0,0,0.6)]">
                                   {slide.description}
                                 </p>
                               )}
