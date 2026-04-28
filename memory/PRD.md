@@ -20,13 +20,20 @@ Build a full-stack real estate portfolio website and CMS for "Kaan Alp Tekin" (A
 
 ## Implemented Features
 ### ✅ Completed (current session — Feb 2026)
-**Phase 2 (latest user request):**
-1. **Değer Artışı Page** — Market Trends moved from Home to dedicated `/deger-artisi` page; "Değer Artışı" link added to Navbar between "Güncel İlanlar" and "Hesaplama"
-2. **Home Forms Section** — New `HomeFormsSection` component placed right after slider; modernized Tabs UI (Talep / Ekspertiz) with "3 Gün İçinde Dönüş Garantisi" badge + decorative gradient backgrounds + trust strip
-3. **Mobile slider optimization** — Slider now `h-[45vh] max-h-[400px]` on mobile, `sm:h-screen sm:max-h-none` on desktop; mobile typography scaled down (h1: text-2xl, subtitle: text-base, hidden description/trust indicators); CTA buttons size sm with reduced padding; slide indicators position adjusted for mobile
+**Phase 3 (latest user request):**
+1. **2026 verileri eklendi** — Tüm 6 bölge için 2020→2026 yıllık veriler (Aksu/Döşemealtı/Altıntaş dahil her ara yıl). Live DB güncellendi + backend default fallback de güncellendi.
+2. **İnteraktif Karşılaştırma aracı** — Yeni SVG line-chart (responsive + horizontal scroll on mobile) ve karşılaştırma tablosu eklendi. Kullanıcı bölgeleri toggle edip kıyaslayabiliyor. Toplam Artış sütunu ile özet.
+3. **Mobil chart okunabilirliği** — Tüm chart container'ları `overflow-x-auto` ile yatay kaydırma; tablo için "← yatayda kaydırın →" hint; mobil eksen yazılarını küçülttük.
+4. **"Son Güncelleme: Nisan 2026"** — Sayfa altında badge olarak gösteriliyor.
+5. **İletişim sayfasından SLA forms kaldırıldı** — `Özel Talep & Ücretsiz Ekspertiz` bölümü Contact.jsx'ten tamamen silindi (sadece Home'da ve `/guncel-ilanlar` modal'ında erişilebilir).
 
-**Phase 1 (earlier in session):**
-1. **Backend route fixes** — `resale_routes`, `forms_routes`, `market_trends_routes` use `verify_token` + lazy `_db()` pattern (server was crashing earlier)
+**Phase 2:**
+1. **Değer Artışı Page** — Market Trends moved from Home to dedicated `/deger-artisi` page; "Değer Artışı" link added to Navbar
+2. **Home Forms Section** — Talep & Ekspertiz tabs right after slider with "3 Gün İçinde Dönüş Garantisi" badge
+3. **Mobile slider optimization** — `h-[45vh] max-h-[400px]` on mobile
+
+**Phase 1:**
+1. **Backend route fixes** — `resale_routes`, `forms_routes`, `market_trends_routes` use `verify_token` + lazy `_db()` pattern
 2. **Resale (2. El) Listings module**
    - Public page: `/guncel-ilanlar` (filters: type/location/price; clicking "İletişim" goes to `/iletisim`)
    - Admin: `/admin/resale` with full CRUD + image upload via Cloudinary

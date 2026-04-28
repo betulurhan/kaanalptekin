@@ -20,7 +20,7 @@ class RegionData(BaseModel):
 class MarketTrendsUpdate(BaseModel):
     data: Dict[str, List[RegionData]]
 
-# Default Antalya market data
+# Default Antalya market data (2020-2026)
 DEFAULT_TRENDS = {
     "konyaalti": [
         {"year": "2020", "value": 450000, "change": 0},
@@ -28,7 +28,8 @@ DEFAULT_TRENDS = {
         {"year": "2022", "value": 920000, "change": 58.6},
         {"year": "2023", "value": 1450000, "change": 57.6},
         {"year": "2024", "value": 2100000, "change": 44.8},
-        {"year": "2025", "value": 2850000, "change": 35.7}
+        {"year": "2025", "value": 2850000, "change": 35.7},
+        {"year": "2026", "value": 3650000, "change": 28.1}
     ],
     "muratpasa": [
         {"year": "2020", "value": 520000, "change": 0},
@@ -36,7 +37,8 @@ DEFAULT_TRENDS = {
         {"year": "2022", "value": 1050000, "change": 61.5},
         {"year": "2023", "value": 1680000, "change": 60.0},
         {"year": "2024", "value": 2400000, "change": 42.9},
-        {"year": "2025", "value": 3200000, "change": 33.3}
+        {"year": "2025", "value": 3200000, "change": 33.3},
+        {"year": "2026", "value": 4050000, "change": 26.6}
     ],
     "kepez": [
         {"year": "2020", "value": 280000, "change": 0},
@@ -44,7 +46,8 @@ DEFAULT_TRENDS = {
         {"year": "2022", "value": 550000, "change": 57.1},
         {"year": "2023", "value": 850000, "change": 54.5},
         {"year": "2024", "value": 1200000, "change": 41.2},
-        {"year": "2025", "value": 1650000, "change": 37.5}
+        {"year": "2025", "value": 1650000, "change": 37.5},
+        {"year": "2026", "value": 2150000, "change": 30.3}
     ],
     "aksu": [
         {"year": "2020", "value": 320000, "change": 0},
@@ -52,7 +55,8 @@ DEFAULT_TRENDS = {
         {"year": "2022", "value": 680000, "change": 61.9},
         {"year": "2023", "value": 1100000, "change": 61.8},
         {"year": "2024", "value": 1550000, "change": 40.9},
-        {"year": "2025", "value": 2100000, "change": 35.5}
+        {"year": "2025", "value": 2100000, "change": 35.5},
+        {"year": "2026", "value": 2750000, "change": 31.0}
     ],
     "dosemealti": [
         {"year": "2020", "value": 380000, "change": 0},
@@ -60,7 +64,8 @@ DEFAULT_TRENDS = {
         {"year": "2022", "value": 750000, "change": 56.3},
         {"year": "2023", "value": 1180000, "change": 57.3},
         {"year": "2024", "value": 1700000, "change": 44.1},
-        {"year": "2025", "value": 2350000, "change": 38.2}
+        {"year": "2025", "value": 2350000, "change": 38.2},
+        {"year": "2026", "value": 3050000, "change": 29.8}
     ],
     "altintas": [
         {"year": "2020", "value": 350000, "change": 0},
@@ -68,7 +73,8 @@ DEFAULT_TRENDS = {
         {"year": "2022", "value": 720000, "change": 60.0},
         {"year": "2023", "value": 1150000, "change": 59.7},
         {"year": "2024", "value": 1680000, "change": 46.1},
-        {"year": "2025", "value": 2300000, "change": 36.9}
+        {"year": "2025", "value": 2300000, "change": 36.9},
+        {"year": "2026", "value": 3000000, "change": 30.4}
     ]
 }
 
