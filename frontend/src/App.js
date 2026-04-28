@@ -21,6 +21,7 @@ const GizlilikPolitikasi = lazy(() => import("./pages/GizlilikPolitikasi"));
 const KullanimKosullari = lazy(() => import("./pages/KullanimKosullari"));
 const ProjectDetail = lazy(() => import("./pages/ProjectDetail"));
 const GuncelIlanlar = lazy(() => import("./pages/GuncelIlanlar"));
+const DegerArtisi = lazy(() => import("./pages/DegerArtisi"));
 const AdminLogin = lazy(() => import("./pages/admin/AdminLogin"));
 const AdminLayout = lazy(() => import("./pages/admin/AdminLayout"));
 const AdminDashboard = lazy(() => import("./pages/admin/AdminDashboard"));
@@ -56,6 +57,7 @@ function App() {
                 <Route path="/projeler" element={<><Navbar /><Projects /><Footer /><WhatsAppButton /></>} />
                 <Route path="/projeler/:id" element={<><Navbar /><ProjectDetail /><Footer /><WhatsAppButton /></>} />
                 <Route path="/guncel-ilanlar" element={<><Navbar /><GuncelIlanlar /><Footer /><WhatsAppButton /></>} />
+                <Route path="/deger-artisi" element={<><Navbar /><DegerArtisi /><Footer /><WhatsAppButton /></>} />
                 <Route path="/blog" element={<><Navbar /><Blog /><Footer /><WhatsAppButton /></>} />
                 <Route path="/blog/:id" element={<><Navbar /><BlogDetail /><Footer /><WhatsAppButton /></>} />
                 <Route path="/hesaplama" element={<><Navbar /><Hesaplama /><Footer /><WhatsAppButton /></>} />

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, Home, User, FolderOpen, BookOpen, Mail, Calculator, Tag, Instagram } from 'lucide-react';
+import { Menu, X, Home, User, FolderOpen, BookOpen, Mail, Calculator, Tag, Instagram, TrendingUp } from 'lucide-react';
 import { Button } from './ui/button';
 import { useSiteData } from '../context/SiteDataContext';
 import { resolveImageUrl } from '../utils/imageUrl';
@@ -25,6 +25,7 @@ export const Navbar = () => {
     { path: '/hakkimda', label: 'Hakkımda', icon: User },
     { path: '/projeler', label: 'Projeler', icon: FolderOpen },
     { path: '/guncel-ilanlar', label: 'Güncel İlanlar', icon: Tag },
+    { path: '/deger-artisi', label: 'Değer Artışı', icon: TrendingUp },
     { path: '/hesaplama', label: 'Hesaplama', icon: Calculator },
     { path: '/blog', label: 'Blog', icon: BookOpen },
     { path: '/iletisim', label: 'İletişim', icon: Mail },

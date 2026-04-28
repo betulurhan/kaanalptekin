@@ -9,7 +9,7 @@ import { SEOHead } from '../components/SEOHead';
 import { useSiteData } from '../context/SiteDataContext';
 import { resolveImageUrl } from '../utils/imageUrl';
 import { LazySection } from '../components/LazySection';
-import { MarketTrends } from '../components/MarketTrends';
+import { HomeFormsSection } from '../components/HomeFormsSection';
 
 export const Home = () => {
   const { seoSettings, carousel, projects, heroFeatures, homeStats, homeCTA, loaded } = useSiteData();
@@ -90,7 +90,7 @@ export const Home = () => {
         description={seoSettings?.home_description || seoSettings?.site_description} 
       />
       {/* Hero Carousel Section */}
-      <section className="relative h-screen overflow-hidden">
+      <section className="relative h-[45vh] max-h-[400px] sm:h-screen sm:max-h-none overflow-hidden">
         {!loaded || carousel.length === 0 ? (
           <div className="h-full flex items-center justify-center bg-slate-900">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-amber-500"></div>
@@ -101,7 +101,7 @@ export const Home = () => {
             opts={{ loop: true }}
             setApi={setCarouselApi}
           >
-            <CarouselContent className="-ml-0 h-screen">
+            <CarouselContent className="-ml-0 h-[45vh] max-h-[400px] sm:h-screen sm:max-h-none">
               {carousel.map((slide, index) => (
                 <CarouselItem key={slide.id} className="pl-0 h-full">
                   <div className="relative h-full w-full">
@@ -119,62 +119,62 @@ export const Home = () => {
                     {/* Content - Different layout for first slide vs others */}
                     {index === 0 ? (
                       /* FIRST SLIDE - Premium Design with Card */
-                      <div className="relative z-10 h-full flex items-center pt-20 sm:pt-0">
+                      <div className="relative z-10 h-full flex items-center pt-16 sm:pt-0">
                         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
                           <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
                             {/* Left Content */}
                             <div className="text-left">
-                              {/* Badge */}
-                              <div className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 bg-amber-500/20 backdrop-blur-sm border border-amber-500/30 rounded-full mb-4 sm:mb-6">
+                              {/* Badge - hidden on mobile to save space */}
+                              <div className="hidden sm:inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 bg-amber-500/20 backdrop-blur-sm border border-amber-500/30 rounded-full mb-4 sm:mb-6">
                                 <Star className="w-3 h-3 sm:w-4 sm:h-4 text-amber-500 fill-amber-500" />
                                 <span className="text-amber-600 text-xs sm:text-sm font-medium">
                                   {heroFeatures?.badge_text || 'Profesyonel Gayrimenkul Danışmanlığı'}
                                 </span>
                               </div>
                               
-                              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-slate-800 mb-3 sm:mb-4 leading-tight">
+                              <h1 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-slate-800 mb-2 sm:mb-4 leading-tight line-clamp-2">
                                 {slide.title}
                               </h1>
                               {slide.subtitle && (
-                                <p className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold bg-gradient-to-r from-amber-500 via-amber-400 to-amber-600 bg-clip-text text-transparent mb-4 sm:mb-6">
+                                <p className="text-base sm:text-2xl md:text-3xl lg:text-4xl font-bold bg-gradient-to-r from-amber-500 via-amber-400 to-amber-600 bg-clip-text text-transparent mb-2 sm:mb-6 line-clamp-1">
                                   {slide.subtitle}
                                 </p>
                               )}
                               {slide.description && (
-                                <p className="text-sm sm:text-lg text-slate-600 mb-4 sm:mb-8 max-w-xl leading-relaxed">
+                                <p className="hidden sm:block text-sm sm:text-lg text-slate-600 mb-4 sm:mb-8 max-w-xl leading-relaxed">
                                   {slide.description}
                                 </p>
                               )}
                               
-                              {/* CTA Buttons */}
-                              <div className="flex flex-col sm:flex-row flex-wrap gap-3 sm:gap-4 mb-6 sm:mb-10">
+                              {/* CTA Buttons - compact on mobile */}
+                              <div className="flex flex-row flex-wrap gap-2 sm:gap-4 mb-3 sm:mb-10">
                                 {slide.cta_text && slide.cta_link && (
                                   <Button
                                     asChild
-                                    size="lg"
-                                    className="bg-amber-500 hover:bg-amber-600 text-white px-6 sm:px-8 py-4 sm:py-6 text-base sm:text-lg rounded-xl shadow-lg shadow-amber-500/25 hover:shadow-xl hover:shadow-amber-500/30 transform hover:scale-105 transition-all duration-300"
+                                    size="sm"
+                                    className="bg-amber-500 hover:bg-amber-600 text-white px-4 sm:px-8 py-2.5 sm:py-6 text-sm sm:text-lg rounded-lg sm:rounded-xl shadow-lg shadow-amber-500/25 hover:shadow-xl hover:shadow-amber-500/30 sm:transform sm:hover:scale-105 transition-all duration-300"
                                   >
                                     <Link to={slide.cta_link}>
                                       {slide.cta_text}
-                                      <ArrowRight className="ml-2 w-5 h-5" />
+                                      <ArrowRight className="ml-1 sm:ml-2 w-4 h-4 sm:w-5 sm:h-5" />
                                     </Link>
                                   </Button>
                                 )}
                                 <Button
                                   asChild
-                                  size="lg"
+                                  size="sm"
                                   variant="outline"
-                                  className="border-slate-300 bg-white/50 backdrop-blur-sm text-slate-700 hover:bg-slate-100 px-6 sm:px-8 py-4 sm:py-6 text-base sm:text-lg rounded-xl transition-all duration-300"
+                                  className="border-slate-300 bg-white/50 backdrop-blur-sm text-slate-700 hover:bg-slate-100 px-4 sm:px-8 py-2.5 sm:py-6 text-sm sm:text-lg rounded-lg sm:rounded-xl transition-all duration-300"
                                 >
                                   <Link to={heroFeatures?.secondary_cta_link || '/iletisim'}>
-                                    <Phone className="mr-2 w-5 h-5" />
+                                    <Phone className="mr-1 sm:mr-2 w-4 h-4 sm:w-5 sm:h-5" />
                                     {heroFeatures?.secondary_cta_text || 'Bize Ulaşın'}
                                   </Link>
                                 </Button>
                               </div>
                               
-                              {/* Trust Indicators - Dynamic */}
-                              <div className="flex flex-col sm:flex-row flex-wrap gap-3 sm:gap-6">
+                              {/* Trust Indicators - hidden on mobile */}
+                              <div className="hidden sm:flex flex-row flex-wrap gap-3 sm:gap-6">
                                 {(heroFeatures?.trust_indicators || [
                                   { icon: 'check-circle', text: 'Lisanslı Danışman', color: 'green' },
                                   { icon: 'shield', text: 'Güvenli İşlem', color: 'blue' },
@@ -285,30 +285,30 @@ export const Home = () => {
                       </div>
                     ) : (
                       /* OTHER SLIDES - Simple Design */
-                      <div className="relative z-10 h-full flex items-center justify-center">
-                        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-                          <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight">
+                      <div className="relative z-10 h-full flex items-center justify-center px-4 pt-16 sm:pt-0">
+                        <div className="max-w-4xl mx-auto sm:px-6 lg:px-8 text-center">
+                          <h2 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-2 sm:mb-6 leading-tight line-clamp-2">
                             {slide.title}
                           </h2>
                           {slide.subtitle && (
-                            <p className="text-xl md:text-2xl text-amber-400 font-semibold mb-4">
+                            <p className="text-base sm:text-xl md:text-2xl text-amber-400 font-semibold mb-2 sm:mb-4 line-clamp-1">
                               {slide.subtitle}
                             </p>
                           )}
                           {slide.description && (
-                            <p className="text-lg md:text-xl text-slate-300 mb-8 max-w-2xl mx-auto">
+                            <p className="hidden sm:block text-lg md:text-xl text-slate-300 mb-8 max-w-2xl mx-auto">
                               {slide.description}
                             </p>
                           )}
                           {slide.cta_text && slide.cta_link && (
                             <Button
                               asChild
-                              size="lg"
-                              className="bg-amber-500 hover:bg-amber-600 text-white px-10 py-6 text-lg rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
+                              size="sm"
+                              className="bg-amber-500 hover:bg-amber-600 text-white px-5 sm:px-10 py-2.5 sm:py-6 text-sm sm:text-lg rounded-lg sm:rounded-xl shadow-lg hover:shadow-xl sm:transform sm:hover:scale-105 transition-all duration-300"
                             >
                               <Link to={slide.cta_link}>
                                 {slide.cta_text}
-                                <ArrowRight className="ml-2 w-5 h-5" />
+                                <ArrowRight className="ml-1 sm:ml-2 w-4 h-4 sm:w-5 sm:h-5" />
                               </Link>
                             </Button>
                           )}
@@ -335,12 +335,12 @@ export const Home = () => {
             </button>
             
             {/* Slide Indicators */}
-            <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex gap-2 z-20">
+            <div className="absolute bottom-2 sm:bottom-8 left-1/2 transform -translate-x-1/2 flex gap-2 z-20">
               {carousel.map((_, idx) => (
                 <button 
                   key={idx} 
                   onClick={() => carouselApi?.scrollTo(idx)}
-                  className={`h-2 rounded-full transition-all duration-300 ${currentSlide === idx ? 'w-8 bg-amber-500' : 'w-2 bg-white/30 hover:bg-white/50'}`}
+                  className={`h-1.5 sm:h-2 rounded-full transition-all duration-300 ${currentSlide === idx ? 'w-6 sm:w-8 bg-amber-500' : 'w-1.5 sm:w-2 bg-white/40 hover:bg-white/50'}`}
                 />
               ))}
             </div>
@@ -348,9 +348,9 @@ export const Home = () => {
         )}
       </section>
 
-      {/* Market Trends Section - Lazy loaded */}
+      {/* Home Forms Section - Talep & Ekspertiz right under slider */}
       <LazySection>
-        <MarketTrends />
+        <HomeFormsSection />
       </LazySection>
 
       {/* Projects Section - Lazy loaded */}
