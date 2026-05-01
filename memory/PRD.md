@@ -20,6 +20,12 @@ Build a full-stack real estate portfolio website and CMS for "Kaan Alp Tekin" (A
 
 ## Implemented Features
 ### ✅ Completed (current session — Feb 2026)
+**Phase 4 (latest user request — 5 teknik düzenleme):**
+1. **Project Detail lightbox responsive** — `DialogContent` `max-w-[95vw] max-h-[95vh]` + `object-contain` + `max-h-[80vh]` görsel; tüm cihazlarda taşma sorunu giderildi.
+2. **Değer Artışı line chart kaldırıldı** — `ComparisonLineChart` componenti ve `LineChartIcon` import temizlendi; sadece interaktif **karşılaştırma tablosu** kaldı.
+3. **FAQ CRUD sistemi** — `/api/faqs` endpoint'leri (GET public, POST/PUT/DELETE admin); `AdminFAQ.jsx` (sıralama, renk, aktif/pasif, edit, delete, yeni); Contact sayfası dinamik FAQ yükler. Admin sidebar'a "SSS" linki (HelpCircle ikonu).
+4. **Sosyal medya admin yönetimi** — `ContactInfo` modeline `youtube` + `whatsapp` eklendi; AdminContent → Sosyal Medya tab'ında YouTube ve WhatsApp inputları; Footer'a YouTube + WhatsApp ikonları; Mobil menüde dinamik sosyal ikon satırı (Instagram CTA + Facebook/YouTube/LinkedIn/Twitter ikonları admin verisine göre).
+5. **Mobil menü z-index/scroll-lock** — Navbar `z-60`, overlay `z-55`, opak `bg-white` (önce yarı saydamdı), `body.style.overflow='hidden'` menü açıkken, route değişiminde otomatik kapanma, WhatsApp widget `z-50` (menünün altında kalıyor).
 **Phase 3 (latest user request):**
 1. **2026 verileri eklendi** — Tüm 6 bölge için 2020→2026 yıllık veriler (Aksu/Döşemealtı/Altıntaş dahil her ara yıl). Live DB güncellendi + backend default fallback de güncellendi.
 2. **İnteraktif Karşılaştırma aracı** — Yeni SVG line-chart (responsive + horizontal scroll on mobile) ve karşılaştırma tablosu eklendi. Kullanıcı bölgeleri toggle edip kıyaslayabiliyor. Toplam Artış sütunu ile özet.
