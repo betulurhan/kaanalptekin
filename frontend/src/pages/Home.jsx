@@ -130,16 +130,16 @@ export const Home = () => {
                                 </span>
                               </div>
                               
-                              <h1 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-2 sm:mb-4 leading-tight line-clamp-2 [text-shadow:_-1px_-1px_0_rgba(0,0,0,0.6),_1px_-1px_0_rgba(0,0,0,0.6),_-1px_1px_0_rgba(0,0,0,0.6),_1px_1px_0_rgba(0,0,0,0.6),_0_3px_14px_rgba(0,0,0,0.85)]">
+                              <h1 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-2 sm:mb-4 leading-tight line-clamp-2 [text-shadow:_0_2px_12px_rgba(0,0,0,0.7),_0_4px_24px_rgba(0,0,0,0.4)]">
                                 {slide.title}
                               </h1>
                               {slide.subtitle && (
-                                <p className="text-base sm:text-2xl md:text-3xl lg:text-4xl font-bold text-white mb-2 sm:mb-6 line-clamp-1 [text-shadow:_-1px_-1px_0_rgba(0,0,0,0.6),_1px_-1px_0_rgba(0,0,0,0.6),_-1px_1px_0_rgba(0,0,0,0.6),_1px_1px_0_rgba(0,0,0,0.6),_0_3px_14px_rgba(0,0,0,0.85)]">
+                                <p className="text-base sm:text-2xl md:text-3xl lg:text-4xl font-bold text-white mb-2 sm:mb-6 line-clamp-1 [text-shadow:_0_2px_12px_rgba(0,0,0,0.7),_0_4px_24px_rgba(0,0,0,0.4)]">
                                   {slide.subtitle}
                                 </p>
                               )}
                               {slide.description && (
-                                <p className="hidden sm:block text-sm sm:text-lg text-white mb-4 sm:mb-8 max-w-xl leading-relaxed [text-shadow:_0_1px_3px_rgba(0,0,0,0.95),_0_2px_10px_rgba(0,0,0,0.7)]">
+                                <p className="hidden sm:block text-sm sm:text-lg text-white mb-4 sm:mb-8 max-w-xl leading-relaxed [text-shadow:_0_2px_10px_rgba(0,0,0,0.7)]">
                                   {slide.description}
                                 </p>
                               )}
@@ -285,16 +285,16 @@ export const Home = () => {
                       /* OTHER SLIDES - Simple Design */
                       <div className="relative z-10 h-full flex items-center justify-center px-4 pt-16 sm:pt-0">
                         <div className="max-w-4xl mx-auto sm:px-6 lg:px-8 text-center">
-                          <h2 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-2 sm:mb-6 leading-tight line-clamp-2 [text-shadow:_-1px_-1px_0_rgba(0,0,0,0.6),_1px_-1px_0_rgba(0,0,0,0.6),_-1px_1px_0_rgba(0,0,0,0.6),_1px_1px_0_rgba(0,0,0,0.6),_0_3px_14px_rgba(0,0,0,0.85)]">
+                          <h2 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-2 sm:mb-6 leading-tight line-clamp-2 [text-shadow:_0_2px_12px_rgba(0,0,0,0.7),_0_4px_24px_rgba(0,0,0,0.4)]">
                             {slide.title}
                           </h2>
                           {slide.subtitle && (
-                            <p className="text-base sm:text-xl md:text-2xl text-white font-semibold mb-2 sm:mb-4 line-clamp-1 [text-shadow:_-1px_-1px_0_rgba(0,0,0,0.6),_1px_-1px_0_rgba(0,0,0,0.6),_-1px_1px_0_rgba(0,0,0,0.6),_1px_1px_0_rgba(0,0,0,0.6),_0_3px_14px_rgba(0,0,0,0.85)]">
+                            <p className="text-base sm:text-xl md:text-2xl text-white font-semibold mb-2 sm:mb-4 line-clamp-1 [text-shadow:_0_2px_12px_rgba(0,0,0,0.7),_0_4px_24px_rgba(0,0,0,0.4)]">
                               {slide.subtitle}
                             </p>
                           )}
                           {slide.description && (
-                            <p className="hidden sm:block text-lg md:text-xl text-white mb-8 max-w-2xl mx-auto [text-shadow:_0_1px_3px_rgba(0,0,0,0.95),_0_2px_10px_rgba(0,0,0,0.7)]">
+                            <p className="hidden sm:block text-lg md:text-xl text-white mb-8 max-w-2xl mx-auto [text-shadow:_0_2px_10px_rgba(0,0,0,0.7)]">
                               {slide.description}
                             </p>
                           )}
