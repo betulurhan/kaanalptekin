@@ -123,23 +123,23 @@ export const Home = () => {
                             {/* Left Content */}
                             <div className="text-left">
                               {/* Badge - hidden on mobile to save space */}
-                              <div className="hidden sm:inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 bg-amber-500/20 backdrop-blur-sm border border-amber-500/30 rounded-full mb-4 sm:mb-6">
-                                <Star className="w-3 h-3 sm:w-4 sm:h-4 text-amber-500 fill-amber-500" />
-                                <span className="text-amber-600 text-xs sm:text-sm font-medium">
+                              <div className="hidden sm:inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 bg-black/30 backdrop-blur-md border border-white/20 rounded-full mb-4 sm:mb-6">
+                                <Star className="w-3 h-3 sm:w-4 sm:h-4 text-amber-400 fill-amber-400" />
+                                <span className="text-white text-xs sm:text-sm font-medium [text-shadow:_0_1px_4px_rgba(0,0,0,0.6)]">
                                   {heroFeatures?.badge_text || 'Profesyonel Gayrimenkul Danışmanlığı'}
                                 </span>
                               </div>
                               
-                              <h1 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-2 sm:mb-4 leading-tight line-clamp-2 drop-shadow-[0_2px_8px_rgba(0,0,0,0.6)]">
+                              <h1 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-2 sm:mb-4 leading-tight line-clamp-2 [text-shadow:_-1px_-1px_0_rgba(0,0,0,0.6),_1px_-1px_0_rgba(0,0,0,0.6),_-1px_1px_0_rgba(0,0,0,0.6),_1px_1px_0_rgba(0,0,0,0.6),_0_3px_14px_rgba(0,0,0,0.85)]">
                                 {slide.title}
                               </h1>
                               {slide.subtitle && (
-                                <p className="text-base sm:text-2xl md:text-3xl lg:text-4xl font-bold bg-gradient-to-r from-amber-400 via-amber-300 to-amber-500 bg-clip-text text-transparent mb-2 sm:mb-6 line-clamp-1 drop-shadow-[0_2px_6px_rgba(0,0,0,0.4)]">
+                                <p className="text-base sm:text-2xl md:text-3xl lg:text-4xl font-bold text-white mb-2 sm:mb-6 line-clamp-1 [text-shadow:_-1px_-1px_0_rgba(0,0,0,0.6),_1px_-1px_0_rgba(0,0,0,0.6),_-1px_1px_0_rgba(0,0,0,0.6),_1px_1px_0_rgba(0,0,0,0.6),_0_3px_14px_rgba(0,0,0,0.85)]">
                                   {slide.subtitle}
                                 </p>
                               )}
                               {slide.description && (
-                                <p className="hidden sm:block text-sm sm:text-lg text-white/95 mb-4 sm:mb-8 max-w-xl leading-relaxed drop-shadow-[0_1px_4px_rgba(0,0,0,0.6)]">
+                                <p className="hidden sm:block text-sm sm:text-lg text-white mb-4 sm:mb-8 max-w-xl leading-relaxed [text-shadow:_0_1px_3px_rgba(0,0,0,0.95),_0_2px_10px_rgba(0,0,0,0.7)]">
                                   {slide.description}
                                 </p>
                               )}
@@ -162,7 +162,7 @@ export const Home = () => {
                                   asChild
                                   size="sm"
                                   variant="outline"
-                                  className="border-slate-300 bg-white/50 backdrop-blur-sm text-slate-700 hover:bg-slate-100 px-4 sm:px-8 py-2.5 sm:py-6 text-sm sm:text-lg rounded-lg sm:rounded-xl transition-all duration-300"
+                                  className="border-white/40 bg-white/10 backdrop-blur-md text-white hover:bg-white/20 hover:text-white px-4 sm:px-8 py-2.5 sm:py-6 text-sm sm:text-lg rounded-lg sm:rounded-xl transition-all duration-300"
                                 >
                                   <Link to={heroFeatures?.secondary_cta_link || '/iletisim'}>
                                     <Phone className="mr-1 sm:mr-2 w-4 h-4 sm:w-5 sm:h-5" />
@@ -179,11 +179,11 @@ export const Home = () => {
                                   { icon: 'award', text: '15+ Yıl Tecrübe', color: 'amber' }
                                 ]).filter(t => t.is_active !== false).map((indicator, idx) => {
                                   const colorClasses = {
-                                    green: 'bg-green-500/20 text-green-600',
-                                    blue: 'bg-blue-500/20 text-blue-600',
-                                    amber: 'bg-amber-500/20 text-amber-600',
-                                    red: 'bg-red-500/20 text-red-600',
-                                    purple: 'bg-purple-500/20 text-purple-600'
+                                    green: 'bg-green-500/30 text-green-300',
+                                    blue: 'bg-blue-500/30 text-blue-300',
+                                    amber: 'bg-amber-500/30 text-amber-300',
+                                    red: 'bg-red-500/30 text-red-300',
+                                    purple: 'bg-purple-500/30 text-purple-300'
                                   };
                                   const iconMap = {
                                     'check-circle': CheckCircle2,
@@ -194,11 +194,11 @@ export const Home = () => {
                                   };
                                   const IconComp = iconMap[indicator.icon] || CheckCircle2;
                                   return (
-                                    <div key={idx} className="flex items-center gap-2 text-slate-600">
-                                      <div className={`w-8 h-8 sm:w-10 sm:h-10 rounded-full ${colorClasses[indicator.color] || colorClasses.green} flex items-center justify-center`}>
+                                    <div key={idx} className="flex items-center gap-2 text-white [text-shadow:_0_1px_4px_rgba(0,0,0,0.7)]">
+                                      <div className={`w-8 h-8 sm:w-10 sm:h-10 rounded-full ${colorClasses[indicator.color] || colorClasses.green} backdrop-blur-sm flex items-center justify-center`}>
                                         <IconComp className="w-4 h-4 sm:w-5 sm:h-5" />
                                       </div>
-                                      <span className="text-xs sm:text-sm">{indicator.text}</span>
+                                      <span className="text-xs sm:text-sm font-medium">{indicator.text}</span>
                                     </div>
                                   );
                                 })}
@@ -285,16 +285,16 @@ export const Home = () => {
                       /* OTHER SLIDES - Simple Design */
                       <div className="relative z-10 h-full flex items-center justify-center px-4 pt-16 sm:pt-0">
                         <div className="max-w-4xl mx-auto sm:px-6 lg:px-8 text-center">
-                          <h2 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-2 sm:mb-6 leading-tight line-clamp-2">
+                          <h2 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-2 sm:mb-6 leading-tight line-clamp-2 [text-shadow:_-1px_-1px_0_rgba(0,0,0,0.6),_1px_-1px_0_rgba(0,0,0,0.6),_-1px_1px_0_rgba(0,0,0,0.6),_1px_1px_0_rgba(0,0,0,0.6),_0_3px_14px_rgba(0,0,0,0.85)]">
                             {slide.title}
                           </h2>
                           {slide.subtitle && (
-                            <p className="text-base sm:text-xl md:text-2xl text-amber-400 font-semibold mb-2 sm:mb-4 line-clamp-1">
+                            <p className="text-base sm:text-xl md:text-2xl text-white font-semibold mb-2 sm:mb-4 line-clamp-1 [text-shadow:_-1px_-1px_0_rgba(0,0,0,0.6),_1px_-1px_0_rgba(0,0,0,0.6),_-1px_1px_0_rgba(0,0,0,0.6),_1px_1px_0_rgba(0,0,0,0.6),_0_3px_14px_rgba(0,0,0,0.85)]">
                               {slide.subtitle}
                             </p>
                           )}
                           {slide.description && (
-                            <p className="hidden sm:block text-lg md:text-xl text-slate-300 mb-8 max-w-2xl mx-auto">
+                            <p className="hidden sm:block text-lg md:text-xl text-white mb-8 max-w-2xl mx-auto [text-shadow:_0_1px_3px_rgba(0,0,0,0.95),_0_2px_10px_rgba(0,0,0,0.7)]">
                               {slide.description}
                             </p>
                           )}
