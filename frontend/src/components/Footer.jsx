@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Facebook, Instagram, Linkedin, Twitter, Phone, Mail, MapPin, Clock } from 'lucide-react';
+import { Facebook, Instagram, Linkedin, Twitter, Youtube, MessageCircle, Phone, Mail, MapPin, Clock } from 'lucide-react';
 import { useSiteData } from '../context/SiteDataContext';
 import { resolveImageUrl } from '../utils/imageUrl';
 
@@ -133,6 +133,28 @@ export const Footer = () => {
                   aria-label="Twitter"
                 >
                   <Twitter className="w-5 h-5" />
+                </a>
+              )}
+              {contactInfo?.youtube && (
+                <a
+                  href={contactInfo.youtube}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-10 h-10 rounded-lg bg-slate-800 flex items-center justify-center hover:bg-red-600 transition-colors duration-300"
+                  aria-label="YouTube"
+                >
+                  <Youtube className="w-5 h-5" />
+                </a>
+              )}
+              {contactInfo?.whatsapp && (
+                <a
+                  href={contactInfo.whatsapp}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-10 h-10 rounded-lg bg-slate-800 flex items-center justify-center hover:bg-green-600 transition-colors duration-300"
+                  aria-label="WhatsApp"
+                >
+                  <MessageCircle className="w-5 h-5" />
                 </a>
               )}
             </div>

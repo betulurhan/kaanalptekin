@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, Home, User, FolderOpen, BookOpen, Mail, Calculator, Tag, Instagram, TrendingUp } from 'lucide-react';
+import { Menu, X, Home, User, FolderOpen, BookOpen, Mail, Calculator, Tag, Instagram, TrendingUp, Facebook, Linkedin, Twitter, Youtube } from 'lucide-react';
 import { Button } from './ui/button';
 import { useSiteData } from '../context/SiteDataContext';
 import { resolveImageUrl } from '../utils/imageUrl';
@@ -20,6 +20,20 @@ export const Navbar = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // Close mobile menu on route change
+  useEffect(() => {
+    setIsMobileMenuOpen(false);
+  }, [location.pathname]);
+
+  // Lock body scroll when mobile menu open
+  useEffect(() => {
+    if (isMobileMenuOpen) {
+      const prev = document.body.style.overflow;
+      document.body.style.overflow = 'hidden';
+      return () => { document.body.style.overflow = prev; };
+    }
+  }, [isMobileMenuOpen]);
+
   const navLinks = [
     { path: '/', label: 'Ana Sayfa', icon: Home },
     { path: '/hakkimda', label: 'Hakkımda', icon: User },
@@ -34,12 +48,23 @@ export const Navbar = () => {
   const isActive = (path) => location.pathname === path;
   const isHomePage = location.pathname === '/';
 
+  // Build dynamic social media list from contactInfo
+  const socialLinks = [
+    { key: 'instagram', url: contactInfo?.instagram, label: 'Instagram', icon: Instagram, gradient: 'from-pink-500 via-purple-500 to-amber-500' },
+    { key: 'facebook', url: contactInfo?.facebook, label: 'Facebook', icon: Facebook, gradient: 'from-blue-600 to-blue-700' },
+    { key: 'youtube', url: contactInfo?.youtube, label: 'YouTube', icon: Youtube, gradient: 'from-red-500 to-red-600' },
+    { key: 'linkedin', url: contactInfo?.linkedin, label: 'LinkedIn', icon: Linkedin, gradient: 'from-sky-600 to-sky-700' },
+    { key: 'twitter', url: contactInfo?.twitter, label: 'Twitter', icon: Twitter, gradient: 'from-slate-700 to-slate-800' },
+  ].filter(s => s.url);
+
   return (
     <nav
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled
-          ? 'bg-white/95 backdrop-blur-md shadow-md'
-          : 'bg-transparent'
+      className={`fixed top-0 left-0 right-0 z-[60] transition-all duration-300 ${
+        isMobileMenuOpen
+          ? 'bg-white shadow-md'
+          : isScrolled
+            ? 'bg-white/95 backdrop-blur-md shadow-md'
+            : 'bg-transparent'
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -90,14 +115,15 @@ export const Navbar = () => {
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             className={`md:hidden p-2 rounded-lg transition-colors ${
-              isScrolled || !isHomePage
+              isMobileMenuOpen || isScrolled || !isHomePage
                 ? 'hover:bg-slate-100'
                 : 'hover:bg-white/10'
             }`}
             aria-label="Toggle menu"
+            data-testid="mobile-menu-toggle"
           >
             {isMobileMenuOpen ? (
-              <X className={`w-6 h-6 ${isScrolled || !isHomePage ? 'text-slate-700' : 'text-white'}`} />
+              <X className="w-6 h-6 text-slate-700" />
             ) : (
               <Menu className={`w-6 h-6 ${isScrolled || !isHomePage ? 'text-slate-700' : 'text-white'}`} />
             )}
@@ -105,13 +131,14 @@ export const Navbar = () => {
         </div>
       </div>
 
-      {/* Mobile Menu - Dashboard Style */}
+      {/* Mobile Menu - Full Screen Overlay (opaque, scroll-locked) */}
       <div
-        className={`md:hidden fixed inset-0 top-20 bg-white/98 backdrop-blur-lg transition-all duration-300 ${
+        className={`md:hidden fixed inset-0 top-20 bg-white transition-opacity duration-300 z-[55] ${
           isMobileMenuOpen
             ? 'opacity-100 visible'
             : 'opacity-0 invisible pointer-events-none'
         }`}
+        data-testid="mobile-menu-overlay"
       >
         <div className="p-6 overflow-y-auto h-full pb-32">
           <div className="grid grid-cols-2 gap-4 max-w-md mx-auto">
@@ -136,20 +163,48 @@ export const Navbar = () => {
             })}
           </div>
 
-          {/* Instagram Quick Link */}
-          {contactInfo?.instagram && (
-            <div className="max-w-md mx-auto mt-6">
-              <a
-                href={contactInfo.instagram}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={() => setIsMobileMenuOpen(false)}
-                data-testid="mobile-nav-instagram"
-                className="flex items-center justify-center gap-3 p-4 rounded-2xl bg-gradient-to-r from-pink-500 via-purple-500 to-amber-500 text-white shadow-lg hover:shadow-xl transition-all duration-300"
-              >
-                <Instagram className="w-6 h-6" />
-                <span className="font-semibold">Instagram'da Takip Et</span>
-              </a>
+          {/* Social Media Quick Links - dynamic from admin */}
+          {socialLinks.length > 0 && (
+            <div className="max-w-md mx-auto mt-8" data-testid="mobile-social-links">
+              <p className="text-xs uppercase tracking-wider text-slate-500 text-center mb-3 font-semibold">
+                Sosyal Medya
+              </p>
+
+              {/* Featured Instagram CTA (kept for prominence) */}
+              {contactInfo?.instagram && (
+                <a
+                  href={contactInfo.instagram}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  data-testid="mobile-nav-instagram"
+                  className="flex items-center justify-center gap-3 p-4 rounded-2xl bg-gradient-to-r from-pink-500 via-purple-500 to-amber-500 text-white shadow-lg hover:shadow-xl transition-all duration-300 mb-3"
+                >
+                  <Instagram className="w-6 h-6" />
+                  <span className="font-semibold">Instagram'da Takip Et</span>
+                </a>
+              )}
+
+              {/* Other social icons */}
+              <div className="flex justify-center gap-3 flex-wrap">
+                {socialLinks.filter(s => s.key !== 'instagram').map((s) => {
+                  const Icon = s.icon;
+                  return (
+                    <a
+                      key={s.key}
+                      href={s.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      aria-label={s.label}
+                      data-testid={`mobile-nav-${s.key}`}
+                      className={`w-12 h-12 rounded-full bg-gradient-to-br ${s.gradient} text-white shadow-md flex items-center justify-center hover:scale-105 transition-transform`}
+                    >
+                      <Icon className="w-5 h-5" />
+                    </a>
+                  );
+                })}
+              </div>
             </div>
           )}
         </div>

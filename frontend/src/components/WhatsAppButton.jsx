@@ -49,7 +49,7 @@ export const WhatsAppButton = () => {
   return (
     <div
       className="fixed bottom-5 right-5 sm:bottom-6 sm:right-6"
-      style={{ zIndex: 9999 }}
+      style={{ zIndex: 50 }}
       onMouseLeave={() => setIsOpen(false)}
       data-testid="whatsapp-widget"
     >

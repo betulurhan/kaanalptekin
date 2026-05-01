@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
-import { TrendingUp, MapPin, Calendar, ChevronLeft, ChevronRight, BarChart3, ArrowUpRight, LineChart as LineChartIcon, Table as TableIcon } from 'lucide-react';
+import { TrendingUp, MapPin, Calendar, ChevronLeft, ChevronRight, BarChart3, ArrowUpRight, Table as TableIcon } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
 import { marketTrendsAPI } from '../services/api';
@@ -107,80 +107,7 @@ const SingleRegionChart = ({ data, color }) => {
   );
 };
 
-// Multi-region SVG line chart
-const ComparisonLineChart = ({ data, regions, selectedIds }) => {
-  const visibleRegions = regions.filter(r => selectedIds.includes(r.id));
-  const allValues = visibleRegions.flatMap(r => (data[r.id] || []).map(d => d.value));
-  if (allValues.length === 0) return null;
-  const maxV = Math.max(...allValues);
-  const years = (data[visibleRegions[0]?.id] || []).map(d => d.year);
-
-  const W = 760;
-  const H = 320;
-  const padL = 56;
-  const padR = 16;
-  const padT = 16;
-  const padB = 36;
-  const innerW = W - padL - padR;
-  const innerH = H - padT - padB;
-
-  const xFor = (i) => padL + (years.length === 1 ? innerW / 2 : (i / (years.length - 1)) * innerW);
-  const yFor = (v) => padT + innerH - (v / maxV) * innerH;
-
-  const yTicks = 4;
-  const ticks = Array.from({ length: yTicks + 1 }, (_, i) => (maxV / yTicks) * i);
-
-  return (
-    <div className="overflow-x-auto pb-2 -mx-4 sm:mx-0 px-4 sm:px-0">
-      <svg
-        viewBox={`0 0 ${W} ${H}`}
-        className="w-full min-w-[640px] h-72 sm:h-80"
-        preserveAspectRatio="xMidYMid meet"
-        data-testid="comparison-line-chart"
-      >
-        {/* Grid */}
-        {ticks.map((t, i) => (
-          <g key={i}>
-            <line
-              x1={padL}
-              x2={W - padR}
-              y1={yFor(t)}
-              y2={yFor(t)}
-              stroke="#e2e8f0"
-              strokeDasharray="3,3"
-            />
-            <text x={padL - 8} y={yFor(t) + 4} textAnchor="end" fontSize="10" fill="#64748b">
-              {formatPrice(t)}
-            </text>
-          </g>
-        ))}
-        {/* X axis labels */}
-        {years.map((y, i) => (
-          <text key={y} x={xFor(i)} y={H - 12} textAnchor="middle" fontSize="11" fill="#475569" fontWeight="500">
-            {y}
-          </text>
-        ))}
-        {/* Lines per region */}
-        {visibleRegions.map((r) => {
-          const series = data[r.id] || [];
-          const path = series
-            .map((d, i) => `${i === 0 ? 'M' : 'L'} ${xFor(i)} ${yFor(d.value)}`)
-            .join(' ');
-          return (
-            <g key={r.id}>
-              <path d={path} fill="none" stroke={r.color} strokeWidth="2.5" strokeLinejoin="round" strokeLinecap="round" />
-              {series.map((d, i) => (
-                <circle key={i} cx={xFor(i)} cy={yFor(d.value)} r="3.5" fill={r.color} stroke="#fff" strokeWidth="1.5">
-                  <title>{`${r.name} ${d.year}: ${formatPrice(d.value)}${d.change ? ` (+${d.change}%)` : ''}`}</title>
-                </circle>
-              ))}
-            </g>
-          );
-        })}
-      </svg>
-    </div>
-  );
-};
+// Multi-region SVG line chart (removed from UI per spec; kept stub-free)
 
 export const MarketTrends = () => {
   const [selectedRegion, setSelectedRegion] = useState('konyaalti');
@@ -398,14 +325,14 @@ export const MarketTrends = () => {
         <div className="mt-12 sm:mt-16">
           <div className="text-center mb-6 sm:mb-8">
             <Badge className="bg-slate-800 text-white mb-3">
-              <LineChartIcon className="w-4 h-4 mr-1" />
+              <TableIcon className="w-4 h-4 mr-1" />
               İnteraktif Karşılaştırma
             </Badge>
             <h3 className="text-xl sm:text-2xl md:text-3xl font-bold text-slate-800 mb-2">
               Bölgeleri Yan Yana Kıyaslayın
             </h3>
             <p className="text-sm sm:text-base text-slate-600 max-w-xl mx-auto">
-              Görmek istediğiniz bölgeleri seçin; trend çizgileri ve yıllık karşılaştırma tablosu güncellensin.
+              Görmek istediğiniz bölgeleri seçin; karşılaştırma tablosu seçimlerinize göre güncellensin.
             </p>
           </div>
 
@@ -437,28 +364,7 @@ export const MarketTrends = () => {
             })}
           </div>
 
-          {/* Line chart */}
-          <Card className="border-none shadow-xl mb-6">
-            <CardHeader className="pb-2">
-              <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
-                <LineChartIcon className="w-5 h-5 text-amber-500" />
-                Yıllara Göre m² Fiyat Trendi
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="px-2 sm:px-6">
-              {comparisonRegions.length === 0 ? (
-                <div className="py-12 text-center text-slate-500 text-sm">
-                  Karşılaştırmak için en az bir bölge seçin.
-                </div>
-              ) : (
-                <ComparisonLineChart
-                  data={trendData}
-                  regions={REGION_META}
-                  selectedIds={comparisonRegions}
-                />
-              )}
-            </CardContent>
-          </Card>
+          {/* Line chart removed per spec; comparison table remains below */}
 
           {/* Comparison Table */}
           <Card className="border-none shadow-xl">

@@ -397,16 +397,16 @@ export const ProjectDetail = () => {
 
       {/* Image Lightbox Dialog */}
       <Dialog open={selectedImage !== null} onOpenChange={() => setSelectedImage(null)}>
-        <DialogContent className="max-w-7xl max-h-[90vh]">
-          <DialogHeader>
-            <DialogTitle>{project.title}</DialogTitle>
+        <DialogContent className="max-w-[95vw] sm:max-w-5xl max-h-[95vh] p-2 sm:p-4 overflow-hidden flex flex-col">
+          <DialogHeader className="px-2 sm:px-4 pt-2">
+            <DialogTitle className="text-base sm:text-lg pr-8 line-clamp-1">{project.title}</DialogTitle>
           </DialogHeader>
           {selectedImage && (
-            <div className="mt-4">
-              <img 
-                src={selectedImage} 
+            <div className="flex-1 flex items-center justify-center overflow-auto min-h-0 px-2">
+              <img
+                src={selectedImage}
                 alt="Preview"
-                className="w-full h-auto"
+                className="max-w-full max-h-[80vh] w-auto h-auto object-contain rounded-md"
               />
             </div>
           )}

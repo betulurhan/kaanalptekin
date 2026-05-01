@@ -509,3 +509,31 @@ export const formsAPI = {
   }
 };
 
+
+// FAQ API
+export const faqAPI = {
+  getAll: async (activeOnly = true) => {
+    const response = await axios.get(`${API}/faqs?active_only=${activeOnly}`);
+    return response.data;
+  },
+  create: async (token, data) => {
+    const response = await axios.post(`${API}/faqs`, data, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    return response.data;
+  },
+  update: async (token, id, data) => {
+    const response = await axios.put(`${API}/faqs/${id}`, data, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    return response.data;
+  },
+  delete: async (token, id) => {
+    const response = await axios.delete(`${API}/faqs/${id}`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    return response.data;
+  }
+};
+
+

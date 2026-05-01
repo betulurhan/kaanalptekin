@@ -164,6 +164,8 @@ class ContactInfo(BaseModel):
     instagram: Optional[str] = None
     linkedin: Optional[str] = None
     twitter: Optional[str] = None
+    youtube: Optional[str] = None
+    whatsapp: Optional[str] = None
     map_embed_url: Optional[str] = None  # Google Maps embed URL
     updated_at: datetime = Field(default_factory=datetime.utcnow)
 
@@ -176,7 +178,34 @@ class ContactInfoUpdate(BaseModel):
     instagram: Optional[str] = None
     linkedin: Optional[str] = None
     twitter: Optional[str] = None
+    youtube: Optional[str] = None
+    whatsapp: Optional[str] = None
     map_embed_url: Optional[str] = None
+
+
+# FAQ Models
+class FAQ(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    question: str
+    answer: str
+    color: Optional[str] = "amber"  # amber | blue | green | red | purple
+    sort_order: int = 0
+    is_active: bool = True
+    updated_at: datetime = Field(default_factory=datetime.utcnow)
+
+class FAQCreate(BaseModel):
+    question: str
+    answer: str
+    color: Optional[str] = "amber"
+    sort_order: int = 0
+    is_active: bool = True
+
+class FAQUpdate(BaseModel):
+    question: Optional[str] = None
+    answer: Optional[str] = None
+    color: Optional[str] = None
+    sort_order: Optional[int] = None
+    is_active: Optional[bool] = None
 
 
 # Hero Content Model

@@ -16,7 +16,8 @@ import {
   MapPin,
   Tag,
   ClipboardList,
-  TrendingUp
+  TrendingUp,
+  HelpCircle
 } from 'lucide-react';
 import { Button } from '../../components/ui/button';
 
@@ -40,6 +41,7 @@ export const AdminLayout = () => {
     { path: '/admin/content', label: 'İçerik', icon: FileText },
     { path: '/admin/ilce-verileri', label: 'İlçe Verileri', icon: MapPin },
     { path: '/admin/market-trends', label: 'Piyasa Trendi', icon: TrendingUp },
+    { path: '/admin/faq', label: 'SSS', icon: HelpCircle },
     { path: '/admin/forms', label: 'Form Başvuruları', icon: ClipboardList },
     { path: '/admin/messages', label: 'Mesajlar', icon: Mail },
     { path: '/admin/users', label: 'Kullanıcılar', icon: Users },

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Phone, Mail, MapPin, Clock, Send } from 'lucide-react';
 import { Card, CardContent } from '../components/ui/card';
 import { Input } from '../components/ui/input';
@@ -6,19 +6,32 @@ import { Button } from '../components/ui/button';
 import { Label } from '../components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
 import { useToast } from '../hooks/use-toast';
-import { messagesAPI } from '../services/api';
+import { messagesAPI, faqAPI } from '../services/api';
 import { SEOHead } from '../components/SEOHead';
 import { useSiteData } from '../context/SiteDataContext';
+
+const COLOR_BORDERS = {
+  amber: 'border-l-amber-500',
+  blue: 'border-l-blue-500',
+  green: 'border-l-green-500',
+  red: 'border-l-red-500',
+  purple: 'border-l-purple-500',
+};
 
 export const Contact = () => {
   const { toast } = useToast();
   const { seoSettings, contactInfo, projects, loaded } = useSiteData();
+  const [faqs, setFaqs] = useState([]);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     phone: '',
     project: 'Tüm Projeler',
   });
+
+  useEffect(() => {
+    faqAPI.getAll(true).then(setFaqs).catch(() => setFaqs([]));
+  }, []);
 
   const handleChange = (e) => {
     setFormData({
@@ -270,38 +283,30 @@ export const Contact = () => {
         </div>
       </section>
 
-      {/* FAQ Section */}
+      {/* FAQ Section - dynamic */}
       <section className="py-16 bg-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl font-bold text-slate-800 mb-8 text-center">
             Sıkça Sorulan Sorular
           </h2>
-          <div className="space-y-4">
-            <Card className="border-l-4 border-l-amber-500 shadow-sm">
-              <CardContent className="p-6">
-                <h3 className="font-bold text-slate-800 mb-2">Danışmanlık ücreti alıyor musunuz?</h3>
-                <p className="text-slate-600">
-                  İlk görüşme ve danışmanlık hizmetimiz tamamen ücretsizdir. Satış işlemi gerçekleştiğinde komisyon alınır.
-                </p>
-              </CardContent>
-            </Card>
-            <Card className="border-l-4 border-l-blue-500 shadow-sm">
-              <CardContent className="p-6">
-                <h3 className="font-bold text-slate-800 mb-2">Hangi bölgelerde hizmet veriyorsunuz?</h3>
-                <p className="text-slate-600">
-                  Başta Ankara, İstanbul, İzmir olmak üzere Türkiye'nin tüm büyük şehirlerinde aktif olarak hizmet vermekteyiz.
-                </p>
-              </CardContent>
-            </Card>
-            <Card className="border-l-4 border-l-green-500 shadow-sm">
-              <CardContent className="p-6">
-                <h3 className="font-bold text-slate-800 mb-2">Yatırım danışmanlığı yapıyor musunuz?</h3>
-                <p className="text-slate-600">
-                  Evet, gayrimenkul yatırımı yapmak isteyenlere piyasa analizi ve karlı yatırım önerileri sunuyoruz.
-                </p>
-              </CardContent>
-            </Card>
-          </div>
+          {faqs.length === 0 ? (
+            <p className="text-center text-slate-500">Henüz SSS eklenmedi.</p>
+          ) : (
+            <div className="space-y-4" data-testid="contact-faq-list">
+              {faqs.map((faq) => (
+                <Card
+                  key={faq.id}
+                  className={`border-l-4 ${COLOR_BORDERS[faq.color] || COLOR_BORDERS.amber} shadow-sm`}
+                  data-testid={`contact-faq-item-${faq.id}`}
+                >
+                  <CardContent className="p-6">
+                    <h3 className="font-bold text-slate-800 mb-2">{faq.question}</h3>
+                    <p className="text-slate-600 whitespace-pre-line">{faq.answer}</p>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          )}
         </div>
       </section>
     </div>

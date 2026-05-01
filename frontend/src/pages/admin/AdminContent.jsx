@@ -740,6 +740,8 @@ export const AdminContent = () => {
                 <div><Label>Instagram URL</Label><Input value={contactData.instagram || ''} onChange={(e) => setContactData({ ...contactData, instagram: e.target.value })} /></div>
                 <div><Label>LinkedIn URL</Label><Input value={contactData.linkedin || ''} onChange={(e) => setContactData({ ...contactData, linkedin: e.target.value })} /></div>
                 <div><Label>Twitter URL</Label><Input value={contactData.twitter || ''} onChange={(e) => setContactData({ ...contactData, twitter: e.target.value })} /></div>
+                <div><Label>YouTube URL</Label><Input value={contactData.youtube || ''} onChange={(e) => setContactData({ ...contactData, youtube: e.target.value })} placeholder="https://youtube.com/@kullanici" /></div>
+                <div><Label>WhatsApp URL</Label><Input value={contactData.whatsapp || ''} onChange={(e) => setContactData({ ...contactData, whatsapp: e.target.value })} placeholder="https://wa.me/9053..." /></div>
               </div>
               
               {/* Google Maps */}
